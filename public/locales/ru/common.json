@@ -1,0 +1,25 @@
+{
+  "common": {
+    "title": "Социально-географическая платформа",
+    "description": "Персонализированное освоение пространства и обмен локальным опытом",
+    "createCollection": "Создать коллекцию",
+    "explorePlaces": "Исследовать места",
+    "colorScheme": "Цветовая схема",
+    "fsdStructure": "Структура FSD",
+    "fsdDescription": "Проект организован по методологии Feature-Sliced Design для масштабируемости и поддерживаемости кода.",
+    "primary": "Primary",
+    "secondary": "Secondary"
+  },
+  "navigation": {
+    "home": "Главная",
+    "places": "Места",
+    "collections": "Коллекции",
+    "guides": "Гайды",
+    "profile": "Профиль"
+  },
+  "language": {
+    "ru": "Русский",
+    "be": "Беларускі",
+    "en": "English"
+  }
+}

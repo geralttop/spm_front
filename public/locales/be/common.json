@@ -1,0 +1,25 @@
+{
+  "common": {
+    "title": "Сацыяльна-геаграфічная платформа",
+    "description": "Персаналізаванае асваенне прасторы і абмен лакальным вопытам",
+    "createCollection": "Стварыць калекцыю",
+    "explorePlaces": "Даследаваць месцы",
+    "colorScheme": "Каляровая схема",
+    "fsdStructure": "Структура FSD",
+    "fsdDescription": "Праект арганізаваны па метадалогіі Feature-Sliced Design для маштабавальнасці і падтрымлівальнасці кода.",
+    "primary": "Primary",
+    "secondary": "Secondary"
+  },
+  "navigation": {
+    "home": "Галоўная",
+    "places": "Месцы",
+    "collections": "Калекцыі",
+    "guides": "Гайды",
+    "profile": "Профіль"
+  },
+  "language": {
+    "ru": "Русский",
+    "be": "Беларускі",
+    "en": "English"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "common": {
+    "title": "Social-Geographic Platform",
+    "description": "Personalized space exploration and local experience sharing",
+    "createCollection": "Create Collection",
+    "explorePlaces": "Explore Places",
+    "colorScheme": "Color Scheme",
+    "fsdStructure": "FSD Structure",
+    "fsdDescription": "The project is organized using Feature-Sliced Design methodology for scalability and code maintainability.",
+    "primary": "Primary",
+    "secondary": "Secondary"
+  },
+  "navigation": {
+    "home": "Home",
+    "places": "Places",
+    "collections": "Collections",
+    "guides": "Guides",
+    "profile": "Profile"
+  },
+  "language": {
+    "ru": "Русский",
+    "be": "Беларускі",
+    "en": "English"
+  }
+}
