@@ -5,6 +5,7 @@ import axios from "axios";
  */
 export const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
+  withCredentials: true, // ВАЖНО: отправляет cookies
   headers: {
     "Content-Type": "application/json",
   },
@@ -40,7 +41,7 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    // Если ошибка 401 и это не запрос на обновление токена или профиля
+    // Если ошибка 401 и это не запрос на обновление токена
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -54,32 +55,29 @@ apiClient.interceptors.response.use(
           try {
             const auth = JSON.parse(authStorage);
             const accessToken = auth?.state?.accessToken;
-            const refreshToken = auth?.state?.refreshToken;
 
-            // Пытаемся обновить токен только если есть оба токена
-            if (accessToken && refreshToken) {
+            // Пытаемся обновить токен (refresh token автоматически из cookie)
+            if (accessToken) {
               try {
-                // Refresh endpoint требует access token в заголовке
                 const response = await axios.post(
                   `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
-                  { refreshToken },
+                  {}, // Пустое body - токен из cookie
                   {
+                    withCredentials: true, // ВАЖНО: отправляет cookies
                     headers: {
                       Authorization: `Bearer ${accessToken}`,
                     },
                   }
                 );
 
-                const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-                  response.data;
+                const { accessToken: newAccessToken } = response.data;
 
-                // Обновляем токены в localStorage
+                // Обновляем только access token в localStorage
                 const updatedAuth = {
                   ...auth,
                   state: {
                     ...auth.state,
                     accessToken: newAccessToken,
-                    refreshToken: newRefreshToken,
                     isAuthenticated: true,
                   },
                 };
@@ -97,7 +95,7 @@ apiClient.interceptors.response.use(
                 return Promise.reject(refreshError);
               }
             } else {
-              // Нет токенов, перенаправляем на страницу аутентификации
+              // Нет токена, перенаправляем на страницу аутентификации
               localStorage.removeItem("auth-storage");
               if (window.location.pathname !== "/auth") {
                 window.location.href = "/auth";

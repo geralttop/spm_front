@@ -9,9 +9,10 @@ import { useAuthStore } from "@/shared/lib/store";
 export default function ProfilePage() {
   const router = useRouter();
   const checkAuth = useAuthStore((state) => state.checkAuth);
-  const clearTokens = useAuthStore((state) => state.clearTokens);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
   const [profile, setProfile] = useState<ProfileResponse | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -25,7 +26,7 @@ export default function ProfilePage() {
         setProfile(data);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        clearTokens();
+        clearAuth();
         router.push("/auth");
       } finally {
         setLoading(false);
@@ -33,11 +34,21 @@ export default function ProfilePage() {
     };
 
     fetchProfile();
-  }, [checkAuth, router, clearTokens]);
+  }, [checkAuth, router, clearAuth]);
 
-  const handleLogout = () => {
-    clearTokens();
-    router.push("/auth");
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      // Вызываем API logout для очистки httpOnly cookie
+      await authApi.logout();
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Продолжаем logout даже если запрос не удался
+    } finally {
+      // Очищаем локальное состояние
+      clearAuth();
+      router.push("/auth");
+    }
   };
 
   if (loading) {
@@ -80,8 +91,13 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <Button onClick={handleLogout} variant="outline" className="w-full">
-            Выйти
+          <Button 
+            onClick={handleLogout} 
+            variant="outline" 
+            className="w-full"
+            disabled={loggingOut}
+          >
+            {loggingOut ? "Выход..." : "Выйти"}
           </Button>
         </div>
       </div>

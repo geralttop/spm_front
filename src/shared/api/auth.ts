@@ -20,7 +20,7 @@ export interface AuthResponse {
   message?: string;
   email?: string;
   accessToken?: string;
-  refreshToken?: string;
+  // refreshToken больше не возвращается - он в httpOnly cookie
 }
 
 export interface ProfileResponse {
@@ -62,10 +62,10 @@ export const authApi = {
     return response.data;
   },
 
-  refreshToken: async (refreshToken: string): Promise<AuthResponse> => {
-    const response = await apiClient.post<AuthResponse>("/auth/refresh", {
-      refreshToken,
-    });
+  logout: async (): Promise<{ message: string }> => {
+    const response = await apiClient.post<{ message: string }>("/auth/logout");
     return response.data;
   },
+
+  // Метод refresh больше не нужен - он вызывается автоматически в интерцепторе
 };

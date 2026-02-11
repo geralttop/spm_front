@@ -10,7 +10,7 @@ type AuthMode = "login" | "register" | "verify";
 
 export default function AuthPage() {
   const router = useRouter();
-  const setTokens = useAuthStore((state) => state.setTokens);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
@@ -18,6 +18,7 @@ export default function AuthPage() {
       router.push("/profile");
     }
   }, [checkAuth, router]);
+  
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -70,8 +71,9 @@ export default function AuthPage() {
         ? await authApi.verifyLogin({ email: pendingEmail, code })
         : await authApi.verifyEmail({ email: pendingEmail, code });
 
-      if (response.accessToken && response.refreshToken) {
-        setTokens(response.accessToken, response.refreshToken);
+      // Сохраняем только access token (refresh token в httpOnly cookie)
+      if (response.accessToken) {
+        setAccessToken(response.accessToken);
         router.push("/profile");
       }
     } catch (err: any) {
