@@ -28,6 +28,13 @@ export interface ProfileResponse {
   userId: string;
   email: string;
   role: string;
+  username?: string;
+  bio?: string;
+}
+
+export interface UpdateProfileRequest {
+  username?: string;
+  bio?: string;
 }
 
 export const authApi = {
@@ -59,6 +66,11 @@ export const authApi = {
 
   getProfile: async (): Promise<ProfileResponse> => {
     const response = await apiClient.get<ProfileResponse>("/auth/profile");
+    return response.data;
+  },
+
+  updateProfile: async (data: UpdateProfileRequest): Promise<ProfileResponse> => {
+    const response = await apiClient.patch<ProfileResponse>("/auth/update-profile", data);
     return response.data;
   },
 

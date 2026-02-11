@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
 import "@/shared/config/i18n";
 import { LanguageProvider } from "./language-provider";
+import { ThemeProvider } from "./theme-provider";
 
 /**
  * Провайдеры приложения (FSD App Layer)
@@ -23,7 +24,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>{children}</LanguageProvider>
+      <ThemeProvider>
+        <LanguageProvider>{children}</LanguageProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

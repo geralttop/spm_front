@@ -5,11 +5,14 @@ import { useRouter } from "next/navigation";
 import { Button, Input } from "@/shared/ui";
 import { authApi } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
+import { useTranslation } from "@/shared/lib/hooks";
+import { Eye, EyeOff } from "lucide-react";
 
 type AuthMode = "login" | "register" | "verify";
 
 export default function AuthPage() {
   const router = useRouter();
+  const { t } = useTranslation();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
@@ -27,6 +30,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +42,7 @@ export default function AuthPage() {
       setPendingEmail(email);
       setMode("verify");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Ошибка регистрации");
+      setError(err.response?.data?.message || t("auth.errorRegister"));
     } finally {
       setLoading(false);
     }
@@ -54,7 +58,7 @@ export default function AuthPage() {
       setPendingEmail(email);
       setMode("verify");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Ошибка входа");
+      setError(err.response?.data?.message || t("auth.errorLogin"));
     } finally {
       setLoading(false);
     }
@@ -77,7 +81,7 @@ export default function AuthPage() {
         router.push("/profile");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Неверный код");
+      setError(err.response?.data?.message || t("auth.errorCode"));
     } finally {
       setLoading(false);
     }
@@ -89,10 +93,10 @@ export default function AuthPage() {
         <div className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-8">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-text-main">
-              Подтверждение кода
+              {t("auth.verifyTitle")}
             </h1>
             <p className="mt-2 text-sm text-text-muted">
-              Введите 6-значный код, отправленный на {pendingEmail}
+              {t("auth.verifySubtitle")} {pendingEmail}
             </p>
           </div>
 
@@ -116,7 +120,7 @@ export default function AuthPage() {
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Проверка..." : "Подтвердить"}
+              {loading ? t("auth.verifying") : t("auth.verifyButton")}
             </Button>
 
             <Button
@@ -129,7 +133,7 @@ export default function AuthPage() {
                 setError("");
               }}
             >
-              Назад
+              {t("auth.backButton")}
             </Button>
           </form>
         </div>
@@ -142,12 +146,12 @@ export default function AuthPage() {
       <div className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-8">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-text-main">
-            {mode === "login" ? "Вход" : "Регистрация"}
+            {mode === "login" ? t("auth.login") : t("auth.register")}
           </h1>
           <p className="mt-2 text-sm text-text-muted">
             {mode === "login"
-              ? "Войдите в свой аккаунт"
-              : "Создайте новый аккаунт"}
+              ? t("auth.loginSubtitle")
+              : t("auth.registerSubtitle")}
           </p>
         </div>
 
@@ -158,7 +162,7 @@ export default function AuthPage() {
           {mode === "register" && (
             <div>
               <label className="mb-2 block text-sm font-medium text-text-main">
-                Имя пользователя
+                {t("auth.username")}
               </label>
               <Input
                 type="text"
@@ -172,7 +176,7 @@ export default function AuthPage() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-text-main">
-              Email
+              {t("auth.email")}
             </label>
             <Input
               type="email"
@@ -185,15 +189,30 @@ export default function AuthPage() {
 
           <div>
             <label className="mb-2 block text-sm font-medium text-text-main">
-              Пароль
+              {t("auth.password")}
             </label>
-            <Input
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors"
+                aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
+            </div>
           </div>
 
           {error && (
@@ -204,16 +223,16 @@ export default function AuthPage() {
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading
-              ? "Отправка..."
+              ? t("auth.loading")
               : mode === "login"
-              ? "Войти"
-              : "Зарегистрироваться"}
+              ? t("auth.loginButton")
+              : t("auth.registerButton")}
           </Button>
 
           <div className="text-center text-sm text-text-muted">
             {mode === "login" ? (
               <>
-                Нет аккаунта?{" "}
+                {t("auth.noAccount")}{" "}
                 <button
                   type="button"
                   onClick={() => {
@@ -222,12 +241,12 @@ export default function AuthPage() {
                   }}
                   className="font-medium text-primary hover:underline"
                 >
-                  Зарегистрироваться
+                  {t("auth.registerButton")}
                 </button>
               </>
             ) : (
               <>
-                Уже есть аккаунт?{" "}
+                {t("auth.hasAccount")}{" "}
                 <button
                   type="button"
                   onClick={() => {
@@ -236,7 +255,7 @@ export default function AuthPage() {
                   }}
                   className="font-medium text-primary hover:underline"
                 >
-                  Войти
+                  {t("auth.loginButton")}
                 </button>
               </>
             )}
