@@ -11,17 +11,78 @@ export const apiClient = axios.create({
   },
 });
 
-// Интерцептор для добавления токена в запросы
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+// Интерцептор для добавления токена и проактивного обновления
 apiClient.interceptors.request.use(
-  (config) => {
+  async (config) => {
     if (typeof window !== "undefined") {
       const authStorage = localStorage.getItem("auth-storage");
       if (authStorage) {
         try {
           const auth = JSON.parse(authStorage);
           const accessToken = auth?.state?.accessToken;
+          const tokenExpiry = auth?.state?.tokenExpiry;
+          
           if (accessToken) {
-            config.headers.Authorization = `Bearer ${accessToken}`;
+            // Проверяем, нужно ли обновить токен (за 2 минуты до истечения)
+            const shouldRefresh = tokenExpiry && Date.now() >= tokenExpiry - 2 * 60 * 1000;
+            
+            if (shouldRefresh && !config.url?.includes("/auth/refresh") && !isRefreshing) {
+              isRefreshing = true;
+              
+              try {
+                const response = await axios.post(
+                  `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
+                  {},
+                  {
+                    withCredentials: true,
+                    headers: {
+                      Authorization: `Bearer ${accessToken}`,
+                    },
+                  }
+                );
+
+                const { accessToken: newAccessToken } = response.data;
+                const newExpiry = Date.now() + 15 * 60 * 1000;
+
+                // Обновляем токен в localStorage
+                const updatedAuth = {
+                  ...auth,
+                  state: {
+                    ...auth.state,
+                    accessToken: newAccessToken,
+                    tokenExpiry: newExpiry,
+                    isAuthenticated: true,
+                  },
+                };
+                localStorage.setItem("auth-storage", JSON.stringify(updatedAuth));
+
+                config.headers.Authorization = `Bearer ${newAccessToken}`;
+                processQueue(null, newAccessToken);
+              } catch (error) {
+                console.error("Proactive token refresh failed:", error);
+                processQueue(error, null);
+                localStorage.removeItem("auth-storage");
+                // Не редиректим здесь - позволяем запросу пройти и обработаться в response interceptor
+              } finally {
+                isRefreshing = false;
+              }
+            } else {
+              config.headers.Authorization = `Bearer ${accessToken}`;
+            }
           }
         } catch (error) {
           console.error("Error parsing auth storage:", error);
@@ -35,7 +96,7 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Интерцептор для обработки ошибок и обновления токена
+// Интерцептор для обработки ошибок 401
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -47,7 +108,22 @@ apiClient.interceptors.response.use(
       !originalRequest._retry &&
       !originalRequest.url?.includes("/auth/refresh")
     ) {
+      if (isRefreshing) {
+        // Если уже идет обновление, добавляем запрос в очередь
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return apiClient(originalRequest);
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      }
+
       originalRequest._retry = true;
+      isRefreshing = true;
 
       if (typeof window !== "undefined") {
         const authStorage = localStorage.getItem("auth-storage");
@@ -56,14 +132,13 @@ apiClient.interceptors.response.use(
             const auth = JSON.parse(authStorage);
             const accessToken = auth?.state?.accessToken;
 
-            // Пытаемся обновить токен (refresh token автоматически из cookie)
             if (accessToken) {
               try {
                 const response = await axios.post(
                   `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
-                  {}, // Пустое body - токен из cookie
+                  {},
                   {
-                    withCredentials: true, // ВАЖНО: отправляет cookies
+                    withCredentials: true,
                     headers: {
                       Authorization: `Bearer ${accessToken}`,
                     },
@@ -71,48 +146,48 @@ apiClient.interceptors.response.use(
                 );
 
                 const { accessToken: newAccessToken } = response.data;
+                const newExpiry = Date.now() + 15 * 60 * 1000;
 
-                // Обновляем только access token в localStorage
+                // Обновляем токен в localStorage
                 const updatedAuth = {
                   ...auth,
                   state: {
                     ...auth.state,
                     accessToken: newAccessToken,
+                    tokenExpiry: newExpiry,
                     isAuthenticated: true,
                   },
                 };
                 localStorage.setItem("auth-storage", JSON.stringify(updatedAuth));
 
-                // Повторяем оригинальный запрос с новым токеном
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                processQueue(null, newAccessToken);
+                isRefreshing = false;
+                
                 return apiClient(originalRequest);
               } catch (refreshError) {
-                // Если обновление токена не удалось, очищаем хранилище
+                console.error("Token refresh failed:", refreshError);
+                processQueue(refreshError, null);
+                isRefreshing = false;
                 localStorage.removeItem("auth-storage");
-                if (window.location.pathname !== "/auth") {
-                  window.location.href = "/auth";
-                }
+                
+                // Более мягкий подход - не редиректим сразу, позволяем компоненту обработать ошибку
                 return Promise.reject(refreshError);
               }
             } else {
-              // Нет токена, перенаправляем на страницу аутентификации
+              isRefreshing = false;
               localStorage.removeItem("auth-storage");
-              if (window.location.pathname !== "/auth") {
-                window.location.href = "/auth";
-              }
+              return Promise.reject(new Error("No access token available"));
             }
           } catch (parseError) {
             console.error("Error parsing auth storage:", parseError);
+            isRefreshing = false;
             localStorage.removeItem("auth-storage");
-            if (window.location.pathname !== "/auth") {
-              window.location.href = "/auth";
-            }
+            return Promise.reject(parseError);
           }
         } else {
-          // Нет хранилища, перенаправляем на страницу аутентификации
-          if (window.location.pathname !== "/auth") {
-            window.location.href = "/auth";
-          }
+          isRefreshing = false;
+          return Promise.reject(new Error("No auth storage found"));
         }
       }
     }
@@ -120,3 +195,4 @@ apiClient.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+

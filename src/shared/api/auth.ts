@@ -37,6 +37,13 @@ export interface UpdateProfileRequest {
   bio?: string;
 }
 
+export interface SearchUserResult {
+  id: number;
+  username: string;
+  email: string;
+  bio: string | null;
+}
+
 export const authApi = {
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
     const response = await apiClient.post<AuthResponse>("/auth/register", data);
@@ -71,6 +78,18 @@ export const authApi = {
 
   updateProfile: async (data: UpdateProfileRequest): Promise<ProfileResponse> => {
     const response = await apiClient.patch<ProfileResponse>("/auth/update-profile", data);
+    return response.data;
+  },
+
+  searchUsers: async (query: string): Promise<SearchUserResult[]> => {
+    const response = await apiClient.get<SearchUserResult[]>("/auth/search", {
+      params: { q: query }
+    });
+    return response.data;
+  },
+
+  getUserById: async (id: number): Promise<SearchUserResult> => {
+    const response = await apiClient.get<SearchUserResult>(`/auth/user/${id}`);
     return response.data;
   },
 

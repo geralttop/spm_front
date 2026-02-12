@@ -3,7 +3,8 @@
  */
 export { apiClient } from "./client";
 export { authApi } from "./auth";
-export { pointsApi } from "./points";
+export { pointsApi, categoriesApi, containersApi } from "./points";
+export { subscriptionsApi } from "./subscriptions";
 export type {
   RegisterRequest,
   LoginRequest,
@@ -11,5 +12,7 @@ export type {
   AuthResponse,
   ProfileResponse,
   UpdateProfileRequest,
+  SearchUserResult,
 } from "./auth";
-export type { Point } from "./points";
+export type { Point, CreatePointRequest, Category, Container } from "./points";
+export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";

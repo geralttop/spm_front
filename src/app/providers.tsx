@@ -5,6 +5,7 @@ import { useState } from "react";
 import "@/shared/config/i18n";
 import { LanguageProvider } from "./language-provider";
 import { ThemeProvider } from "./theme-provider";
+import { AuthInitializer } from "./auth-initializer";
 
 /**
  * Провайдеры приложения (FSD App Layer)
@@ -25,7 +26,9 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <LanguageProvider>{children}</LanguageProvider>
+        <LanguageProvider>
+          <AuthInitializer>{children}</AuthInitializer>
+        </LanguageProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

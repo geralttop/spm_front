@@ -23,6 +23,29 @@
     "be": "Беларускі",
     "en": "English"
   },
+  "search": {
+    "placeholder": "Search users...",
+    "searching": "Searching...",
+    "noResults": "No results found",
+    "title": "Search Users",
+    "description": "Find and connect with other users",
+    "button": "Search",
+    "results": "Search Results",
+    "viewProfile": "View Profile",
+    "startSearching": "Start searching for users",
+    "enterUsername": "Enter a username or email to find users",
+    "tryDifferent": "Try a different search term"
+  },
+  "sidebar": {
+    "home": "Home",
+    "profile": "Profile",
+    "search": "Search",
+    "createPoint": "Create Point",
+    "map": "Map",
+    "community": "Community",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
   "theme": {
     "switchToDark": "Switch to dark theme",
     "switchToLight": "Switch to light theme"
@@ -82,6 +105,15 @@
     "createdAt": "Created",
     "noCategory": "No category",
     "noContainer": "No container",
-    "noDescription": "No description"
+    "noDescription": "No description",
+    "followers": "Followers",
+    "following": "Following",
+    "followersCount": "followers",
+    "followingCount": "following",
+    "noFollowers": "No followers",
+    "noFollowing": "No following",
+    "close": "Close",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
   }
 }

@@ -17,9 +17,14 @@ export default function AuthPage() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
-    if (checkAuth()) {
-      router.push("/profile");
-    }
+    const checkAuthentication = async () => {
+      const isAuthenticated = await checkAuth();
+      if (isAuthenticated) {
+        router.push("/profile");
+      }
+    };
+    
+    checkAuthentication();
   }, [checkAuth, router]);
   
   const [mode, setMode] = useState<AuthMode>("login");

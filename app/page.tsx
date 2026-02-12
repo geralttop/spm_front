@@ -11,12 +11,16 @@ export default function Home() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
-    const isAuthenticated = checkAuth();
-    if (isAuthenticated) {
-      router.push("/profile");
-    } else {
-      router.push("/auth");
-    }
+    const checkAuthentication = async () => {
+      const isAuthenticated = await checkAuth();
+      if (isAuthenticated) {
+        router.push("/profile");
+      } else {
+        router.push("/auth");
+      }
+    };
+    
+    checkAuthentication();
   }, [checkAuth, router]);
 
   return (

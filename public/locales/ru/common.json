@@ -23,6 +23,29 @@
     "be": "Беларускі",
     "en": "English"
   },
+  "search": {
+    "placeholder": "Поиск пользователей...",
+    "searching": "Поиск...",
+    "noResults": "Ничего не найдено",
+    "title": "Поиск пользователей",
+    "description": "Найдите и подключитесь к другим пользователям",
+    "button": "Найти",
+    "results": "Результаты поиска",
+    "viewProfile": "Посмотреть профиль",
+    "startSearching": "Начните поиск пользователей",
+    "enterUsername": "Введите имя пользователя или email для поиска",
+    "tryDifferent": "Попробуйте другой поисковый запрос"
+  },
+  "sidebar": {
+    "home": "Главная",
+    "profile": "Профиль",
+    "search": "Поиск",
+    "createPoint": "Создать точку",
+    "map": "Карта",
+    "community": "Сообщество",
+    "notifications": "Уведомления",
+    "settings": "Настройки"
+  },
   "theme": {
     "switchToDark": "Переключить на темную тему",
     "switchToLight": "Переключить на светлую тему"
@@ -82,6 +105,15 @@
     "createdAt": "Создано",
     "noCategory": "Без категории",
     "noContainer": "Без контейнера",
-    "noDescription": "Нет описания"
+    "noDescription": "Нет описания",
+    "followers": "Подписчики",
+    "following": "Подписки",
+    "followersCount": "подписчиков",
+    "followingCount": "подписок",
+    "noFollowers": "Нет подписчиков",
+    "noFollowing": "Нет подписок",
+    "close": "Закрыть",
+    "follow": "Подписаться",
+    "unfollow": "Отписаться"
   }
 }

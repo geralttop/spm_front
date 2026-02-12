@@ -23,6 +23,11 @@
     "be": "Беларускі",
     "en": "English"
   },
+  "search": {
+    "placeholder": "Пошук карыстальнікаў...",
+    "searching": "Пошук...",
+    "noResults": "Нічога не знойдзена"
+  },
   "theme": {
     "switchToDark": "Пераключыць на цёмную тэму",
     "switchToLight": "Пераключыць на светлую тэму"
@@ -82,6 +87,15 @@
     "createdAt": "Створана",
     "noCategory": "Без катэгорыі",
     "noContainer": "Без кантэйнера",
-    "noDescription": "Няма апісання"
+    "noDescription": "Няма апісання",
+    "followers": "Падпісчыкі",
+    "following": "Падпіскі",
+    "followersCount": "падпісчыкаў",
+    "followingCount": "падпісак",
+    "noFollowers": "Няма падпісчыкаў",
+    "noFollowing": "Няма падпісак",
+    "close": "Зачыніць",
+    "follow": "Падпісацца",
+    "unfollow": "Адпісацца"
   }
 }
