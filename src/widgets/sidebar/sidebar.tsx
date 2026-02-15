@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
-import { User, Search, Bell, Settings, Map, Users, Home, MapPin, Rss, Heart } from "lucide-react";
+import { User, Search, Settings, MapPin, Rss, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Sidebar() {
@@ -13,11 +13,31 @@ export function Sidebar() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const accessToken = useAuthStore((state) => state.accessToken);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [favoritesCount, setFavoritesCount] = useState(0);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
   useEffect(() => {
-    checkAuth().then(setIsAuthenticated);
-  }, [checkAuth]);
+    const fetchUserData = async () => {
+      const isAuth = await checkAuth();
+      setIsAuthenticated(isAuth);
+      
+      if (isAuth && accessToken) {
+        try {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/profile`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` },
+          });
+          
+          if (response.ok) {
+            const userData = await response.json();
+            setUserRole(userData.role);
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, [checkAuth, accessToken]);
 
   // Загружаем количество избранного
   useEffect(() => {
@@ -31,7 +51,7 @@ export function Sidebar() {
         
         if (response.ok) {
           const favorites = await response.json();
-          setFavoritesCount(favorites.length);
+          // Можно использовать favorites.length если нужно
         }
       } catch (error) {
         console.error('Error fetching favorites count:', error);
@@ -78,6 +98,16 @@ export function Sidebar() {
       active: pathname === "/points/create"
     }
   ];
+
+  // Добавляем админку только для администраторов
+  if (userRole === 'admin') {
+    menuItems.push({
+      icon: Settings,
+      label: "Админка",
+      path: "/admin",
+      active: pathname === "/admin"
+    });
+  }
 
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40 flex flex-col">
