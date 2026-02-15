@@ -1,6 +1,7 @@
 import { Admin, Resource } from 'react-admin';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
+import { Dashboard } from './Dashboard';
 
 // Импорты для ресурсов
 import { UserList, UserEdit, UserShow } from './resources/users';
@@ -12,6 +13,7 @@ const AdminApp = () => (
   <Admin 
     dataProvider={dataProvider} 
     authProvider={authProvider}
+    dashboard={Dashboard}
     title="SPM Admin"
   >
     <Resource 
