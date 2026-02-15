@@ -35,6 +35,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
+  const [isFromRegister, setIsFromRegister] = useState(false); // Новый флаг
   const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -45,6 +46,7 @@ export default function AuthPage() {
     try {
       await authApi.register({ email, password, username });
       setPendingEmail(email);
+      setIsFromRegister(true); // Устанавливаем флаг регистрации
       setMode("verify");
     } catch (err: any) {
       setError(err.response?.data?.message || t("auth.errorRegister"));
@@ -61,6 +63,7 @@ export default function AuthPage() {
     try {
       await authApi.login({ email, password });
       setPendingEmail(email);
+      setIsFromRegister(false); // Устанавливаем флаг логина
       setMode("verify");
     } catch (err: any) {
       setError(err.response?.data?.message || t("auth.errorLogin"));
@@ -75,10 +78,10 @@ export default function AuthPage() {
     setLoading(true);
 
     try {
-      const isLogin = mode === "verify" && pendingEmail;
-      const response = isLogin
-        ? await authApi.verifyLogin({ email: pendingEmail, code })
-        : await authApi.verifyEmail({ email: pendingEmail, code });
+      // Используем правильный эндпоинт в зависимости от того, откуда пришли
+      const response = isFromRegister
+        ? await authApi.verifyEmail({ email: pendingEmail, code })
+        : await authApi.verifyLogin({ email: pendingEmail, code });
 
       // Сохраняем только access token (refresh token в httpOnly cookie)
       if (response.accessToken) {
@@ -136,6 +139,7 @@ export default function AuthPage() {
                 setMode("login");
                 setCode("");
                 setError("");
+                setIsFromRegister(false); // Сбрасываем флаг
               }}
             >
               {t("auth.backButton")}
