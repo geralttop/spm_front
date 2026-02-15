@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Textarea } from "@/shared/ui";
-import { authApi, pointsApi, subscriptionsApi, type ProfileResponse, type Point, type SubscriptionUser, type SubscriptionStats } from "@/shared/api";
+import { Button, Input, Textarea, UserListModal } from "@/shared/ui";
+import { authApi, pointsApi, subscriptionsApi, type ProfileResponse, type Point, type SubscriptionStats } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation } from "@/shared/lib/hooks";
-import { User, Mail, Edit2, X, Check, MapPin, Tag, Package, Calendar, Users } from "lucide-react";
+import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
+import { User, Mail, Edit2, X, Check, MapPin, Users } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
 
 export default function ProfilePage() {
@@ -26,27 +26,19 @@ export default function ProfilePage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   
-  // Modal states
-  const [showFollowersModal, setShowFollowersModal] = useState(false);
-  const [showFollowingModal, setShowFollowingModal] = useState(false);
-  const [followers, setFollowers] = useState<SubscriptionUser[]>([]);
-  const [following, setFollowing] = useState<SubscriptionUser[]>([]);
-  const [loadingFollowers, setLoadingFollowers] = useState(false);
-  const [loadingFollowing, setLoadingFollowing] = useState(false);
-  
-  // Состояния для управления подписками в модальных окнах
-  const [followingStates, setFollowingStates] = useState<Record<number, boolean>>({});
-  const [actionLoadingStates, setActionLoadingStates] = useState<Record<number, boolean>>({});
-  
   const [editForm, setEditForm] = useState({
     username: "",
     bio: "",
   });
 
+  // Используем новые хуки
+  const followersModal = useUserModal();
+  const followingModal = useUserModal();
+  const { followingStates, actionLoadingStates, initializeFollowingStates, initializeFollowingList, handleFollowToggle } = useFollowManagement();
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        // Сначала проверяем аутентификацию
         const isAuthenticated = await checkAuth();
         if (!isAuthenticated) {
           router.push("/auth");
@@ -60,12 +52,10 @@ export default function ProfilePage() {
           bio: data.bio || "",
         });
         
-        // Загружаем статистику подписок
         const statsData = await subscriptionsApi.getStats(Number(data.userId));
         setStats(statsData);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        // Проверяем, связана ли ошибка с аутентификацией
         const isStillAuth = await checkAuth();
         if (!isStillAuth) {
           clearAuth();
@@ -81,7 +71,6 @@ export default function ProfilePage() {
 
   const fetchPoints = async () => {
     try {
-      // Загружаем только точки текущего пользователя (без параметра userId)
       const data = await pointsApi.getAll();
       setPoints(data);
     } catch (error) {
@@ -146,96 +135,31 @@ export default function ProfilePage() {
 
   const handleShowFollowers = async () => {
     if (!profile) return;
-    setLoadingFollowers(true);
-    setShowFollowersModal(true);
-    try {
-      const data = await subscriptionsApi.getFollowers(Number(profile.userId));
-      setFollowers(data);
-      
-      // Для подписчиков нужно проверить, подписаны ли мы на каждого из них
-      const followingStatesPromises = data.map(async (user) => {
-        try {
-          const userStats = await subscriptionsApi.getStats(user.id);
-          return { userId: user.id, isFollowing: userStats.isFollowing || false };
-        } catch (error) {
-          console.error(`Error getting stats for user ${user.id}:`, error);
-          return { userId: user.id, isFollowing: false };
-        }
-      });
-      
-      const followingStatesResults = await Promise.all(followingStatesPromises);
-      const initialStates: Record<number, boolean> = {};
-      followingStatesResults.forEach(({ userId, isFollowing }) => {
-        initialStates[userId] = isFollowing;
-      });
-      setFollowingStates(initialStates);
-    } catch (error) {
-      console.error("Error fetching followers:", error);
-    } finally {
-      setLoadingFollowers(false);
-    }
+    await followersModal.openModal(Number(profile.userId), "followers");
+    await initializeFollowingStates(followersModal.users);
   };
 
   const handleShowFollowing = async () => {
     if (!profile) return;
-    setLoadingFollowing(true);
-    setShowFollowingModal(true);
-    try {
-      const data = await subscriptionsApi.getFollowing(Number(profile.userId));
-      setFollowing(data);
-      
-      // Инициализируем состояния подписок - все пользователи в списке "подписки" уже подписаны
-      const initialStates: Record<number, boolean> = {};
-      data.forEach(user => {
-        initialStates[user.id] = true; // Мы на них подписаны
-      });
-      setFollowingStates(initialStates);
-    } catch (error) {
-      console.error("Error fetching following:", error);
-    } finally {
-      setLoadingFollowing(false);
-    }
+    await followingModal.openModal(Number(profile.userId), "following");
+    initializeFollowingList(followingModal.users);
   };
 
   const handleFollowToggleInModal = async (userId: number, isCurrentlyFollowing: boolean) => {
-    setActionLoadingStates(prev => ({ ...prev, [userId]: true }));
-    
-    try {
-      if (isCurrentlyFollowing) {
-        await subscriptionsApi.unfollow(userId);
-        setFollowingStates(prev => ({ ...prev, [userId]: false }));
-        
-        // Обновляем статистику
-        if (stats) {
-          setStats({ ...stats, followingCount: stats.followingCount - 1 });
-        }
-        
-        // Удаляем пользователя из списка подписок, если мы в модальном окне подписок
-        if (showFollowingModal) {
-          setFollowing(prev => prev.filter(user => user.id !== userId));
-        }
-      } else {
-        await subscriptionsApi.follow(userId);
-        setFollowingStates(prev => ({ ...prev, [userId]: true }));
-        
-        // Обновляем статистику
-        if (stats) {
-          setStats({ ...stats, followingCount: stats.followingCount + 1 });
-        }
+    await handleFollowToggle(userId, isCurrentlyFollowing, (isFollowing) => {
+      if (stats) {
+        setStats({
+          ...stats,
+          followingCount: isFollowing ? stats.followingCount + 1 : stats.followingCount - 1,
+        });
       }
-    } catch (error) {
-      console.error("Error toggling follow:", error);
-    } finally {
-      setActionLoadingStates(prev => ({ ...prev, [userId]: false }));
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString();
-  };
-
-  const formatCoordinates = (coords: [number, number]) => {
-    return `${coords[1].toFixed(6)}, ${coords[0].toFixed(6)}`;
+      
+      // Удаляем из списка подписок если отписались
+      if (!isFollowing && followingModal.showModal) {
+        followingModal.closeModal();
+        handleShowFollowing();
+      }
+    });
   };
 
   if (loading) {
@@ -435,137 +359,36 @@ export default function ProfilePage() {
       </div>
 
       {/* Followers Modal */}
-      {showFollowersModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowFollowersModal(false)}>
-          <div className="bg-card rounded-lg border border-border p-6 w-full max-w-md max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-text-main">{t("profile.followers")}</h2>
-              <button onClick={() => setShowFollowersModal(false)} className="text-text-muted hover:text-text-main">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {loadingFollowers ? (
-              <div className="text-center py-8 text-text-muted">{t("profile.loading")}</div>
-            ) : followers.length === 0 ? (
-              <div className="text-center py-8 text-text-muted">{t("profile.noFollowers")}</div>
-            ) : (
-              <div className="space-y-3">
-                {followers.map((user) => (
-                  <div 
-                    key={user.id} 
-                    className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors"
-                  >
-                    <div 
-                      className="flex-1 cursor-pointer"
-                      onClick={() => {
-                        setShowFollowersModal(false);
-                        // Если это наш профиль, остаемся на /profile
-                        if (profile && Number(profile.userId) === user.id) {
-                          return;
-                        }
-                        router.push(`/user/${user.id}`);
-                      }}
-                    >
-                      <p className="font-medium text-text-main">{user.username}</p>
-                      <p className="text-sm text-text-muted">{user.email}</p>
-                      {user.bio && <p className="text-xs text-text-muted mt-1">{user.bio}</p>}
-                    </div>
-                    
-                    {/* Кнопка подписки/отписки */}
-                    {profile && Number(profile.userId) !== user.id && (
-                      <Button
-                        size="sm"
-                        variant={followingStates[user.id] ? "destructive" : "default"}
-                        disabled={actionLoadingStates[user.id]}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFollowToggleInModal(user.id, followingStates[user.id] || false);
-                        }}
-                        className={followingStates[user.id] 
-                          ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
-                          : "bg-blue-500 hover:bg-blue-600 text-white border-blue-500"
-                        }
-                      >
-                        {actionLoadingStates[user.id] 
-                          ? "..." 
-                          : followingStates[user.id] 
-                            ? t("profile.unfollow") 
-                            : t("profile.follow")
-                        }
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <UserListModal
+        isOpen={followersModal.showModal}
+        onClose={followersModal.closeModal}
+        title={t("profile.followers")}
+        users={followersModal.users}
+        loading={followersModal.loading}
+        emptyMessage={t("profile.noFollowers")}
+        currentUserId={profile ? Number(profile.userId) : undefined}
+        followingStates={followingStates}
+        actionLoadingStates={actionLoadingStates}
+        onFollowToggle={handleFollowToggleInModal}
+        followLabel={t("profile.follow")}
+        unfollowLabel={t("profile.unfollow")}
+      />
 
       {/* Following Modal */}
-      {showFollowingModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setShowFollowingModal(false)}>
-          <div className="bg-card rounded-lg border border-border p-6 w-full max-w-md max-h-[80vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-text-main">{t("profile.following")}</h2>
-              <button onClick={() => setShowFollowingModal(false)} className="text-text-muted hover:text-text-main">
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            
-            {loadingFollowing ? (
-              <div className="text-center py-8 text-text-muted">{t("profile.loading")}</div>
-            ) : following.length === 0 ? (
-              <div className="text-center py-8 text-text-muted">{t("profile.noFollowing")}</div>
-            ) : (
-              <div className="space-y-3">
-                {following.map((user) => (
-                  <div 
-                    key={user.id} 
-                    className="flex items-center gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors"
-                  >
-                    <div 
-                      className="flex-1 cursor-pointer"
-                      onClick={() => {
-                        setShowFollowingModal(false);
-                        // Если это наш профиль, остаемся на /profile
-                        if (profile && Number(profile.userId) === user.id) {
-                          return;
-                        }
-                        router.push(`/user/${user.id}`);
-                      }}
-                    >
-                      <p className="font-medium text-text-main">{user.username}</p>
-                      <p className="text-sm text-text-muted">{user.email}</p>
-                      {user.bio && <p className="text-xs text-text-muted mt-1">{user.bio}</p>}
-                    </div>
-                    
-                    {/* Кнопка отписки */}
-                    {profile && Number(profile.userId) !== user.id && (
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        disabled={actionLoadingStates[user.id]}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleFollowToggleInModal(user.id, true); // В списке подписок всегда true
-                        }}
-                        className="bg-red-500 hover:bg-red-600 text-white border-red-500"
-                      >
-                        {actionLoadingStates[user.id] 
-                          ? "..." 
-                          : t("profile.unfollow")
-                        }
-                      </Button>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <UserListModal
+        isOpen={followingModal.showModal}
+        onClose={followingModal.closeModal}
+        title={t("profile.following")}
+        users={followingModal.users}
+        loading={followingModal.loading}
+        emptyMessage={t("profile.noFollowing")}
+        currentUserId={profile ? Number(profile.userId) : undefined}
+        followingStates={followingStates}
+        actionLoadingStates={actionLoadingStates}
+        onFollowToggle={handleFollowToggleInModal}
+        followLabel={t("profile.follow")}
+        unfollowLabel={t("profile.unfollow")}
+      />
     </div>
   );
 }

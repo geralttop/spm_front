@@ -1,10 +1,11 @@
 import { MapPin, Tag, Package, User, Calendar, Heart } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
+import { favoritesApi } from '@/shared/api';
+import { formatRelativeDate } from '@/shared/lib/utils';
 
-// Простой кэш для избранного
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
-const CACHE_DURATION = 30000; // 30 секунд
+const CACHE_DURATION = 30000;
 
 interface Point {
   id: string;
@@ -37,7 +38,7 @@ interface Point {
 interface PointCardProps {
   point: Point;
   showAuthor?: boolean;
-  onFavoriteChange?: () => void; // Колбэк для обновления списка после изменения избранного
+  onFavoriteChange?: () => void;
 }
 
 export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointCardProps) {
@@ -45,14 +46,12 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Проверяем, находится ли точка в избранном (с кэшированием и дебаунсингом)
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
     
     const checkFavoriteStatus = async () => {
       if (!accessToken) return;
       
-      // Проверяем кэш (только для статуса избранного)
       const cached = favoriteCache.get(point.id);
       if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
         setIsFavorite(cached.isFavorite);
@@ -60,29 +59,21 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
       }
       
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/favorites/check/${point.id}`, {
-          headers: { 'Authorization': `Bearer ${accessToken}` },
+        const data = await favoritesApi.check(point.id);
+        const isFav = data.isFavorite;
+        
+        setIsFavorite(isFav);
+        
+        favoriteCache.set(point.id, {
+          isFavorite: isFav,
+          count: 0,
+          timestamp: Date.now()
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          const isFav = data.isFavorite;
-          
-          setIsFavorite(isFav);
-          
-          // Сохраняем в кэш (без счетчика)
-          favoriteCache.set(point.id, {
-            isFavorite: isFav,
-            count: 0, // Не используется
-            timestamp: Date.now()
-          });
-        }
       } catch (error) {
         console.error('Ошибка при проверке статуса избранного:', error);
       }
     };
 
-    // Дебаунсинг для уменьшения количества запросов
     timeoutId = setTimeout(checkFavoriteStatus, 100);
     
     return () => {
@@ -97,52 +88,32 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
     
     setLoading(true);
     try {
-      const method = isFavorite ? 'DELETE' : 'POST';
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/favorites/${point.id}`, {
-        method,
-        headers: { 'Authorization': `Bearer ${accessToken}` },
-      });
-
-      if (response.ok) {
-        const newIsFavorite = !isFavorite;
-        
-        setIsFavorite(newIsFavorite);
-        
-        // Обновляем кэш (без счетчика)
-        favoriteCache.set(point.id, {
-          isFavorite: newIsFavorite,
-          count: 0, // Не используется
-          timestamp: Date.now()
-        });
-        
-        onFavoriteChange?.(); // Вызываем колбэк для обновления родительского компонента
+      if (isFavorite) {
+        await favoritesApi.remove(point.id);
+      } else {
+        await favoritesApi.add(point.id);
       }
+
+      const newIsFavorite = !isFavorite;
+      
+      setIsFavorite(newIsFavorite);
+      
+      favoriteCache.set(point.id, {
+        isFavorite: newIsFavorite,
+        count: 0,
+        timestamp: Date.now()
+      });
+      
+      onFavoriteChange?.();
     } catch (error) {
       console.error('Ошибка при изменении избранного:', error);
     } finally {
       setLoading(false);
     }
   };
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
-    
-    if (diffInHours < 1) {
-      return 'Только что';
-    } else if (diffInHours < 24) {
-      return `${diffInHours} ч. назад`;
-    } else if (diffInHours < 168) {
-      const days = Math.floor(diffInHours / 24);
-      return `${days} дн. назад`;
-    } else {
-      return date.toLocaleDateString('ru-RU');
-    }
-  };
 
   return (
     <div className="bg-surface border border-border rounded-lg p-6 hover:shadow-md transition-shadow">
-      {/* Заголовок с автором */}
       {showAuthor && (
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
@@ -157,9 +128,8 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 text-sm text-text-muted">
               <Calendar className="h-4 w-4" />
-              {formatDate(point.createdAt)}
+              {formatRelativeDate(point.createdAt)}
             </div>
-            {/* Кнопка избранного */}
             <button
               onClick={toggleFavorite}
               disabled={loading}
@@ -178,12 +148,11 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
         </div>
       )}
 
-      {/* Если автор не показывается, добавляем кнопку избранного отдельно */}
       {!showAuthor && (
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-1 text-sm text-text-muted">
             <Calendar className="h-4 w-4" />
-            {formatDate(point.createdAt)}
+            {formatRelativeDate(point.createdAt)}
           </div>
           <button
             onClick={toggleFavorite}
@@ -202,7 +171,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
         </div>
       )}
 
-      {/* Основная информация о точке */}
       <div className="mb-4">
         <h3 className="text-lg font-semibold text-text-main mb-2">{point.name}</h3>
         {point.description && (
@@ -216,7 +184,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
         )}
       </div>
 
-      {/* Метаданные */}
       <div className="flex flex-wrap gap-4 text-sm">
         <div className="flex items-center gap-2">
           <Tag className="h-4 w-4 text-text-muted" />

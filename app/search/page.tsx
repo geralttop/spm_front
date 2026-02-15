@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input } from "@/shared/ui";
+import { Button, Input, UserCard } from "@/shared/ui";
 import { authApi, type SearchUserResult } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
@@ -46,7 +46,6 @@ export default function SearchPage() {
     
     try {
       const results = await authApi.searchUsers(searchQuery);
-      // Фильтруем результаты, исключая текущего пользователя
       const filteredResults = results.filter(user => user.id !== currentUserId);
       setSearchResults(filteredResults);
     } catch (error) {
@@ -141,37 +140,16 @@ export default function SearchPage() {
                 </h2>
                 
                 {searchResults.map((user) => (
-                  <div
+                  <UserCard
                     key={user.id}
+                    user={user}
                     onClick={() => handleUserClick(user.id)}
-                    className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:bg-accent transition-colors cursor-pointer"
-                  >
-                    <div className="shrink-0">
-                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-text-main truncate">
-                        {user.username}
-                      </h3>
-                      <p className="text-sm text-text-muted truncate">
-                        {user.email}
-                      </p>
-                      {user.bio && (
-                        <p className="text-xs text-text-muted mt-1 line-clamp-2">
-                          {user.bio}
-                        </p>
-                      )}
-                    </div>
-                    
-                    <div className="shrink-0">
+                    actionButton={
                       <Button variant="outline" size="sm">
                         {t("search.viewProfile")}
                       </Button>
-                    </div>
-                  </div>
+                    }
+                  />
                 ))}
               </div>
             )}

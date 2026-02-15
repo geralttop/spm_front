@@ -5,34 +5,7 @@ import { useAuthStore } from '@/shared/lib/store';
 import { Heart, MapPin, Loader2, RefreshCw, Calendar, User as UserIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PointCard } from '@/src/shared/ui/point-card';
-
-interface FavoritePoint {
-  id: string;
-  name: string;
-  description?: string;
-  address?: string;
-  coords: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  category?: {
-    id: number;
-    name: string;
-    color: string;
-    icon?: string;
-  };
-  container?: {
-    id: string;
-    title: string;
-  };
-  author: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-  };
-  addedAt: string; // Дата добавления в избранное
-}
+import { favoritesApi, type FavoritePoint } from '@/shared/api';
 
 export default function FavoritesPage() {
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -49,17 +22,7 @@ export default function FavoritesPage() {
       setLoading(true);
       setError(null);
       
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/favorites`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Ошибка загрузки избранного');
-      }
-
-      const data = await response.json();
+      const data = await favoritesApi.getAll();
       setFavorites(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка');
@@ -83,11 +46,9 @@ export default function FavoritesPage() {
   }, [accessToken]);
 
   const handleFavoriteChange = () => {
-    // Обновляем список избранного после изменения
     fetchFavorites();
   };
 
-  // Сортировка избранного
   const sortedFavorites = [...favorites].sort((a, b) => {
     switch (sortBy) {
       case 'name':
@@ -175,7 +136,6 @@ export default function FavoritesPage() {
           </div>
         ) : (
           <>
-            {/* Панель сортировки */}
             <div className="flex items-center gap-4 mb-6 p-4 bg-surface border border-border rounded-lg">
               <span className="text-sm font-medium text-text-main">Сортировать по:</span>
               <div className="flex gap-2">
@@ -223,7 +183,6 @@ export default function FavoritesPage() {
                     showAuthor={true}
                     onFavoriteChange={handleFavoriteChange}
                   />
-                  {/* Дата добавления в избранное */}
                   <div className="absolute top-4 right-4 bg-red-50 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
                     Добавлено {new Date(favorite.addedAt).toLocaleDateString('ru-RU')}
                   </div>

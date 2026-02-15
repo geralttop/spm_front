@@ -5,48 +5,12 @@ import { useAuthStore } from '@/shared/lib/store';
 import { MapPin, Loader2, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PointCard } from '@/src/shared/ui/point-card';
-
-interface Point {
-  id: string;
-  name: string;
-  description: string;
-  address: string;
-  coords: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  createdAt: string;
-  category: {
-    id: number;
-    name: string;
-    color: string;
-    icon: string;
-  } | null;
-  container: {
-    id: string;
-    title: string;
-  } | null;
-  author: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-  };
-}
-
-interface FeedResponse {
-  points: Point[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  hasMore: boolean;
-}
+import { feedApi, type FeedPoint } from '@/shared/api';
 
 export default function FeedPage() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const { t } = useTranslation();
-  const [points, setPoints] = useState<Point[]>([]);
+  const [points, setPoints] = useState<FeedPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
@@ -61,17 +25,7 @@ export default function FeedPage() {
         setLoadingMore(true);
       }
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/points/feed?page=${pageNum}&limit=10`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error('Ошибка загрузки ленты');
-      }
-
-      const data: FeedResponse = await response.json();
+      const data = await feedApi.getFeed(pageNum, 10);
       
       if (reset || pageNum === 1) {
         setPoints(data.points);
@@ -88,12 +42,11 @@ export default function FeedPage() {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [accessToken]);
+  }, []);
 
   useEffect(() => {
     const initializeAndFetch = async () => {
       if (accessToken) {
-        // Проверяем аутентификацию перед загрузкой
         const checkAuth = useAuthStore.getState().checkAuth;
         const isAuthenticated = await checkAuth();
         if (isAuthenticated) {
@@ -178,7 +131,6 @@ export default function FeedPage() {
               <PointCard key={point.id} point={point} showAuthor={true} />
             ))}
 
-            {/* Индикатор загрузки */}
             {loadingMore && (
               <div className="flex items-center justify-center py-6">
                 <div className="flex items-center gap-2">
@@ -188,7 +140,6 @@ export default function FeedPage() {
               </div>
             )}
 
-            {/* Сообщение об окончании */}
             {!hasMore && points.length > 0 && (
               <div className="text-center py-6">
                 <p className="text-text-muted">Все точки загружены</p>

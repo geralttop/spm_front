@@ -32,8 +32,8 @@ const httpClient = (url: string, options: any = {}) => {
 
 export const dataProvider: DataProvider = {
   getList: (resource, params) => {
-    const { page, perPage } = params.pagination;
-    const { field, order } = params.sort;
+    const { page = 1, perPage = 10 } = params.pagination || {};
+    const { field = 'id', order = 'ASC' } = params.sort || {};
     
     const query = {
       _start: ((page - 1) * perPage).toString(),
@@ -108,13 +108,13 @@ export const dataProvider: DataProvider = {
       method: 'POST',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({
-      data: { ...params.data, id: json.id },
+      data: { ...params.data, id: json.id } as any,
     })),
 
   delete: (resource, params) =>
     httpClient(`${apiUrl}/admin/${resource}/${params.id}`, {
       method: 'DELETE',
-    }).then(() => ({ data: { id: params.id } })),
+    }).then(() => ({ data: { id: params.id } as any })),
 
   deleteMany: (resource, params) => {
     const promises = params.ids.map(id =>
