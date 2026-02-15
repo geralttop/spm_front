@@ -21,6 +21,12 @@ export interface Point {
     title: string;
     description?: string;
   };
+  author: {
+    id: number;
+    username: string;
+    firstName: string;
+    lastName: string;
+  };
 }
 
 export interface CreatePointRequest {
@@ -47,8 +53,9 @@ export interface Container {
 }
 
 export const pointsApi = {
-  getAll: async (): Promise<Point[]> => {
-    const response = await apiClient.get<Point[]>("/points");
+  getAll: async (userId?: number): Promise<Point[]> => {
+    const params = userId ? { userId: userId.toString() } : {};
+    const response = await apiClient.get<Point[]>("/points", { params });
     return response.data;
   },
 

@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button } from "@/shared/ui";
-import { subscriptionsApi, authApi, type SubscriptionUser, type SubscriptionStats } from "@/shared/api";
+import { subscriptionsApi, authApi, pointsApi, type SubscriptionUser, type SubscriptionStats, type Point } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
-import { User, Mail, Users, X } from "lucide-react";
+import { User, Mail, Users, X, MapPin, Tag, Package, Calendar } from "lucide-react";
+import { PointCard } from "@/src/shared/ui/point-card";
 
 export default function UserProfilePage() {
   const router = useRouter();
@@ -17,7 +18,9 @@ export default function UserProfilePage() {
   
   const [user, setUser] = useState<SubscriptionUser | null>(null);
   const [stats, setStats] = useState<SubscriptionStats | null>(null);
+  const [points, setPoints] = useState<Point[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pointsLoading, setPointsLoading] = useState(true);
   const [following, setFollowing] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
@@ -33,6 +36,19 @@ export default function UserProfilePage() {
   // Состояния для управления подписками в модальных окнах
   const [followingStates, setFollowingStates] = useState<Record<number, boolean>>({});
   const [actionLoadingStates, setActionLoadingStates] = useState<Record<number, boolean>>({});
+
+  const fetchPoints = async () => {
+    try {
+      setPointsLoading(true);
+      const userPoints = await pointsApi.getAll(userId);
+      setPoints(userPoints);
+    } catch (pointsError) {
+      console.error("Error fetching user points:", pointsError);
+      setPoints([]);
+    } finally {
+      setPointsLoading(false);
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -63,6 +79,9 @@ export default function UserProfilePage() {
         const statsData = await subscriptionsApi.getStats(userId);
         setStats(statsData);
         setFollowing(statsData.isFollowing || false);
+        
+        // Загружаем точки пользователя
+        await fetchPoints();
       } catch (error) {
         console.error("Error fetching user data:", error);
         // Проверяем, не связана ли ошибка с аутентификацией
@@ -187,6 +206,14 @@ export default function UserProfilePage() {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
+  };
+
+  const formatCoordinates = (coords: [number, number]) => {
+    return `${coords[1].toFixed(6)}, ${coords[0].toFixed(6)}`;
+  };
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
@@ -289,6 +316,39 @@ export default function UserProfilePage() {
                 </div>
               )}
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* User Points Section */}
+      <div className="min-h-screen bg-background py-8 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
+            <h2 className="mb-4 text-lg font-semibold text-text-main flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
+              Точки пользователя {user?.username}
+            </h2>
+
+            {pointsLoading ? (
+              <div className="text-center py-8 text-text-muted">
+                Загрузка точек...
+              </div>
+            ) : points.length === 0 ? (
+              <div className="text-center py-8 text-text-muted">
+                У пользователя пока нет точек
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {points.map((point) => (
+                  <PointCard 
+                    key={point.id} 
+                    point={point} 
+                    showAuthor={false}
+                    onFavoriteChange={() => fetchPoints()}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

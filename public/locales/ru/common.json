@@ -38,6 +38,8 @@
   },
   "sidebar": {
     "home": "Главная",
+    "feed": "Лента",
+    "favorites": "Избранное",
     "profile": "Профиль",
     "search": "Поиск",
     "createPoint": "Создать точку",

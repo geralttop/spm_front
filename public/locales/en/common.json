@@ -38,6 +38,8 @@
   },
   "sidebar": {
     "home": "Home",
+    "feed": "Feed",
+    "favorites": "Favorites",
     "profile": "Profile",
     "search": "Search",
     "createPoint": "Create Point",

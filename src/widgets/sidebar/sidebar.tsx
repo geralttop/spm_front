@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
-import { User, Search, Bell, Settings, Map, Users, Home, MapPin } from "lucide-react";
+import { User, Search, Bell, Settings, Map, Users, Home, MapPin, Rss, Heart } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function Sidebar() {
@@ -11,11 +11,35 @@ export function Sidebar() {
   const pathname = usePathname();
   const { t } = useTranslation();
   const checkAuth = useAuthStore((state) => state.checkAuth);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [favoritesCount, setFavoritesCount] = useState(0);
 
   useEffect(() => {
     checkAuth().then(setIsAuthenticated);
   }, [checkAuth]);
+
+  // Загружаем количество избранного
+  useEffect(() => {
+    const fetchFavoritesCount = async () => {
+      if (!accessToken || !isAuthenticated) return;
+      
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/favorites`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` },
+        });
+        
+        if (response.ok) {
+          const favorites = await response.json();
+          setFavoritesCount(favorites.length);
+        }
+      } catch (error) {
+        console.error('Error fetching favorites count:', error);
+      }
+    };
+
+    fetchFavoritesCount();
+  }, [accessToken, isAuthenticated]);
 
   // Не показываем сайдбар на странице авторизации
   if (pathname === "/auth" || !isAuthenticated) {
@@ -23,6 +47,18 @@ export function Sidebar() {
   }
 
   const menuItems = [
+    {
+      icon: Rss,
+      label: t("sidebar.feed"),
+      path: "/feed",
+      active: pathname === "/feed"
+    },
+    {
+      icon: Heart,
+      label: t("sidebar.favorites"),
+      path: "/favorites",
+      active: pathname === "/favorites"
+    },
     {
       icon: User,
       label: t("sidebar.profile"),
@@ -67,7 +103,8 @@ export function Sidebar() {
                   }`}
                 >
                   <Icon className="h-5 w-5" />
-                  <span className="font-medium">{item.label}</span>
+                  <span className="font-medium flex-1">{item.label}</span>
+                  
                 </button>
               </li>
             );

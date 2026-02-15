@@ -7,6 +7,7 @@ import { authApi, pointsApi, subscriptionsApi, type ProfileResponse, type Point,
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
 import { User, Mail, Edit2, X, Check, MapPin, Tag, Package, Calendar, Users } from "lucide-react";
+import { PointCard } from "@/src/shared/ui/point-card";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -45,6 +46,13 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
+        // Сначала проверяем аутентификацию
+        const isAuthenticated = await checkAuth();
+        if (!isAuthenticated) {
+          router.push("/auth");
+          return;
+        }
+
         const data = await authApi.getProfile();
         setProfile(data);
         setEditForm({
@@ -57,29 +65,33 @@ export default function ProfilePage() {
         setStats(statsData);
       } catch (error) {
         console.error("Error fetching profile:", error);
-        // Только если запрос не удался, очищаем auth и редиректим
-        clearAuth();
-        router.push("/auth");
+        // Проверяем, связана ли ошибка с аутентификацией
+        const isStillAuth = await checkAuth();
+        if (!isStillAuth) {
+          clearAuth();
+          router.push("/auth");
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchProfile();
-  }, [router, clearAuth]);
+  }, [router, clearAuth, checkAuth]);
+
+  const fetchPoints = async () => {
+    try {
+      // Загружаем только точки текущего пользователя (без параметра userId)
+      const data = await pointsApi.getAll();
+      setPoints(data);
+    } catch (error) {
+      console.error("Error fetching points:", error);
+    } finally {
+      setPointsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPoints = async () => {
-      try {
-        const data = await pointsApi.getAll();
-        setPoints(data);
-      } catch (error) {
-        console.error("Error fetching points:", error);
-      } finally {
-        setPointsLoading(false);
-      }
-    };
-
     if (!loading) {
       fetchPoints();
     }
@@ -407,56 +419,14 @@ export default function ProfilePage() {
                 {t("profile.noPoints")}
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {points.map((point) => (
-                  <div
-                    key={point.id}
-                    className="rounded-lg border border-border bg-muted p-4 hover:bg-accent transition-colors"
-                  >
-                    <h3 className="text-lg font-semibold text-text-main mb-2">
-                      {point.name}
-                    </h3>
-                    
-                    {point.description && (
-                      <p className="text-sm text-text-muted mb-3">
-                        {point.description}
-                      </p>
-                    )}
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Tag className="h-4 w-4 text-text-muted" />
-                        <span className="text-text-muted">{t("profile.category")}:</span>
-                        <span className="text-text-main font-medium">
-                          {point.category?.name || t("profile.noCategory")}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Package className="h-4 w-4 text-text-muted" />
-                        <span className="text-text-muted">{t("profile.container")}:</span>
-                        <span className="text-text-main font-medium">
-                          {point.container?.name || t("profile.noContainer")}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4 text-text-muted" />
-                        <span className="text-text-muted">{t("profile.coordinates")}:</span>
-                        <span className="text-text-main font-mono text-xs">
-                          {formatCoordinates(point.coords.coordinates)}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-text-muted" />
-                        <span className="text-text-muted">{t("profile.createdAt")}:</span>
-                        <span className="text-text-main">
-                          {formatDate(point.createdAt)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <PointCard 
+                    key={point.id} 
+                    point={point} 
+                    showAuthor={false}
+                    onFavoriteChange={() => fetchPoints()}
+                  />
                 ))}
               </div>
             )}
