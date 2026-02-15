@@ -1,53 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '@/shared/lib/store';
-import { Heart, MapPin, Loader2, RefreshCw, Calendar, User as UserIcon } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
+import { Heart, MapPin, RefreshCw, Calendar, User as UserIcon } from 'lucide-react';
 import { PointCard } from '@/src/shared/ui/point-card';
-import { favoritesApi, type FavoritePoint } from '@/shared/api';
+import { Loading, ErrorMessage } from '@/shared/ui';
+import { useFavoritesQuery } from '@/shared/lib/hooks';
 
 export default function FavoritesPage() {
-  const accessToken = useAuthStore((state) => state.accessToken);
-  const { t } = useTranslation();
-  const [favorites, setFavorites] = useState<FavoritePoint[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: favorites = [], isLoading, error, refetch } = useFavoritesQuery();
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'author'>('date');
-
-  const fetchFavorites = async () => {
-    if (!accessToken) return;
-    
-    try {
-      setLoading(true);
-      setError(null);
-      
-      const data = await favoritesApi.getAll();
-      setFavorites(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    const initializeAndFetch = async () => {
-      if (accessToken) {
-        const checkAuth = useAuthStore.getState().checkAuth;
-        const isAuthenticated = await checkAuth();
-        if (isAuthenticated) {
-          fetchFavorites();
-        }
-      }
-    };
-
-    initializeAndFetch();
-  }, [accessToken]);
-
-  const handleFavoriteChange = () => {
-    fetchFavorites();
-  };
 
   const sortedFavorites = [...favorites].sort((a, b) => {
     switch (sortBy) {
@@ -63,30 +24,17 @@ export default function FavoritesPage() {
     }
   });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Загрузка избранного...</span>
-        </div>
-      </div>
-    );
+  if (isLoading) {
+    return <Loading message="Загрузка избранного..." fullScreen />;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
-          <button 
-            onClick={fetchFavorites}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-          >
-            Попробовать снова
-          </button>
-        </div>
-      </div>
+      <ErrorMessage
+        message="Ошибка загрузки избранного"
+        onRetry={() => refetch()}
+        fullScreen
+      />
     );
   }
 
@@ -104,11 +52,11 @@ export default function FavoritesPage() {
             )}
           </div>
           <button
-            onClick={fetchFavorites}
-            disabled={loading}
+            onClick={() => refetch()}
+            disabled={isLoading}
             className="flex items-center gap-2 px-3 py-2 text-sm bg-surface border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Обновить
           </button>
         </div>
@@ -181,7 +129,6 @@ export default function FavoritesPage() {
                   <PointCard 
                     point={favorite} 
                     showAuthor={true}
-                    onFavoriteChange={handleFavoriteChange}
                   />
                   <div className="absolute top-4 right-4 bg-red-50 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
                     Добавлено {new Date(favorite.addedAt).toLocaleDateString('ru-RU')}

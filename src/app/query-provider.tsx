@@ -3,23 +3,15 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useState } from "react";
-import "@/shared/config/i18n";
-import { LanguageProvider } from "./language-provider";
-import { ThemeProvider } from "./theme-provider";
-import { AuthInitializer } from "./auth-initializer";
-import { ToastProvider } from "./toast-provider";
 
-/**
- * Провайдеры приложения (FSD App Layer)
- */
-export function AppProviders({ children }: { children: React.ReactNode }) {
+export function QueryProvider({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
     () =>
       new QueryClient({
         defaultOptions: {
           queries: {
             staleTime: 60 * 1000, // 1 минута
-            gcTime: 5 * 60 * 1000, // 5 минут
+            gcTime: 5 * 60 * 1000, // 5 минут (было cacheTime)
             refetchOnWindowFocus: false,
             retry: 1,
           },
@@ -29,14 +21,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <LanguageProvider>
-          <AuthInitializer>
-            {children}
-            <ToastProvider />
-          </AuthInitializer>
-        </LanguageProvider>
-      </ThemeProvider>
+      {children}
       {process.env.NODE_ENV === "development" && (
         <ReactQueryDevtools initialIsOpen={false} />
       )}

@@ -3,9 +3,10 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, UserCard } from "@/shared/ui";
-import { authApi, type SearchUserResult } from "@/shared/api";
+import { authApi } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
+import { useSearchUsersQuery, useProfileQuery } from "@/shared/lib/hooks/queries";
 import { Search, X, User } from "lucide-react";
 
 export default function SearchPage() {
@@ -14,46 +15,34 @@ export default function SearchPage() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<SearchUserResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+
+  const { data: profile } = useProfileQuery();
+  const currentUserId = profile ? Number(profile.userId) : null;
+
+  const { data: searchResults = [], isLoading: isSearching } = useSearchUsersQuery(
+    debouncedQuery,
+    hasSearched
+  );
+
+  const filteredResults = searchResults.filter(user => user.id !== currentUserId);
 
   useEffect(() => {
     const initAuth = async () => {
       const isAuth = await checkAuth();
       if (!isAuth) {
         router.push("/auth");
-        return;
-      }
-      
-      try {
-        const profile = await authApi.getProfile();
-        setCurrentUserId(Number(profile.userId));
-      } catch (error) {
-        console.error("Failed to get current user profile:", error);
       }
     };
     
     initAuth();
   }, [checkAuth, router]);
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!searchQuery.trim()) return;
-    
-    setIsSearching(true);
+    setDebouncedQuery(searchQuery);
     setHasSearched(true);
-    
-    try {
-      const results = await authApi.searchUsers(searchQuery);
-      const filteredResults = results.filter(user => user.id !== currentUserId);
-      setSearchResults(filteredResults);
-    } catch (error) {
-      console.error("Search error:", error);
-      setSearchResults([]);
-    } finally {
-      setIsSearching(false);
-    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -64,7 +53,7 @@ export default function SearchPage() {
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    setSearchResults([]);
+    setDebouncedQuery("");
     setHasSearched(false);
   };
 
@@ -125,7 +114,7 @@ export default function SearchPage() {
               </div>
             )}
 
-            {!isSearching && hasSearched && searchResults.length === 0 && (
+            {!isSearching && hasSearched && filteredResults.length === 0 && (
               <div className="text-center py-8 text-text-muted">
                 <User className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <p>{t("search.noResults")}</p>
@@ -133,13 +122,13 @@ export default function SearchPage() {
               </div>
             )}
 
-            {!isSearching && searchResults.length > 0 && (
+            {!isSearching && filteredResults.length > 0 && (
               <div className="space-y-3">
                 <h2 className="text-lg font-semibold text-text-main">
-                  {t("search.results")} ({searchResults.length})
+                  {t("search.results")} ({filteredResults.length})
                 </h2>
                 
-                {searchResults.map((user) => (
+                {filteredResults.map((user) => (
                   <UserCard
                     key={user.id}
                     user={user}

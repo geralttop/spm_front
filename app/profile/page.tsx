@@ -2,106 +2,71 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button, Input, Textarea, UserListModal } from "@/shared/ui";
-import { authApi, pointsApi, subscriptionsApi, type ProfileResponse, type Point, type SubscriptionStats } from "@/shared/api";
+import { Button, Input, Textarea, UserListModal, Loading, ErrorMessage } from "@/shared/ui";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
+import { useTranslation, useFollowManagement, useUserModal, useToast } from "@/shared/lib/hooks";
+import { 
+  useProfileQuery, 
+  useUpdateProfileMutation, 
+  usePointsQuery, 
+  useSubscriptionStatsQuery,
+  useLogoutMutation 
+} from "@/shared/lib/hooks/queries";
 import { User, Mail, Edit2, X, Check, MapPin, Users } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
 
 export default function ProfilePage() {
   const router = useRouter();
   const { t } = useTranslation();
+  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
-  const clearAuth = useAuthStore((state) => state.clearAuth);
   
-  const [profile, setProfile] = useState<ProfileResponse | null>(null);
-  const [points, setPoints] = useState<Point[]>([]);
-  const [stats, setStats] = useState<SubscriptionStats | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [pointsLoading, setPointsLoading] = useState(true);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const { data: profile, isLoading, error } = useProfileQuery();
+  const { data: points = [], isLoading: pointsLoading, refetch: refetchPoints } = usePointsQuery();
+  const { data: stats } = useSubscriptionStatsQuery(profile ? Number(profile.userId) : 0);
+  const updateProfileMutation = useUpdateProfileMutation();
+  const logoutMutation = useLogoutMutation();
+  
   const [isEditing, setIsEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  
   const [editForm, setEditForm] = useState({
     username: "",
     bio: "",
   });
 
-  // Используем новые хуки
   const followersModal = useUserModal();
   const followingModal = useUserModal();
   const { followingStates, actionLoadingStates, initializeFollowingStates, initializeFollowingList, handleFollowToggle } = useFollowManagement();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const isAuthenticated = await checkAuth();
-        if (!isAuthenticated) {
-          router.push("/auth");
-          return;
-        }
-
-        const data = await authApi.getProfile();
-        setProfile(data);
-        setEditForm({
-          username: data.username || "",
-          bio: data.bio || "",
-        });
-        
-        const statsData = await subscriptionsApi.getStats(Number(data.userId));
-        setStats(statsData);
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        const isStillAuth = await checkAuth();
-        if (!isStillAuth) {
-          clearAuth();
-          router.push("/auth");
-        }
-      } finally {
-        setLoading(false);
+    const initAuth = async () => {
+      const isAuthenticated = await checkAuth();
+      if (!isAuthenticated) {
+        router.push("/auth");
       }
     };
 
-    fetchProfile();
-  }, [router, clearAuth, checkAuth]);
-
-  const fetchPoints = async () => {
-    try {
-      const data = await pointsApi.getAll();
-      setPoints(data);
-    } catch (error) {
-      console.error("Error fetching points:", error);
-    } finally {
-      setPointsLoading(false);
-    }
-  };
+    initAuth();
+  }, [router, checkAuth]);
 
   useEffect(() => {
-    if (!loading) {
-      fetchPoints();
+    if (profile) {
+      setEditForm({
+        username: profile.username || "",
+        bio: profile.bio || "",
+      });
     }
-  }, [loading]);
+  }, [profile]);
 
-  const handleLogout = async () => {
-    setLoggingOut(true);
-    try {
-      await authApi.logout();
-    } catch (error) {
-      console.error("Error during logout:", error);
-    } finally {
-      clearAuth();
-      router.push("/auth");
-    }
+  const handleLogout = () => {
+    logoutMutation.mutate(undefined, {
+      onSuccess: () => {
+        router.push("/auth");
+      },
+    });
   };
 
   const handleEdit = () => {
     setIsEditing(true);
-    setError("");
-    setSuccess("");
   };
 
   const handleCancel = () => {
@@ -110,27 +75,18 @@ export default function ProfilePage() {
       username: profile?.username || "",
       bio: profile?.bio || "",
     });
-    setError("");
-    setSuccess("");
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    setError("");
-    setSuccess("");
-
-    try {
-      const updatedProfile = await authApi.updateProfile(editForm);
-      setProfile(updatedProfile);
-      setIsEditing(false);
-      setSuccess(t("profile.updateSuccess"));
-      
-      setTimeout(() => setSuccess(""), 3000);
-    } catch (err: any) {
-      setError(err.response?.data?.message || t("profile.updateError"));
-    } finally {
-      setSaving(false);
-    }
+  const handleSave = () => {
+    updateProfileMutation.mutate(editForm, {
+      onSuccess: () => {
+        setIsEditing(false);
+        toast.success(t("profile.updateSuccess"));
+      },
+      onError: (error: any) => {
+        toast.error(error.response?.data?.message || t("profile.updateError"));
+      },
+    });
   };
 
   const handleShowFollowers = async () => {
@@ -147,14 +103,6 @@ export default function ProfilePage() {
 
   const handleFollowToggleInModal = async (userId: number, isCurrentlyFollowing: boolean) => {
     await handleFollowToggle(userId, isCurrentlyFollowing, (isFollowing) => {
-      if (stats) {
-        setStats({
-          ...stats,
-          followingCount: isFollowing ? stats.followingCount + 1 : stats.followingCount - 1,
-        });
-      }
-      
-      // Удаляем из списка подписок если отписались
       if (!isFollowing && followingModal.showModal) {
         followingModal.closeModal();
         handleShowFollowing();
@@ -162,12 +110,12 @@ export default function ProfilePage() {
     });
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-text-muted">{t("profile.loading")}</div>
-      </div>
-    );
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <ErrorMessage message={t("profile.loadError")} />;
   }
 
   if (!profile) {
@@ -220,19 +168,6 @@ export default function ProfilePage() {
             </div>
           )}
 
-          {/* Success/Error Messages */}
-          {success && (
-            <div className="rounded-lg bg-secondary/10 p-4 text-sm text-secondary border border-secondary/20">
-              {success}
-            </div>
-          )}
-          
-          {error && (
-            <div className="rounded-lg bg-destructive/10 p-4 text-sm text-destructive border border-destructive/20">
-              {error}
-            </div>
-          )}
-
           {/* Profile Card */}
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-text-main">
@@ -240,7 +175,6 @@ export default function ProfilePage() {
             </h2>
             
             <div className="space-y-4">
-              {/* Username */}
               <div>
                 <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
                   <User className="h-4 w-4" />
@@ -262,7 +196,6 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              {/* Email */}
               <div>
                 <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
                   <Mail className="h-4 w-4" />
@@ -271,7 +204,6 @@ export default function ProfilePage() {
                 <p className="text-text-main font-medium">{profile.email}</p>
               </div>
 
-              {/* Bio */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-muted">
                   {t("profile.bio")}
@@ -299,16 +231,16 @@ export default function ProfilePage() {
               <>
                 <Button 
                   onClick={handleSave} 
-                  disabled={saving}
+                  disabled={updateProfileMutation.isPending}
                   className="flex-1 gap-2"
                 >
                   <Check className="h-4 w-4" />
-                  {saving ? t("profile.saving") : t("profile.save")}
+                  {updateProfileMutation.isPending ? t("profile.saving") : t("profile.save")}
                 </Button>
                 <Button 
                   onClick={handleCancel} 
                   variant="outline"
-                  disabled={saving}
+                  disabled={updateProfileMutation.isPending}
                   className="flex-1 gap-2"
                 >
                   <X className="h-4 w-4" />
@@ -320,9 +252,9 @@ export default function ProfilePage() {
                 onClick={handleLogout} 
                 variant="destructive" 
                 className="w-full"
-                disabled={loggingOut}
+                disabled={logoutMutation.isPending}
               >
-                {loggingOut ? t("profile.loggingOut") : t("profile.logout")}
+                {logoutMutation.isPending ? t("profile.loggingOut") : t("profile.logout")}
               </Button>
             )}
           </div>
@@ -349,7 +281,7 @@ export default function ProfilePage() {
                     key={point.id} 
                     point={point} 
                     showAuthor={false}
-                    onFavoriteChange={() => fetchPoints()}
+                    onFavoriteChange={() => refetchPoints()}
                   />
                 ))}
               </div>

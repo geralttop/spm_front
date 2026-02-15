@@ -1,106 +1,56 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useAuthStore } from '@/shared/lib/store';
+import { useEffect } from 'react';
 import { MapPin, Loader2, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PointCard } from '@/src/shared/ui/point-card';
-import { feedApi, type FeedPoint } from '@/shared/api';
+import { Loading, ErrorMessage } from '@/shared/ui';
+import { useFeedQuery } from '@/shared/lib/hooks';
 
 export default function FeedPage() {
-  const accessToken = useAuthStore((state) => state.accessToken);
   const { t } = useTranslation();
-  const [points, setPoints] = useState<FeedPoint[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    error,
+    refetch,
+  } = useFeedQuery(10);
 
-  const fetchFeed = useCallback(async (pageNum: number, reset: boolean = false) => {
-    try {
-      if (pageNum === 1) {
-        setLoading(true);
-      } else {
-        setLoadingMore(true);
-      }
-
-      const data = await feedApi.getFeed(pageNum, 10);
-      
-      if (reset || pageNum === 1) {
-        setPoints(data.points);
-      } else {
-        setPoints(prev => [...prev, ...data.points]);
-      }
-      
-      setHasMore(data.hasMore);
-      setPage(pageNum);
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка');
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const initializeAndFetch = async () => {
-      if (accessToken) {
-        const checkAuth = useAuthStore.getState().checkAuth;
-        const isAuthenticated = await checkAuth();
-        if (isAuthenticated) {
-          fetchFeed(1, true);
-        }
-      }
-    };
-
-    initializeAndFetch();
-  }, [accessToken, fetchFeed]);
-
-  const loadMore = useCallback(() => {
-    if (!loadingMore && hasMore) {
-      fetchFeed(page + 1);
-    }
-  }, [fetchFeed, page, loadingMore, hasMore]);
-
+  // Infinite scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 1000) {
-        loadMore();
+      if (
+        window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 1000
+      ) {
+        if (hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
       }
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [loadMore]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="flex items-center gap-2">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span>Загрузка ленты...</span>
-        </div>
-      </div>
-    );
+  if (isLoading) {
+    return <Loading message="Загрузка ленты..." fullScreen />;
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
-          <button 
-            onClick={() => fetchFeed(1, true)}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90"
-          >
-            Попробовать снова
-          </button>
-        </div>
-      </div>
+      <ErrorMessage
+        message="Ошибка загрузки ленты"
+        onRetry={() => refetch()}
+        fullScreen
+      />
     );
   }
+
+  const points = data?.pages.flatMap((page) => page.points) ?? [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -108,11 +58,11 @@ export default function FeedPage() {
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold text-text-main">Лента точек</h1>
           <button
-            onClick={() => fetchFeed(1, true)}
-            disabled={loading}
+            onClick={() => refetch()}
+            disabled={isLoading}
             className="flex items-center gap-2 px-3 py-2 text-sm bg-surface border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Обновить
           </button>
         </div>
@@ -131,7 +81,7 @@ export default function FeedPage() {
               <PointCard key={point.id} point={point} showAuthor={true} />
             ))}
 
-            {loadingMore && (
+            {isFetchingNextPage && (
               <div className="flex items-center justify-center py-6">
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
@@ -140,7 +90,7 @@ export default function FeedPage() {
               </div>
             )}
 
-            {!hasMore && points.length > 0 && (
+            {!hasNextPage && points.length > 0 && (
               <div className="text-center py-6">
                 <p className="text-text-muted">Все точки загружены</p>
               </div>

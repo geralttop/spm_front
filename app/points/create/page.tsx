@@ -3,35 +3,38 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, Textarea } from "@/shared/ui";
-import { pointsApi, categoriesApi, containersApi, type CreatePointRequest, type Category, type Container } from "@/shared/api";
+import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation } from "@/shared/lib/hooks";
+import { useTranslation, useToast } from "@/shared/lib/hooks";
+import { 
+  useCategoriesQuery, 
+  useContainersQuery, 
+  useCreatePointMutation,
+  useCreateCategoryMutation,
+  useCreateContainerMutation 
+} from "@/shared/lib/hooks/queries";
 import { MapPin, Tag, Package, Plus, ArrowLeft } from "lucide-react";
 
 export default function CreatePointPage() {
   const router = useRouter();
   const { t } = useTranslation();
+  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   
-  const [loading, setLoading] = useState(true);
-  const [creating, setCreating] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [containers, setContainers] = useState<Container[]>([]);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const { data: categories = [], isLoading: categoriesLoading } = useCategoriesQuery();
+  const { data: containers = [], isLoading: containersLoading } = useContainersQuery();
+  const createPointMutation = useCreatePointMutation();
+  const createCategoryMutation = useCreateCategoryMutation();
+  const createContainerMutation = useCreateContainerMutation();
 
-  // Состояния для создания нового контейнера
   const [showCreateContainer, setShowCreateContainer] = useState(false);
   const [newContainerTitle, setNewContainerTitle] = useState("");
   const [newContainerDescription, setNewContainerDescription] = useState("");
-  const [creatingContainer, setCreatingContainer] = useState(false);
 
-  // Состояния для создания новой категории
   const [showCreateCategory, setShowCreateCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryIcon, setNewCategoryIcon] = useState("");
   const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
-  const [creatingCategory, setCreatingCategory] = useState(false);
 
   const [formData, setFormData] = useState<CreatePointRequest>({
     name: "",
@@ -47,22 +50,6 @@ export default function CreatePointPage() {
       const isAuth = await checkAuth();
       if (!isAuth) {
         router.push("/auth");
-        return;
-      }
-
-      try {
-        const [categoriesData, containersData] = await Promise.all([
-          categoriesApi.getAll(),
-          containersApi.getAll(),
-        ]);
-        
-        setCategories(categoriesData);
-        setContainers(containersData);
-      } catch (error) {
-        console.error("Error loading data:", error);
-        setError("Ошибка загрузки данных");
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -71,102 +58,92 @@ export default function CreatePointPage() {
 
   const handleInputChange = (field: keyof CreatePointRequest, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
-    setError("");
-    setSuccess("");
   };
 
-  const handleCreateContainer = async () => {
+  const handleCreateContainer = () => {
     if (!newContainerTitle.trim()) {
-      setError("Введите название контейнера");
+      toast.error("Введите название контейнера");
       return;
     }
 
-    setCreatingContainer(true);
-    try {
-      const newContainer = await containersApi.create({
+    createContainerMutation.mutate(
+      {
         title: newContainerTitle,
         description: newContainerDescription || undefined,
-      });
-      
-      setContainers(prev => [...prev, newContainer]);
-      setFormData(prev => ({ ...prev, containerId: newContainer.id }));
-      setNewContainerTitle("");
-      setNewContainerDescription("");
-      setShowCreateContainer(false);
-      setSuccess("Контейнер создан успешно");
-    } catch (error) {
-      console.error("Error creating container:", error);
-      setError("Ошибка создания контейнера");
-    } finally {
-      setCreatingContainer(false);
-    }
+      },
+      {
+        onSuccess: (newContainer) => {
+          setFormData(prev => ({ ...prev, containerId: newContainer.id }));
+          setNewContainerTitle("");
+          setNewContainerDescription("");
+          setShowCreateContainer(false);
+          toast.success("Контейнер создан успешно");
+        },
+        onError: () => {
+          toast.error("Ошибка создания контейнера");
+        },
+      }
+    );
   };
 
-  const handleCreateCategory = async () => {
+  const handleCreateCategory = () => {
     if (!newCategoryName.trim()) {
-      setError("Введите название категории");
+      toast.error("Введите название категории");
       return;
     }
 
-    setCreatingCategory(true);
-    try {
-      const newCategory = await categoriesApi.create({
+    createCategoryMutation.mutate(
+      {
         name: newCategoryName,
         icon: newCategoryIcon || undefined,
         color: newCategoryColor,
-      });
-      
-      setCategories(prev => [...prev, newCategory]);
-      setFormData(prev => ({ ...prev, categoryId: newCategory.id }));
-      setNewCategoryName("");
-      setNewCategoryIcon("");
-      setNewCategoryColor("#3B82F6");
-      setShowCreateCategory(false);
-      setSuccess("Категория создана успешно");
-    } catch (error) {
-      console.error("Error creating category:", error);
-      setError("Ошибка создания категории");
-    } finally {
-      setCreatingCategory(false);
-    }
+      },
+      {
+        onSuccess: (newCategory) => {
+          setFormData(prev => ({ ...prev, categoryId: newCategory.id }));
+          setNewCategoryName("");
+          setNewCategoryIcon("");
+          setNewCategoryColor("#3B82F6");
+          setShowCreateCategory(false);
+          toast.success("Категория создана успешно");
+        },
+        onError: () => {
+          toast.error("Ошибка создания категории");
+        },
+      }
+    );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
-      setError("Введите название точки");
+      toast.error("Введите название точки");
       return;
     }
     
     if (!formData.containerId) {
-      setError("Выберите контейнер");
+      toast.error("Выберите контейнер");
       return;
     }
     
     if (!formData.categoryId) {
-      setError("Выберите категорию");
+      toast.error("Выберите категорию");
       return;
     }
 
-    setCreating(true);
-    setError("");
-    
-    try {
-      await pointsApi.create(formData);
-      setSuccess("Точка создана успешно!");
-      
-      // Перенаправляем на профиль через 2 секунды
-      setTimeout(() => {
-        router.push("/profile");
-      }, 2000);
-    } catch (error: any) {
-      console.error("Error creating point:", error);
-      setError(error.response?.data?.message || "Ошибка создания точки");
-    } finally {
-      setCreating(false);
-    }
+    createPointMutation.mutate(formData, {
+      onSuccess: () => {
+        toast.success("Точка создана успешно!");
+        setTimeout(() => router.push("/profile"), 1500);
+      },
+      onError: (error: any) => {
+        toast.error(error.response?.data?.message || "Ошибка создания точки");
+      },
+    });
   };
+
+  const loading = categoriesLoading || containersLoading;
 
   if (loading) {
     return (
@@ -197,19 +174,6 @@ export default function CreatePointPage() {
             </div>
           </div>
 
-          {/* Success/Error Messages */}
-          {success && (
-            <div className="rounded-lg bg-green-50 border border-green-200 p-4 text-sm text-green-800">
-              {success}
-            </div>
-          )}
-          
-          {error && (
-            <div className="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-800">
-              {error}
-            </div>
-          )}
-
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Info Card */}
@@ -219,7 +183,6 @@ export default function CreatePointPage() {
               </h2>
               
               <div className="space-y-4">
-                {/* Name */}
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
                     Название точки *
@@ -234,7 +197,6 @@ export default function CreatePointPage() {
                   />
                 </div>
 
-                {/* Description */}
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
                     Описание
@@ -258,7 +220,6 @@ export default function CreatePointPage() {
               </h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Longitude */}
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
                     Долгота (lng) *
@@ -276,7 +237,6 @@ export default function CreatePointPage() {
                   </p>
                 </div>
 
-                {/* Latitude */}
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
                     Широта (lat) *
@@ -323,7 +283,6 @@ export default function CreatePointPage() {
                   </select>
                 </div>
 
-                {/* Create New Category */}
                 <div>
                   <Button
                     type="button"
@@ -387,10 +346,10 @@ export default function CreatePointPage() {
                         <Button
                           type="button"
                           onClick={handleCreateCategory}
-                          disabled={creatingCategory || !newCategoryName.trim()}
+                          disabled={createCategoryMutation.isPending || !newCategoryName.trim()}
                           size="sm"
                         >
-                          {creatingCategory ? "Создание..." : "Создать"}
+                          {createCategoryMutation.isPending ? "Создание..." : "Создать"}
                         </Button>
                         <Button
                           type="button"
@@ -434,7 +393,6 @@ export default function CreatePointPage() {
                   </select>
                 </div>
 
-                {/* Create New Container */}
                 <div>
                   <Button
                     type="button"
@@ -469,10 +427,10 @@ export default function CreatePointPage() {
                         <Button
                           type="button"
                           onClick={handleCreateContainer}
-                          disabled={creatingContainer || !newContainerTitle.trim()}
+                          disabled={createContainerMutation.isPending || !newContainerTitle.trim()}
                           size="sm"
                         >
-                          {creatingContainer ? "Создание..." : "Создать"}
+                          {createContainerMutation.isPending ? "Создание..." : "Создать"}
                         </Button>
                         <Button
                           type="button"
@@ -493,16 +451,16 @@ export default function CreatePointPage() {
             <div className="flex gap-3">
               <Button
                 type="submit"
-                disabled={creating}
+                disabled={createPointMutation.isPending}
                 className="flex-1"
               >
-                {creating ? "Создание..." : "Создать точку"}
+                {createPointMutation.isPending ? "Создание..." : "Создать точку"}
               </Button>
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => router.back()}
-                disabled={creating}
+                disabled={createPointMutation.isPending}
               >
                 Отмена
               </Button>

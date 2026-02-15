@@ -2,10 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Button, UserListModal } from "@/shared/ui";
-import { subscriptionsApi, authApi, pointsApi, type SubscriptionUser, type SubscriptionStats, type Point } from "@/shared/api";
+import { Button, UserListModal, Loading } from "@/shared/ui";
+import { authApi } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
+import { useTranslation, useFollowManagement, useUserModal, useToast } from "@/shared/lib/hooks";
+import { 
+  useProfileQuery, 
+  usePointsQuery, 
+  useSubscriptionStatsQuery,
+  useFollowMutation,
+  useUnfollowMutation 
+} from "@/shared/lib/hooks/queries";
 import { User, Mail, Users, MapPin } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
 
@@ -14,34 +21,23 @@ export default function UserProfilePage() {
   const params = useParams();
   const userId = Number(params.id);
   const { t } = useTranslation();
+  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   
-  const [user, setUser] = useState<SubscriptionUser | null>(null);
-  const [stats, setStats] = useState<SubscriptionStats | null>(null);
-  const [points, setPoints] = useState<Point[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [pointsLoading, setPointsLoading] = useState(true);
-  const [following, setFollowing] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const { data: currentProfile } = useProfileQuery();
+  const currentUserId = currentProfile ? Number(currentProfile.userId) : null;
   
-  // Используем новые хуки
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  
+  const { data: stats, refetch: refetchStats } = useSubscriptionStatsQuery(userId);
+  const { data: points = [], isLoading: pointsLoading, refetch: refetchPoints } = usePointsQuery(userId);
+  const followMutation = useFollowMutation();
+  const unfollowMutation = useUnfollowMutation();
+  
   const followersModal = useUserModal();
   const followingModal = useUserModal();
   const { followingStates, actionLoadingStates, initializeFollowingStates, handleFollowToggle } = useFollowManagement();
-
-  const fetchPoints = async () => {
-    try {
-      setPointsLoading(true);
-      const userPoints = await pointsApi.getAll(userId);
-      setPoints(userPoints);
-    } catch (pointsError) {
-      console.error("Error fetching user points:", pointsError);
-      setPoints([]);
-    } finally {
-      setPointsLoading(false);
-    }
-  };
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,63 +48,44 @@ export default function UserProfilePage() {
           return;
         }
 
-        const currentProfile = await authApi.getProfile();
-        const currentId = Number(currentProfile.userId);
-        setCurrentUserId(currentId);
-        
-        if (currentId === userId) {
+        if (currentUserId === userId) {
           router.push("/profile");
           return;
         }
         
         const userData = await authApi.getUserById(userId);
         setUser(userData);
-        
-        const statsData = await subscriptionsApi.getStats(userId);
-        setStats(statsData);
-        setFollowing(statsData.isFollowing || false);
-        
-        await fetchPoints();
       } catch (error) {
         console.error("Error fetching user data:", error);
         const isStillAuth = await checkAuth();
         if (!isStillAuth) {
           router.push("/auth");
-        } else {
-          setUser(null);
-          setStats(null);
         }
       } finally {
         setLoading(false);
       }
     };
 
-    if (userId) {
+    if (userId && currentUserId !== null) {
       fetchUserData();
     }
-  }, [userId, router, checkAuth]);
+  }, [userId, currentUserId, router, checkAuth]);
 
-  const handleFollowToggleMain = async () => {
-    setActionLoading(true);
-    try {
-      if (following) {
-        await subscriptionsApi.unfollow(userId);
-        setFollowing(false);
-        if (stats) {
-          setStats({ ...stats, followersCount: stats.followersCount - 1 });
-        }
-      } else {
-        await subscriptionsApi.follow(userId);
-        setFollowing(true);
-        if (stats) {
-          setStats({ ...stats, followersCount: stats.followersCount + 1 });
-        }
-      }
-    } catch (error) {
-      console.error("Error toggling follow:", error);
-    } finally {
-      setActionLoading(false);
-    }
+  const handleFollowToggleMain = () => {
+    const isFollowing = stats?.isFollowing || false;
+    const mutation = isFollowing ? unfollowMutation : followMutation;
+    
+    mutation.mutate(userId, {
+      onSuccess: () => {
+        refetchStats();
+        toast.success(
+          isFollowing ? t("profile.unfollowSuccess") : t("profile.followSuccess")
+        );
+      },
+      onError: () => {
+        toast.error(t("profile.followError"));
+      },
+    });
   };
 
   const handleShowFollowers = async () => {
@@ -126,11 +103,7 @@ export default function UserProfilePage() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-text-muted">{t("profile.loading")}</div>
-      </div>
-    );
+    return <Loading />;
   }
 
   if (!user && !stats) {
@@ -140,6 +113,9 @@ export default function UserProfilePage() {
       </div>
     );
   }
+
+  const isFollowing = stats?.isFollowing || false;
+  const actionLoading = followMutation.isPending || unfollowMutation.isPending;
 
   return (
     <div className="min-h-screen bg-background py-8 px-4">
@@ -155,13 +131,13 @@ export default function UserProfilePage() {
             <Button 
               onClick={handleFollowToggleMain}
               disabled={actionLoading}
-              variant={following ? "destructive" : "default"}
-              className={following 
+              variant={isFollowing ? "destructive" : "default"}
+              className={isFollowing 
                 ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
                 : "bg-blue-500 hover:bg-blue-600 text-white border-blue-500"
               }
             >
-              {actionLoading ? "..." : following ? t("profile.unfollow") : t("profile.follow")}
+              {actionLoading ? "..." : isFollowing ? t("profile.unfollow") : t("profile.follow")}
             </Button>
           </div>
 
@@ -248,7 +224,7 @@ export default function UserProfilePage() {
                     key={point.id} 
                     point={point} 
                     showAuthor={false}
-                    onFavoriteChange={() => fetchPoints()}
+                    onFavoriteChange={() => refetchPoints()}
                   />
                 ))}
               </div>

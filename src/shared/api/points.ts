@@ -52,6 +52,17 @@ export interface Container {
   createdAt: string;
 }
 
+export interface CreateCategoryRequest {
+  name: string;
+  icon?: string;
+  color?: string;
+}
+
+export interface CreateContainerRequest {
+  title: string;
+  description?: string;
+}
+
 export const pointsApi = {
   getAll: async (userId?: number): Promise<Point[]> => {
     const params = userId ? { userId: userId.toString() } : {};
@@ -76,7 +87,7 @@ export const categoriesApi = {
     return response.data;
   },
 
-  create: async (data: { name: string; icon?: string; color?: string }): Promise<Category> => {
+  create: async (data: CreateCategoryRequest): Promise<Category> => {
     const response = await apiClient.post<Category>("/categories", data);
     return response.data;
   },
@@ -88,7 +99,7 @@ export const containersApi = {
     return response.data;
   },
 
-  create: async (data: { title: string; description?: string }): Promise<Container> => {
+  create: async (data: CreateContainerRequest): Promise<Container> => {
     const response = await apiClient.post<Container>("/containers", data);
     return response.data;
   },

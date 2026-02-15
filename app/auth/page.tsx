@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/shared/ui";
-import { authApi } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation } from "@/shared/lib/hooks";
+import { useTranslation, useToast } from "@/shared/lib/hooks";
+import { useRegisterMutation, useLoginMutation, useVerifyEmailMutation, useVerifyLoginMutation } from "@/shared/lib/hooks/queries";
 import { Eye, EyeOff } from "lucide-react";
 
 type AuthMode = "login" | "register" | "verify";
@@ -13,7 +13,7 @@ type AuthMode = "login" | "register" | "verify";
 export default function AuthPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
@@ -32,68 +32,74 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [code, setCode] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [pendingEmail, setPendingEmail] = useState("");
-  const [isFromRegister, setIsFromRegister] = useState(false); // Новый флаг
+  const [isFromRegister, setIsFromRegister] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+
+  const registerMutation = useRegisterMutation();
+  const loginMutation = useLoginMutation();
+  const verifyEmailMutation = useVerifyEmailMutation();
+  const verifyLoginMutation = useVerifyLoginMutation();
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
-    try {
-      await authApi.register({ email, password, username });
-      setPendingEmail(email);
-      setIsFromRegister(true); // Устанавливаем флаг регистрации
-      setMode("verify");
-    } catch (err: any) {
-      setError(err.response?.data?.message || t("auth.errorRegister"));
-    } finally {
-      setLoading(false);
-    }
+    registerMutation.mutate(
+      { email, password, username },
+      {
+        onSuccess: () => {
+          setPendingEmail(email);
+          setIsFromRegister(true);
+          setMode("verify");
+          toast.success(t("auth.verificationSent"));
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message || t("auth.errorRegister"));
+        },
+      }
+    );
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
-    try {
-      await authApi.login({ email, password });
-      setPendingEmail(email);
-      setIsFromRegister(false); // Устанавливаем флаг логина
-      setMode("verify");
-    } catch (err: any) {
-      setError(err.response?.data?.message || t("auth.errorLogin"));
-    } finally {
-      setLoading(false);
-    }
+    loginMutation.mutate(
+      { email, password },
+      {
+        onSuccess: () => {
+          setPendingEmail(email);
+          setIsFromRegister(false);
+          setMode("verify");
+          toast.success(t("auth.verificationSent"));
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message || t("auth.errorLogin"));
+        },
+      }
+    );
   };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setLoading(true);
 
-    try {
-      // Используем правильный эндпоинт в зависимости от того, откуда пришли
-      const response = isFromRegister
-        ? await authApi.verifyEmail({ email: pendingEmail, code })
-        : await authApi.verifyLogin({ email: pendingEmail, code });
-
-      // Сохраняем только access token (refresh token в httpOnly cookie)
-      if (response.accessToken) {
-        setAccessToken(response.accessToken);
-        router.push("/profile");
+    const mutation = isFromRegister ? verifyEmailMutation : verifyLoginMutation;
+    
+    mutation.mutate(
+      { email: pendingEmail, code },
+      {
+        onSuccess: () => {
+          toast.success(t("auth.verificationSuccess"));
+          router.push("/profile");
+        },
+        onError: (error: any) => {
+          toast.error(error.response?.data?.message || t("auth.errorCode"));
+        },
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || t("auth.errorCode"));
-    } finally {
-      setLoading(false);
-    }
+    );
   };
+
+  const loading = registerMutation.isPending || loginMutation.isPending || 
+                  verifyEmailMutation.isPending || verifyLoginMutation.isPending;
 
   if (mode === "verify") {
     return (
@@ -121,12 +127,6 @@ export default function AuthPage() {
               />
             </div>
 
-            {error && (
-              <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                {error}
-              </div>
-            )}
-
             <Button type="submit" className="w-full" disabled={loading}>
               {loading ? t("auth.verifying") : t("auth.verifyButton")}
             </Button>
@@ -138,8 +138,7 @@ export default function AuthPage() {
               onClick={() => {
                 setMode("login");
                 setCode("");
-                setError("");
-                setIsFromRegister(false); // Сбрасываем флаг
+                setIsFromRegister(false);
               }}
             >
               {t("auth.backButton")}
@@ -224,12 +223,6 @@ export default function AuthPage() {
             </div>
           </div>
 
-          {error && (
-            <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-              {error}
-            </div>
-          )}
-
           <Button type="submit" className="w-full" disabled={loading}>
             {loading
               ? t("auth.loading")
@@ -244,10 +237,7 @@ export default function AuthPage() {
                 {t("auth.noAccount")}{" "}
                 <button
                   type="button"
-                  onClick={() => {
-                    setMode("register");
-                    setError("");
-                  }}
+                  onClick={() => setMode("register")}
                   className="font-medium text-primary hover:underline"
                 >
                   {t("auth.registerButton")}
@@ -258,10 +248,7 @@ export default function AuthPage() {
                 {t("auth.hasAccount")}{" "}
                 <button
                   type="button"
-                  onClick={() => {
-                    setMode("login");
-                    setError("");
-                  }}
+                  onClick={() => setMode("login")}
                   className="font-medium text-primary hover:underline"
                 >
                   {t("auth.loginButton")}

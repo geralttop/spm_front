@@ -16,7 +16,14 @@ export type {
   UpdateProfileRequest,
   SearchUserResult,
 } from "./auth";
-export type { Point, CreatePointRequest, Category, Container } from "./points";
+export type { 
+  Point, 
+  CreatePointRequest, 
+  Category, 
+  Container,
+  CreateCategoryRequest,
+  CreateContainerRequest 
+} from "./points";
 export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";
 export type { FavoritePoint, FavoriteCheckResponse } from "./favorites";
 export type { FeedPoint, FeedResponse } from "./feed";
