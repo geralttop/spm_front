@@ -8,8 +8,8 @@
     "colorScheme": "Каляровая схема",
     "fsdStructure": "Структура FSD",
     "fsdDescription": "Праект арганізаваны па метадалогіі Feature-Sliced Design для маштабавальнасці і падтрымлівальнасці кода.",
-    "primary": "Primary",
-    "secondary": "Secondary"
+    "primary": "Асноўны",
+    "secondary": "Другасны"
   },
   "navigation": {
     "home": "Галоўная",
@@ -26,7 +26,27 @@
   "search": {
     "placeholder": "Пошук карыстальнікаў...",
     "searching": "Пошук...",
-    "noResults": "Нічога не знойдзена"
+    "noResults": "Нічога не знойдзена",
+    "title": "Пошук карыстальнікаў",
+    "description": "Знайдзіце і злучыцеся з іншымі карыстальнікамі",
+    "button": "Знайсці",
+    "results": "Вынікі пошуку",
+    "viewProfile": "Паглядзець профіль",
+    "startSearching": "Пачніце пошук карыстальнікаў",
+    "enterUsername": "Увядзіце імя карыстальніка або email для пошуку",
+    "tryDifferent": "Паспрабуйце іншы пошукавы запыт"
+  },
+  "sidebar": {
+    "home": "Галоўная",
+    "feed": "Стужка",
+    "favorites": "Абранае",
+    "profile": "Профіль",
+    "search": "Пошук",
+    "createPoint": "Стварыць кропку",
+    "map": "Карта",
+    "community": "Супольнасць",
+    "notifications": "Апавяшчэнні",
+    "settings": "Налады"
   },
   "theme": {
     "switchToDark": "Пераключыць на цёмную тэму",

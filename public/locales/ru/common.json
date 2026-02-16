@@ -8,8 +8,8 @@
     "colorScheme": "Цветовая схема",
     "fsdStructure": "Структура FSD",
     "fsdDescription": "Проект организован по методологии Feature-Sliced Design для масштабируемости и поддерживаемости кода.",
-    "primary": "Primary",
-    "secondary": "Secondary"
+    "primary": "Основной",
+    "secondary": "Вторичный"
   },
   "navigation": {
     "home": "Главная",
