@@ -1,8 +1,10 @@
-import { MapPin, Tag, Package, User, Calendar, Heart } from 'lucide-react';
+import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
 import { favoritesApi } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
+import { Comments } from '@/widgets/Comments';
+import { useTranslation } from 'react-i18next';
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
 const CACHE_DURATION = 30000;
@@ -42,9 +44,11 @@ interface PointCardProps {
 }
 
 export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointCardProps) {
+  const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showComments, setShowComments] = useState(false);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -211,6 +215,22 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
             {point.coords.coordinates[1].toFixed(6)}, {point.coords.coordinates[0].toFixed(6)}
           </span>
         </div>
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-border">
+        <button
+          onClick={() => setShowComments(!showComments)}
+          className="flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors"
+        >
+          <MessageCircle className="h-4 w-4" />
+          <span>{showComments ? t('comments.hide') : t('comments.show')}</span>
+        </button>
+        
+        {showComments && (
+          <div className="mt-4">
+            <Comments pointId={point.id} />
+          </div>
+        )}
       </div>
     </div>
   );

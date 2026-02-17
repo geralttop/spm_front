@@ -7,6 +7,7 @@ export { pointsApi, categoriesApi, containersApi } from "./points";
 export { subscriptionsApi } from "./subscriptions";
 export { favoritesApi } from "./favorites";
 export { feedApi } from "./feed";
+export { commentsApi } from "./comments";
 export type {
   RegisterRequest,
   LoginRequest,
@@ -26,4 +27,5 @@ export type {
 } from "./points";
 export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";
 export type { FavoritePoint, FavoriteCheckResponse } from "./favorites";
-export type { FeedPoint, FeedResponse } from "./feed";
+export type { FeedResponse } from "./feed";
+export type { Comment, CreateCommentDto, UpdateCommentDto } from "./comments";
