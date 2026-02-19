@@ -3,16 +3,23 @@
 import { usePathname } from 'next/navigation';
 import { Sidebar } from './sidebar';
 import { Header } from './header';
+import { useToast } from '@/shared/ui';
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const { ToastContainer } = useToast();
   
   // Не показываем сайдбар и хедер на страницах админки и авторизации
   const isAdminPage = pathname?.startsWith('/admin');
   const isAuthPage = pathname === '/auth';
   
   if (isAdminPage || isAuthPage) {
-    return <>{children}</>;
+    return (
+      <>
+        {children}
+        <ToastContainer />
+      </>
+    );
   }
   
   return (
@@ -22,6 +29,7 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
         <Header />
         <main>{children}</main>
       </div>
+      <ToastContainer />
     </div>
   );
 }

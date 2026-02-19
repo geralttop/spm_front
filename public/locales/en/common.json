@@ -143,5 +143,36 @@
     "subtitle": "All comments you have posted",
     "noComments": "You don't have any comments yet",
     "unknownPoint": "Unknown point"
+  },
+  "reports": {
+    "title": "Report",
+    "subtitle": "Report {{type}}",
+    "target": "Report target",
+    "reasonLabel": "Reason for report",
+    "descriptionLabel": "Additional description",
+    "descriptionPlaceholder": "Describe the problem in more detail (optional)...",
+    "submit": "Submit Report",
+    "submitting": "Submitting...",
+    "cancel": "Cancel",
+    "success": "Report submitted",
+    "successMessage": "Your report has been submitted and will be reviewed by administration",
+    "button": "Report",
+    "types": {
+      "point": "point",
+      "comment": "comment",
+      "user": "user"
+    },
+    "reasons": {
+      "spam": "Spam",
+      "inappropriate": "Inappropriate content",
+      "harassment": "Harassment",
+      "fake": "Fake information",
+      "other": "Other"
+    },
+    "errors": {
+      "submitFailed": "Failed to submit report. Please try again.",
+      "alreadyReported": "You have already reported this item",
+      "cannotReportSelf": "You cannot report yourself"
+    }
   }
 }

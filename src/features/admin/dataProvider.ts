@@ -86,11 +86,21 @@ export const dataProvider: DataProvider = {
     }));
   },
 
-  update: (resource, params) =>
-    httpClient(`${apiUrl}/admin/${resource}/${params.id}`, {
+  update: (resource, params) => {
+    // Специальная обработка для жалоб с действиями
+    if (resource === 'reports' && params.data.action) {
+      const { action, ...otherData } = params.data;
+      return httpClient(`${apiUrl}/admin/${resource}/${params.id}/resolve`, {
+        method: 'POST',
+        body: JSON.stringify({ action, adminNotes: otherData.adminNotes }),
+      }).then(({ json }) => ({ data: json }));
+    }
+    
+    return httpClient(`${apiUrl}/admin/${resource}/${params.id}`, {
       method: 'PUT',
       body: JSON.stringify(params.data),
-    }).then(({ json }) => ({ data: json })),
+    }).then(({ json }) => ({ data: json }));
+  },
 
   updateMany: (resource, params) => {
     const promises = params.ids.map(id =>

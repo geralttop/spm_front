@@ -8,6 +8,7 @@ import { UserList, UserEdit, UserShow } from './resources/users';
 import { PointList, PointEdit, PointShow, PointCreate } from './resources/points';
 import { CategoryList, CategoryEdit, CategoryShow, CategoryCreate } from './resources/categories';
 import { ContainerList, ContainerEdit, ContainerShow, ContainerCreate } from './resources/containers';
+import { ReportList, ReportEdit, ReportShow } from './resources/reports';
 
 const AdminApp = () => (
   <Admin 
@@ -46,6 +47,13 @@ const AdminApp = () => (
       show={ContainerShow}
       create={ContainerCreate}
       options={{ label: 'Контейнеры' }}
+    />
+    <Resource 
+      name="reports" 
+      list={ReportList} 
+      edit={ReportEdit} 
+      show={ReportShow}
+      options={{ label: 'Жалобы' }}
     />
   </Admin>
 );

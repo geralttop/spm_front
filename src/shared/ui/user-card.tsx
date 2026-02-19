@@ -1,14 +1,57 @@
-import { User as UserIcon } from "lucide-react";
+import { User as UserIcon, Flag } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./button";
+import { ReportModal } from "./report-modal";
+import { useAuthStore } from "@/shared/lib/store";
+import { authApi } from "@/shared/api";
 import type { SearchUserResult } from "@/shared/api";
 
 interface UserCardProps {
   user: SearchUserResult;
   onClick: () => void;
   actionButton?: React.ReactNode;
+  showReportButton?: boolean;
 }
 
-export function UserCard({ user, onClick, actionButton }: UserCardProps) {
+export function UserCard({ user, onClick, actionButton, showReportButton = true }: UserCardProps) {
+  const { t } = useTranslation();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+
+  // Загружаем информацию о текущем пользователе
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      if (!accessToken) return;
+      
+      try {
+        const profile = await authApi.getProfile();
+        setCurrentUserId(Number(profile.userId));
+      } catch (error) {
+        console.error('Error loading current user:', error);
+      }
+    };
+
+    loadCurrentUser();
+  }, [accessToken]);
+
+  const canReport = showReportButton && accessToken && currentUserId && currentUserId !== user.id;
+
+  // Отладочная информация (можно удалить в продакшене)
+  useEffect(() => {
+    console.log('UserCard debug:', {
+      accessToken: !!accessToken,
+      currentUserId,
+      userId: user.id,
+      showReportButton,
+      canReport
+    });
+  }, [accessToken, currentUserId, user.id, showReportButton, canReport]);
+
+  const handleReportSuccess = () => {
+    console.log('Жалоба на пользователя успешно отправлена');
+  };
   return (
     <div
       onClick={onClick}
@@ -34,11 +77,32 @@ export function UserCard({ user, onClick, actionButton }: UserCardProps) {
         )}
       </div>
       
-      {actionButton && (
-        <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
+      {(actionButton || canReport) && (
+        <div className="shrink-0 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
           {actionButton}
+          {canReport && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowReportModal(true)}
+              className="text-gray-500 hover:text-red-600 hover:bg-red-50"
+              title={t('reports.button')}
+            >
+              <Flag className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       )}
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        type="user"
+        targetId={user.id}
+        targetName={user.username}
+        onSuccess={handleReportSuccess}
+      />
     </div>
   );
 }

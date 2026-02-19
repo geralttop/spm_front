@@ -59,13 +59,16 @@ const ChartCard = ({ title, children }: { title: string; children: React.ReactNo
 
 export const Dashboard = () => {
   const [stats, setStats] = useState<any>(null);
+  const [reportsStats, setReportsStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
         const token = getAccessToken();
-        const response = await fetch(
+        
+        // Загружаем основную статистику
+        const statsResponse = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/admin/stats`,
           {
             headers: {
@@ -74,9 +77,46 @@ export const Dashboard = () => {
           }
         );
 
-        if (response.ok) {
-          const data = await response.json();
+        if (statsResponse.ok) {
+          const data = await statsResponse.json();
           setStats(data);
+        }
+
+        // Загружаем статистику жалоб
+        const reportsResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/admin/reports?_start=0&_end=1000`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (reportsResponse.ok) {
+          const reportsData = await reportsResponse.json();
+          
+          // Обрабатываем статистику жалоб
+          const reports = reportsData.data || [];
+          const reportsStats = {
+            total: reports.length,
+            pending: reports.filter((r: any) => r.status === 'pending').length,
+            resolved: reports.filter((r: any) => r.status === 'resolved').length,
+            dismissed: reports.filter((r: any) => r.status === 'dismissed').length,
+            byType: {
+              point: reports.filter((r: any) => r.type === 'point').length,
+              comment: reports.filter((r: any) => r.type === 'comment').length,
+              user: reports.filter((r: any) => r.type === 'user').length,
+            },
+            byReason: {
+              spam: reports.filter((r: any) => r.reason === 'spam').length,
+              inappropriate: reports.filter((r: any) => r.reason === 'inappropriate').length,
+              harassment: reports.filter((r: any) => r.reason === 'harassment').length,
+              fake: reports.filter((r: any) => r.reason === 'fake').length,
+              other: reports.filter((r: any) => r.reason === 'other').length,
+            }
+          };
+          
+          setReportsStats(reportsStats);
         }
       } catch (error) {
         console.error('Failed to fetch stats:', error);
@@ -115,12 +155,25 @@ export const Dashboard = () => {
     { name: 'Не подтверждены', value: stats.users.unverified },
   ];
 
+  // Данные для статистики жалоб
+  const reportsStatusData = reportsStats ? [
+    { name: 'Ожидают', value: reportsStats.pending },
+    { name: 'Решены', value: reportsStats.resolved },
+    { name: 'Отклонены', value: reportsStats.dismissed },
+  ] : [];
+
+  const reportsTypeData = reportsStats ? [
+    { name: 'Точки', value: reportsStats.byType.point },
+    { name: 'Комментарии', value: reportsStats.byType.comment },
+    { name: 'Пользователи', value: reportsStats.byType.user },
+  ] : [];
+
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-gray-800">Панель управления</h1>
 
       {/* Карточки с общей статистикой */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard 
           title="Пользователи" 
           value={stats.totals.users} 
@@ -141,7 +194,33 @@ export const Dashboard = () => {
           value={stats.totals.containers} 
           color="text-purple-600" 
         />
+        <StatCard 
+          title="Жалобы" 
+          value={reportsStats?.total || 0} 
+          color="text-red-600" 
+        />
       </div>
+
+      {/* Статистика жалоб */}
+      {reportsStats && reportsStats.total > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <StatCard 
+            title="Ожидают рассмотрения" 
+            value={reportsStats.pending} 
+            color="text-orange-600" 
+          />
+          <StatCard 
+            title="Решены" 
+            value={reportsStats.resolved} 
+            color="text-green-600" 
+          />
+          <StatCard 
+            title="Отклонены" 
+            value={reportsStats.dismissed} 
+            color="text-gray-600" 
+          />
+        </div>
+      )}
 
       {/* Графики */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -255,6 +334,51 @@ export const Dashboard = () => {
               </ResponsiveContainer>
             </ChartCard>
           </div>
+        )}
+
+        {/* Статистика жалоб */}
+        {reportsStats && reportsStats.total > 0 && (
+          <>
+            <ChartCard title="Статус жалоб">
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={reportsStatusData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) =>
+                      `${name}: ${((percent || 0) * 100).toFixed(0)}%`
+                    }
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {reportsStatusData.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={['#f59e0b', '#10b981', '#6b7280'][index]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </ChartCard>
+
+            <ChartCard title="Жалобы по типам">
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={reportsTypeData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="value" fill="#ef4444" name="Количество жалоб" />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </>
         )}
       </div>
     </div>

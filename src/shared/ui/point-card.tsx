@@ -1,9 +1,10 @@
-import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle } from 'lucide-react';
+import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle, Flag } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
-import { favoritesApi } from '@/shared/api';
+import { favoritesApi, authApi } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/widgets/Comments';
+import { ReportModal } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
@@ -46,9 +47,11 @@ interface PointCardProps {
 export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointCardProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -87,6 +90,22 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
     };
   }, [point.id, accessToken]);
 
+  // Загружаем информацию о текущем пользователе
+  useEffect(() => {
+    const loadCurrentUser = async () => {
+      if (!accessToken) return;
+      
+      try {
+        const profile = await authApi.getProfile();
+        setCurrentUserId(Number(profile.userId));
+      } catch (error) {
+        console.error('Error loading current user:', error);
+      }
+    };
+
+    loadCurrentUser();
+  }, [accessToken]);
+
   const toggleFavorite = async () => {
     if (!accessToken || loading) return;
     
@@ -116,6 +135,24 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
     }
   };
 
+  const handleReportSuccess = () => {
+    // Можно показать уведомление об успешной отправке жалобы
+    console.log('Жалоба успешно отправлена');
+  };
+
+  // Проверяем, может ли пользователь пожаловаться на эту точку
+  const canReport = accessToken && currentUserId && currentUserId !== point.author.id;
+
+  // Отладочная информация (можно удалить в продакшене)
+  useEffect(() => {
+    console.log('PointCard debug:', {
+      accessToken: !!accessToken,
+      currentUserId,
+      pointAuthorId: point.author.id,
+      canReport
+    });
+  }, [accessToken, currentUserId, point.author.id, canReport]);
+
   return (
     <div className="bg-surface border border-border rounded-lg p-6 hover:shadow-md transition-shadow">
       {showAuthor && (
@@ -134,6 +171,42 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
               <Calendar className="h-4 w-4" />
               {formatRelativeDate(point.createdAt)}
             </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleFavorite}
+                disabled={loading}
+                className={`p-2 rounded-lg transition-colors ${
+                  isFavorite 
+                    ? 'bg-red-50 text-red-600 hover:bg-red-100' 
+                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
+                } disabled:opacity-50`}
+                title={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
+              >
+                <Heart 
+                  className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} 
+                />
+              </button>
+              {canReport && (
+                <button
+                  onClick={() => setShowReportModal(true)}
+                  className="p-2 rounded-lg transition-colors bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-600"
+                  title={t('reports.button')}
+                >
+                  <Flag className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {!showAuthor && (
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-1 text-sm text-text-muted">
+            <Calendar className="h-4 w-4" />
+            {formatRelativeDate(point.createdAt)}
+          </div>
+          <div className="flex items-center gap-2">
             <button
               onClick={toggleFavorite}
               disabled={loading}
@@ -148,30 +221,16 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
                 className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} 
               />
             </button>
+            {canReport && (
+              <button
+                onClick={() => setShowReportModal(true)}
+                className="p-2 rounded-lg transition-colors bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-600"
+                title={t('reports.button')}
+              >
+                <Flag className="h-4 w-4" />
+              </button>
+            )}
           </div>
-        </div>
-      )}
-
-      {!showAuthor && (
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center gap-1 text-sm text-text-muted">
-            <Calendar className="h-4 w-4" />
-            {formatRelativeDate(point.createdAt)}
-          </div>
-          <button
-            onClick={toggleFavorite}
-            disabled={loading}
-            className={`p-2 rounded-lg transition-colors ${
-              isFavorite 
-                ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-                : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-            } disabled:opacity-50`}
-            title={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
-          >
-            <Heart 
-              className={`h-4 w-4 ${isFavorite ? 'fill-current' : ''}`} 
-            />
-          </button>
         </div>
       )}
 
@@ -232,6 +291,16 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           </div>
         )}
       </div>
+
+      {/* Report Modal */}
+      <ReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        type="point"
+        targetId={point.id}
+        targetName={point.name}
+        onSuccess={handleReportSuccess}
+      />
     </div>
   );
 }

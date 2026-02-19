@@ -2,7 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Flag } from 'lucide-react';
 import { commentsApi, Comment, authApi } from '@/shared/api';
+import { ReportModal } from '@/shared/ui';
 import styles from './Comments.module.css';
 
 interface CommentsProps {
@@ -18,23 +20,12 @@ export function Comments({ pointId }: CommentsProps) {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState('');
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [reportingCommentId, setReportingCommentId] = useState<number | null>(null);
 
   useEffect(() => {
     loadComments();
     loadCurrentUser();
-  }, [pointId]);
-
-  const loadCurrentUser = async () => {
-    try {
-      const profile = await authApi.getProfile();
-      setCurrentUserId(Number(profile.userId));
-    } catch (error) {
-      console.error('Error loading current user:', error);
-    }
-  };
-
-  useEffect(() => {
-    loadComments();
   }, [pointId]);
 
   const loadComments = async () => {
@@ -48,6 +39,16 @@ export function Comments({ pointId }: CommentsProps) {
       setLoading(false);
     }
   };
+  const loadCurrentUser = async () => {
+    try {
+      const profile = await authApi.getProfile();
+      setCurrentUserId(Number(profile.userId));
+    } catch (error) {
+      console.error('Error loading current user:', error);
+      setCurrentUserId(null);
+    }
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +93,20 @@ export function Comments({ pointId }: CommentsProps) {
     } catch (error) {
       console.error('Error deleting comment:', error);
     }
+  };
+
+  const handleReport = (commentId: number) => {
+    setReportingCommentId(commentId);
+    setShowReportModal(true);
+  };
+
+  const handleReportSuccess = () => {
+    console.log('Жалоба на комментарий успешно отправлена');
+    setReportingCommentId(null);
+  };
+
+  const getReportingComment = () => {
+    return comments.find(c => c.id === reportingCommentId);
   };
 
   const formatDate = (dateString: string) => {
@@ -173,28 +188,54 @@ export function Comments({ pointId }: CommentsProps) {
               ) : (
                 <>
                   <p className={styles.content}>{comment.content}</p>
-                  {currentUserId === comment.authorId && (
-                    <div className={styles.actions}>
+                  <div className={styles.actions}>
+                    {currentUserId === comment.authorId ? (
+                      <>
+                        <button 
+                          onClick={() => handleEdit(comment)}
+                          className={styles.editButton}
+                        >
+                          {t('comments.edit')}
+                        </button>
+                        <button 
+                          onClick={() => handleDelete(comment.id)}
+                          className={styles.deleteButton}
+                        >
+                          {t('comments.delete')}
+                        </button>
+                      </>
+                    ) : (
                       <button 
-                        onClick={() => handleEdit(comment)}
-                        className={styles.editButton}
+                        onClick={() => handleReport(comment.id)}
+                        className={styles.reportButton}
+                        title={t('reports.button')}
                       >
-                        {t('comments.edit')}
+                        <Flag className={styles.reportIcon} />
+                        {t('reports.button')}
                       </button>
-                      <button 
-                        onClick={() => handleDelete(comment.id)}
-                        className={styles.deleteButton}
-                      >
-                        {t('comments.delete')}
-                      </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </>
               )}
             </div>
           ))
         )}
       </div>
+
+      {/* Report Modal */}
+      {reportingCommentId && (
+        <ReportModal
+          isOpen={showReportModal}
+          onClose={() => {
+            setShowReportModal(false);
+            setReportingCommentId(null);
+          }}
+          type="comment"
+          targetId={reportingCommentId}
+          targetName={getReportingComment()?.content.substring(0, 50) + '...'}
+          onSuccess={handleReportSuccess}
+        />
+      )}
     </div>
   );
 }

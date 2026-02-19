@@ -13,6 +13,8 @@ export { PointsSection } from "./points-section";
 export { Form, FormField } from "./form";
 export { Loading } from "./loading";
 export { ErrorMessage } from "./error-message";
+export { ReportModal } from "./report-modal";
+export { Toast, useToast } from "./toast";
 export type { ButtonProps } from "./button";
 export type { InputProps } from "./input";
 export type { TextareaProps } from "./textarea";
