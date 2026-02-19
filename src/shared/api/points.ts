@@ -13,7 +13,6 @@ export interface Point {
   category?: {
     id: number;
     name: string;
-    icon?: string;
     color: string;
   };
   container?: {
@@ -41,7 +40,6 @@ export interface CreatePointRequest {
 export interface Category {
   id: number;
   name: string;
-  icon?: string;
   color: string;
 }
 
@@ -54,7 +52,6 @@ export interface Container {
 
 export interface CreateCategoryRequest {
   name: string;
-  icon?: string;
   color?: string;
 }
 

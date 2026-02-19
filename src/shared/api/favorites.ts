@@ -14,7 +14,6 @@ export interface FavoritePoint {
     id: number;
     name: string;
     color: string;
-    icon?: string;
   };
   container?: {
     id: string;

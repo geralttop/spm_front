@@ -24,7 +24,6 @@ interface Point {
     id: number;
     name: string;
     color: string;
-    icon?: string;
   } | null;
   container?: {
     id: string;
@@ -169,8 +168,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3 flex-shrink-0">
             <div className="flex items-center gap-1 text-xs sm:text-sm text-text-muted">
               <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">{formatRelativeDate(point.createdAt)}</span>
-              <span className="sm:hidden">{formatRelativeDate(point.createdAt, true)}</span>
+              <span>{formatRelativeDate(point.createdAt)}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
               <button
@@ -205,8 +203,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center gap-1 text-xs sm:text-sm text-text-muted">
             <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
-            <span className="hidden sm:inline">{formatRelativeDate(point.createdAt)}</span>
-            <span className="sm:hidden">{formatRelativeDate(point.createdAt, true)}</span>
+            <span>{formatRelativeDate(point.createdAt)}</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
             <button

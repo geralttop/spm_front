@@ -14,7 +14,6 @@ export interface FeedPoint {
     id: number;
     name: string;
     color: string;
-    icon: string;
   } | null;
   container: {
     id: string;

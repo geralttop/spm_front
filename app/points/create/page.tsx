@@ -33,7 +33,6 @@ export default function CreatePointPage() {
 
   const [showCreateCategory, setShowCreateCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [newCategoryIcon, setNewCategoryIcon] = useState("");
   const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
 
   const [formData, setFormData] = useState<CreatePointRequest>({
@@ -95,14 +94,12 @@ export default function CreatePointPage() {
     createCategoryMutation.mutate(
       {
         name: newCategoryName,
-        icon: newCategoryIcon || undefined,
         color: newCategoryColor,
       },
       {
         onSuccess: (newCategory) => {
           setFormData(prev => ({ ...prev, categoryId: newCategory.id }));
           setNewCategoryName("");
-          setNewCategoryIcon("");
           setNewCategoryColor("#3B82F6");
           setShowCreateCategory(false);
           toast.success("Категория создана успешно");
@@ -306,30 +303,6 @@ export default function CreatePointPage() {
                         placeholder="Название категории"
                         maxLength={50}
                       />
-                      <div>
-                        <Input
-                          type="text"
-                          value={newCategoryIcon}
-                          onChange={(e) => setNewCategoryIcon(e.target.value)}
-                          placeholder="Иконка (например: coffee, park)"
-                          maxLength={30}
-                        />
-                        <div className="mt-2">
-                          <p className="text-xs text-text-muted mb-2">Популярные иконки:</p>
-                          <div className="flex flex-wrap gap-1">
-                            {["coffee", "restaurant", "park", "shop", "hospital", "school", "bank", "gas-station", "hotel", "museum"].map((icon) => (
-                              <button
-                                key={icon}
-                                type="button"
-                                onClick={() => setNewCategoryIcon(icon)}
-                                className="px-2 py-1 text-xs bg-accent hover:bg-accent/80 rounded border text-text-main"
-                              >
-                                {icon}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
                       <div className="flex items-center gap-3">
                         <label className="text-sm font-medium text-text-muted">
                           Цвет:

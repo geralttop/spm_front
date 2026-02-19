@@ -115,8 +115,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             if (userData.sidebarOrder && Array.isArray(userData.sidebarOrder)) {
               // Сортируем вкладки согласно сохраненному порядку
               const orderedItems = userData.sidebarOrder
-                .map((id: string) => defaultItems.find(item => item.id === id))
-                .filter((item): item is MenuItem => item !== undefined);
+                .map((id: string) => defaultItems.find((item: MenuItem) => item.id === id))
+                .filter((item: MenuItem | undefined): item is MenuItem => item !== undefined);
               
               // Добавляем новые вкладки, которых нет в сохраненном порядке
               const newItems = defaultItems.filter(
