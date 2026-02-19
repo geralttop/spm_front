@@ -17,6 +17,8 @@ export type {
   ProfileResponse,
   UpdateProfileRequest,
   SearchUserResult,
+  ForgotPasswordRequest,
+  ResetPasswordRequest,
 } from "./auth";
 export type { 
   Point, 

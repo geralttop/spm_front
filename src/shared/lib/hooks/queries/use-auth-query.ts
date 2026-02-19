@@ -1,7 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
-import { authApi, type LoginRequest, type RegisterRequest, type VerifyCodeRequest } from '@/shared/api';
+import { authApi, type LoginRequest, type RegisterRequest, type VerifyCodeRequest, type ForgotPasswordRequest, type ResetPasswordRequest } from '@/shared/api';
 import { useAuthStore } from '@/shared/lib/store';
-
 export const useRegisterMutation = () => {
   return useMutation({
     mutationFn: (data: RegisterRequest) => authApi.register(data),
@@ -48,5 +47,16 @@ export const useLogoutMutation = () => {
     onSuccess: () => {
       clearAuth();
     },
+  });
+};
+export const useForgotPasswordMutation = () => {
+  return useMutation({
+    mutationFn: (data: ForgotPasswordRequest) => authApi.forgotPassword(data),
+  });
+};
+
+export const useResetPasswordMutation = () => {
+  return useMutation({
+    mutationFn: (data: ResetPasswordRequest) => authApi.resetPassword(data),
   });
 };

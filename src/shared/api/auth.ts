@@ -37,6 +37,16 @@ export interface UpdateProfileRequest {
   bio?: string;
 }
 
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  code: string;
+  newPassword: string;
+}
+
 export interface SearchUserResult {
   id: number;
   username: string;
@@ -95,6 +105,15 @@ export const authApi = {
 
   logout: async (): Promise<{ message: string }> => {
     const response = await apiClient.post<{ message: string }>("/auth/logout");
+    return response.data;
+  },
+  forgotPassword: async (data: ForgotPasswordRequest): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>("/auth/forgot-password", data);
+    return response.data;
+  },
+
+  resetPassword: async (data: ResetPasswordRequest): Promise<AuthResponse> => {
+    const response = await apiClient.post<AuthResponse>("/auth/reset-password", data);
     return response.data;
   },
 
