@@ -54,29 +54,29 @@ export default function FeedPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-text-main">Лента точек</h1>
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-text-main">Лента точек</h1>
           <button
             onClick={() => refetch()}
             disabled={isLoading}
-            className="flex items-center gap-2 px-3 py-2 text-sm bg-surface border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50"
+            className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-surface border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50 w-full sm:w-auto"
           >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            Обновить
+            <span className="sm:inline">Обновить</span>
           </button>
         </div>
         
         {points.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="text-center py-12 px-4">
             <MapPin className="h-12 w-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-muted mb-2">Ваша лента пуста</p>
-            <p className="text-sm text-text-muted">
+            <p className="text-text-muted mb-2 text-lg">Ваша лента пуста</p>
+            <p className="text-sm text-text-muted max-w-md mx-auto">
               Подпишитесь на других пользователей или создайте свои точки, чтобы увидеть их здесь
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             {points.map((point) => (
               <PointCard key={point.id} point={point} showAuthor={true} />
             ))}

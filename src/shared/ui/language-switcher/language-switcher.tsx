@@ -6,10 +6,14 @@ import { cn } from "@/shared/lib/utils";
 import { useEffect, useState } from "react";
 import { ChevronDown, Languages } from "lucide-react";
 
+interface LanguageSwitcherProps {
+  compact?: boolean;
+}
+
 /**
  * Компонент переключения языка
  */
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
   const { currentLanguage, changeLanguage, t, ready } = useTranslation();
   const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -37,10 +41,13 @@ export function LanguageSwitcher() {
       <div className="relative">
         <button
           disabled
-          className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium text-text-muted"
+          className={cn(
+            "flex items-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-text-muted",
+            compact ? "px-2 py-1.5" : "px-3 py-2"
+          )}
         >
           <Languages className="h-4 w-4" />
-          <span>...</span>
+          {!compact && <span>...</span>}
           <ChevronDown className="h-4 w-4" />
         </button>
       </div>
@@ -52,13 +59,14 @@ export function LanguageSwitcher() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          "flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-sm font-medium transition-colors",
+          "flex items-center gap-2 rounded-lg border border-border bg-card text-sm font-medium transition-colors",
           "hover:bg-accent hover:text-accent-foreground",
-          isOpen && "bg-accent text-accent-foreground"
+          isOpen && "bg-accent text-accent-foreground",
+          compact ? "px-2 py-1.5" : "px-3 py-2"
         )}
       >
         <Languages className="h-4 w-4" />
-        <span>{t(`language.${currentLanguage}`)}</span>
+        {!compact && <span>{t(`language.${currentLanguage}`)}</span>}
         <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
       </button>
 

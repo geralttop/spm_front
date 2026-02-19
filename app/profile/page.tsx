@@ -123,54 +123,56 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
-        <div className="space-y-6">
+    <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
+      <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-text-main">{profile.username || t("profile.title")}</h1>
-              <p className="mt-1 text-sm text-text-muted">{profile.email}</p>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-main truncate">
+                {profile.username || t("profile.title")}
+              </h1>
+              <p className="mt-1 text-sm text-text-muted truncate">{profile.email}</p>
             </div>
             
             {!isEditing && (
-              <Button onClick={handleEdit} variant="outline" className="gap-2">
+              <Button onClick={handleEdit} variant="outline" className="gap-2 w-full sm:w-auto">
                 <Edit2 className="h-4 w-4" />
-                {t("profile.edit")}
+                <span className="sm:inline">{t("profile.edit")}</span>
               </Button>
             )}
           </div>
 
           {/* Subscription Stats */}
           {stats && (
-            <div className="flex gap-4">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:flex sm:w-auto">
               <button
                 onClick={handleShowFollowers}
-                className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-3 hover:bg-accent transition-colors"
+                className="flex items-center gap-2 sm:gap-3 rounded-lg border border-border bg-card px-3 py-3 sm:px-4 hover:bg-accent transition-colors"
               >
-                <Users className="h-5 w-5 text-text-muted" />
-                <div className="text-left">
-                  <div className="text-2xl font-bold text-text-main">{stats.followersCount}</div>
-                  <div className="text-sm text-text-muted">{t("profile.followers")}</div>
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-text-muted shrink-0" />
+                <div className="text-left min-w-0">
+                  <div className="text-lg sm:text-2xl font-bold text-text-main">{stats.followersCount}</div>
+                  <div className="text-xs sm:text-sm text-text-muted truncate">{t("profile.followers")}</div>
                 </div>
               </button>
               
               <button
                 onClick={handleShowFollowing}
-                className="flex items-center gap-2 rounded-lg border border-border bg-card px-4 py-3 hover:bg-accent transition-colors"
+                className="flex items-center gap-2 sm:gap-3 rounded-lg border border-border bg-card px-3 py-3 sm:px-4 hover:bg-accent transition-colors"
               >
-                <Users className="h-5 w-5 text-text-muted" />
-                <div className="text-left">
-                  <div className="text-2xl font-bold text-text-main">{stats.followingCount}</div>
-                  <div className="text-sm text-text-muted">{t("profile.following")}</div>
+                <Users className="h-4 w-4 sm:h-5 sm:w-5 text-text-muted shrink-0" />
+                <div className="text-left min-w-0">
+                  <div className="text-lg sm:text-2xl font-bold text-text-main">{stats.followingCount}</div>
+                  <div className="text-xs sm:text-sm text-text-muted truncate">{t("profile.following")}</div>
                 </div>
               </button>
             </div>
           )}
 
           {/* Profile Card */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-text-main">
+          <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm">
+            <h2 className="mb-4 text-base sm:text-lg font-semibold text-text-main">
               {t("profile.profileInfo")}
             </h2>
             
@@ -190,7 +192,7 @@ export default function ProfilePage() {
                     minLength={3}
                   />
                 ) : (
-                  <p className="text-text-main font-medium">
+                  <p className="text-text-main font-medium hyphens-auto">
                     {profile.username || "-"}
                   </p>
                 )}
@@ -201,7 +203,7 @@ export default function ProfilePage() {
                   <Mail className="h-4 w-4" />
                   {t("profile.email")}
                 </label>
-                <p className="text-text-main font-medium">{profile.email}</p>
+                <p className="text-text-main font-medium break-all">{profile.email}</p>
               </div>
 
               <div>
@@ -217,7 +219,7 @@ export default function ProfilePage() {
                     rows={4}
                   />
                 ) : (
-                  <p className="text-text-main whitespace-pre-wrap">
+                  <p className="text-text-main whitespace-pre-wrap hyphens-auto">
                     {profile.bio || "-"}
                   </p>
                 )}
@@ -226,13 +228,13 @@ export default function ProfilePage() {
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             {isEditing ? (
               <>
                 <Button 
                   onClick={handleSave} 
                   disabled={updateProfileMutation.isPending}
-                  className="flex-1 gap-2"
+                  className="flex-1 gap-2 w-full"
                 >
                   <Check className="h-4 w-4" />
                   {updateProfileMutation.isPending ? t("profile.saving") : t("profile.save")}
@@ -241,7 +243,7 @@ export default function ProfilePage() {
                   onClick={handleCancel} 
                   variant="outline"
                   disabled={updateProfileMutation.isPending}
-                  className="flex-1 gap-2"
+                  className="flex-1 gap-2 w-full"
                 >
                   <X className="h-4 w-4" />
                   {t("profile.cancel")}
@@ -260,9 +262,9 @@ export default function ProfilePage() {
           </div>
 
           {/* My Points Section */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-lg font-semibold text-text-main flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
+          <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm">
+            <h2 className="mb-4 text-base sm:text-lg font-semibold text-text-main flex items-center gap-2">
+              <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
               {t("profile.myPoints")}
             </h2>
 
@@ -275,7 +277,7 @@ export default function ProfilePage() {
                 {t("profile.noPoints")}
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-6">
                 {points.map((point) => (
                   <PointCard 
                     key={point.id} 

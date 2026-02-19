@@ -103,14 +103,14 @@ export default function AuthPage() {
 
   if (mode === "verify") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <div className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-8">
+      <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
+        <div className="w-full max-w-sm sm:max-w-md space-y-6 rounded-lg border border-border bg-card p-6 sm:p-8 shadow-lg">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-text-main">
+            <h1 className="text-xl sm:text-2xl font-bold text-text-main">
               {t("auth.verifyTitle")}
             </h1>
-            <p className="mt-2 text-sm text-text-muted">
-              {t("auth.verifySubtitle")} {pendingEmail}
+            <p className="mt-2 text-sm text-text-muted break-words">
+              {t("auth.verifySubtitle")} <span className="font-medium">{pendingEmail}</span>
             </p>
           </div>
 
@@ -123,18 +123,18 @@ export default function AuthPage() {
                 onChange={(e) => setCode(e.target.value)}
                 maxLength={6}
                 required
-                className="text-center text-2xl tracking-widest"
+                className="text-center text-xl sm:text-2xl tracking-widest touch-target"
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full touch-target" disabled={loading}>
               {loading ? t("auth.verifying") : t("auth.verifyButton")}
             </Button>
 
             <Button
               type="button"
               variant="ghost"
-              className="w-full"
+              className="w-full touch-target"
               onClick={() => {
                 setMode("login");
                 setCode("");
@@ -150,10 +150,10 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md space-y-6 rounded-lg border border-border bg-card p-8">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
+      <div className="w-full max-w-sm sm:max-w-md space-y-6 rounded-lg border border-border bg-card p-6 sm:p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-text-main">
+          <h1 className="text-xl sm:text-2xl font-bold text-text-main">
             {mode === "login" ? t("auth.login") : t("auth.register")}
           </h1>
           <p className="mt-2 text-sm text-text-muted">
@@ -178,6 +178,7 @@ export default function AuthPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                className="touch-target"
               />
             </div>
           )}
@@ -192,6 +193,7 @@ export default function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="touch-target"
             />
           </div>
 
@@ -206,24 +208,24 @@ export default function AuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="pr-10"
+                className="pr-12 touch-target"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main transition-colors p-1 touch-target"
                 aria-label={showPassword ? t("auth.hidePassword") : t("auth.showPassword")}
               >
                 {showPassword ? (
-                  <EyeOff className="h-5 w-5" />
+                  <EyeOff className="h-4 w-4 sm:h-5 sm:w-5" />
                 ) : (
-                  <Eye className="h-5 w-5" />
+                  <Eye className="h-4 w-4 sm:h-5 sm:w-5" />
                 )}
               </button>
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="w-full touch-target" disabled={loading}>
             {loading
               ? t("auth.loading")
               : mode === "login"
@@ -238,7 +240,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setMode("register")}
-                  className="font-medium text-primary hover:underline"
+                  className="font-medium text-primary hover:underline touch-target inline-block"
                 >
                   {t("auth.registerButton")}
                 </button>
@@ -249,7 +251,7 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => setMode("login")}
-                  className="font-medium text-primary hover:underline"
+                  className="font-medium text-primary hover:underline touch-target inline-block"
                 >
                   {t("auth.loginButton")}
                 </button>

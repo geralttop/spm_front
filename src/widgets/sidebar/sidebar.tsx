@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
-import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, GripVertical } from "lucide-react";
+import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, GripVertical, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MenuItem {
@@ -14,7 +14,12 @@ interface MenuItem {
   id: string;
 }
 
-export function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
   const { t } = useTranslation();
@@ -218,82 +223,144 @@ export function Sidebar() {
     setDragOverIndex(null);
   };
 
+  const handleNavigation = (path: string) => {
+    if (!isEditMode) {
+      router.push(path);
+      onClose(); // Закрываем сайдбар на мобильных после навигации
+    }
+  };
+
   // Не показываем сайдбар на странице авторизации
   if (pathname === "/auth" || !isAuthenticated) {
     return null;
   }
 
   return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40 flex flex-col">
-      {/* Logo/Title */}
-      <div className="p-6 border-b border-border">
-        <h1 className="text-2xl font-bold text-text-main">SPM</h1>
-        <p className="text-sm text-text-muted mt-1">SharePlacesMap</p>
-      </div>
+    <>
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40 flex-col">
+        {/* Logo/Title */}
+        <div className="p-6 border-b border-border">
+          <h1 className="text-2xl font-bold text-text-main">SPM</h1>
+          <p className="text-sm text-text-muted mt-1">SharePlacesMap</p>
+        </div>
 
-      {/* Navigation Menu */}
-      <nav className="flex-1 p-4">
-        {isEditMode && (
-          <div className="mb-3 p-2 bg-accent/50 rounded-lg text-xs text-text-muted text-center">
-            Перетащите вкладки для изменения порядка
-          </div>
-        )}
-        <ul className="space-y-2">
-          {menuItems.map((item, index) => {
-            const Icon = item.icon;
-            const isDragging = draggedIndex === index;
-            const isDragOver = dragOverIndex === index;
-            
-            return (
-              <li 
-                key={item.id}
-                draggable={isEditMode}
-                onDragStart={(e) => handleDragStart(e, index)}
-                onDragOver={(e) => handleDragOver(e, index)}
-                onDragLeave={handleDragLeave}
-                onDrop={(e) => handleDrop(e, index)}
-                onDragEnd={handleDragEnd}
-                onClick={() => !isEditMode && router.push(item.path)}
-                className={`transition-all ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'scale-105' : ''} ${
-                  isEditMode ? 'cursor-move' : 'cursor-pointer'
-                }`}
-              >
-                <div
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                    item.active
-                      ? "bg-primary text-primary-foreground"
-                      : "text-text-muted hover:text-text-main hover:bg-accent"
+        {/* Navigation Menu */}
+        <nav className="flex-1 p-4">
+          {isEditMode && (
+            <div className="mb-3 p-2 bg-accent/50 rounded-lg text-xs text-text-muted text-center">
+              Перетащите вкладки для изменения порядка
+            </div>
+          )}
+          <ul className="space-y-2">
+            {menuItems.map((item, index) => {
+              const Icon = item.icon;
+              const isDragging = draggedIndex === index;
+              const isDragOver = dragOverIndex === index;
+              
+              return (
+                <li 
+                  key={item.id}
+                  draggable={isEditMode}
+                  onDragStart={(e) => handleDragStart(e, index)}
+                  onDragOver={(e) => handleDragOver(e, index)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, index)}
+                  onDragEnd={handleDragEnd}
+                  onClick={() => handleNavigation(item.path)}
+                  className={`transition-all ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'scale-105' : ''} ${
+                    isEditMode ? 'cursor-move' : 'cursor-pointer'
                   }`}
                 >
-                  {isEditMode && (
-                    <GripVertical className="h-4 w-4 opacity-70" />
-                  )}
-                  <Icon className="h-5 w-5" />
-                  <span className="font-medium flex-1">{item.label}</span>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+                  <div
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                      item.active
+                        ? "bg-primary text-primary-foreground"
+                        : "text-text-muted hover:text-text-main hover:bg-accent"
+                    }`}
+                  >
+                    {isEditMode && (
+                      <GripVertical className="h-4 w-4 opacity-70" />
+                    )}
+                    <Icon className="h-5 w-5" />
+                    <span className="font-medium flex-1">{item.label}</span>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
 
-      {/* Footer */}
-      <div className="p-4 border-t border-border space-y-3">
-        <button
-          onClick={() => setIsEditMode(!isEditMode)}
-          className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-            isEditMode
-              ? "bg-primary text-primary-foreground"
-              : "bg-accent text-text-main hover:bg-accent/80"
-          }`}
-        >
-          {isEditMode ? "Готово" : "Изменить порядок"}
-        </button>
-        
-        <p className="text-xs text-text-muted text-center">
-          © 2026 SPM
-        </p>
-      </div>
-    </aside>
+        {/* Footer */}
+        <div className="p-4 border-t border-border space-y-3">
+          <button
+            onClick={() => setIsEditMode(!isEditMode)}
+            className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              isEditMode
+                ? "bg-primary text-primary-foreground"
+                : "bg-accent text-text-main hover:bg-accent/80"
+            }`}
+          >
+            {isEditMode ? "Готово" : "Изменить порядок"}
+          </button>
+          
+          <p className="text-xs text-text-muted text-center">
+            © 2026 SPM
+          </p>
+        </div>
+      </aside>
+
+      {/* Mobile Sidebar */}
+      <aside className={`lg:hidden fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40 flex flex-col transform transition-transform duration-300 ease-in-out ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
+      }`}>
+        {/* Mobile Header with Close Button */}
+        <div className="p-4 border-b border-border flex items-center justify-between">
+          <div>
+            <h1 className="text-xl font-bold text-text-main">SPM</h1>
+            <p className="text-xs text-text-muted">SharePlacesMap</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-accent transition-colors"
+            aria-label="Закрыть меню"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+
+        {/* Mobile Navigation Menu */}
+        <nav className="flex-1 p-4">
+          <ul className="space-y-2">
+            {menuItems.map((item) => {
+              const Icon = item.icon;
+              
+              return (
+                <li key={item.id}>
+                  <button
+                    onClick={() => handleNavigation(item.path)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${
+                      item.active
+                        ? "bg-primary text-primary-foreground"
+                        : "text-text-muted hover:text-text-main hover:bg-accent"
+                    }`}
+                  >
+                    <Icon className="h-5 w-5" />
+                    <span className="font-medium flex-1">{item.label}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Mobile Footer */}
+        <div className="p-4 border-t border-border">
+          <p className="text-xs text-text-muted text-center">
+            © 2026 SPM
+          </p>
+        </div>
+      </aside>
+    </>
   );
 }
