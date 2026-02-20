@@ -33,7 +33,9 @@ const getAccessToken = () => {
     const authStorage = localStorage.getItem("auth-storage");
     if (authStorage) {
       const auth = JSON.parse(authStorage);
-      return auth?.state?.accessToken || null;
+      const token = auth?.state?.accessToken || null;
+      console.log('🔑 Getting access token:', token ? 'EXISTS' : 'MISSING');
+      return token;
     }
   } catch (error) {
     console.error("Error getting access token:", error);
@@ -61,6 +63,7 @@ const updateAccessToken = (newToken: string) => {
         },
       };
       localStorage.setItem("auth-storage", JSON.stringify(updatedAuth));
+      console.log('✅ Access token updated in storage');
     }
   } catch (error) {
     console.error("Error updating access token:", error);
@@ -71,6 +74,7 @@ const updateAccessToken = (newToken: string) => {
 const clearAuthStorage = () => {
   if (typeof window !== "undefined") {
     localStorage.removeItem("auth-storage");
+    console.log('🗑️ Auth storage cleared');
   }
 };
 
@@ -94,13 +98,25 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    console.log('🔍 Interceptor triggered:', {
+      status: error.response?.status,
+      url: originalRequest.url,
+      fullUrl: originalRequest.baseURL + originalRequest.url,
+      isRefreshUrl: originalRequest.url?.includes("/auth/refresh") || originalRequest.url?.includes("refresh"),
+      hasRetry: originalRequest._retry
+    });
+
     // Если ошибка 401 и это не запрос на обновление токена
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/refresh")
+      !originalRequest.url?.includes("/auth/refresh") &&
+      !originalRequest.url?.includes("refresh")
     ) {
+      console.log('🔄 Starting token refresh process...');
+      
       if (isRefreshing) {
+        console.log('⏳ Already refreshing, adding to queue...');
         // Если уже идет обновление, добавляем запрос в очередь
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -118,19 +134,22 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       const accessToken = getAccessToken();
+      console.log('🔑 Current access token:', accessToken ? 'EXISTS' : 'MISSING');
+      
       if (accessToken) {
         try {
+          console.log('🔄 Making refresh request...');
           const response = await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
             {},
             {
               withCredentials: true,
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
+              // НЕ отправляем Authorization заголовок для refresh запроса
+              // Refresh token передается через httpOnly cookie
             }
           );
 
+          console.log('✅ Refresh successful:', response.status);
           const { accessToken: newAccessToken } = response.data;
           updateAccessToken(newAccessToken);
 
@@ -138,9 +157,10 @@ apiClient.interceptors.response.use(
           processQueue(null, newAccessToken);
           isRefreshing = false;
           
+          console.log('🔄 Retrying original request...');
           return apiClient(originalRequest);
         } catch (refreshError) {
-          console.error("Token refresh failed:", refreshError);
+          console.error("❌ Token refresh failed:", refreshError);
           processQueue(refreshError, null);
           isRefreshing = false;
           clearAuthStorage();
@@ -148,6 +168,7 @@ apiClient.interceptors.response.use(
           return Promise.reject(refreshError);
         }
       } else {
+        console.log('❌ No access token available');
         isRefreshing = false;
         clearAuthStorage();
         return Promise.reject(new Error("No access token available"));
