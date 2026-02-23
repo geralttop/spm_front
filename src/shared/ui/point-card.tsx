@@ -6,9 +6,18 @@ import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/widgets/Comments';
 import { ReportModal } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
+import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/shared/ui/map";
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
 const CACHE_DURATION = 30000;
+
+const mapStyles = {
+  openstreetmap: "https://tiles.openfreemap.org/styles/bright",
+  openstreetmap3d: "https://tiles.openfreemap.org/styles/liberty",
+  default: undefined,
+};
+
+type MapStyleKey = keyof typeof mapStyles;
 
 interface Point {
   id: string;
@@ -51,6 +60,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>("openstreetmap");
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -276,7 +286,54 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           </span>
         </div>
       </div>
-
+      <div className="relative">
+        <div className="h-[400px] w-full">
+          <MapComponent 
+            center={[point.coords.coordinates[0], point.coords.coordinates[1]]} 
+            zoom={15}
+            styles={mapStyles[mapStyle] ? { light: mapStyles[mapStyle], dark: mapStyles[mapStyle] } : undefined}
+          >
+            <MapMarker
+              longitude={point.coords.coordinates[0]}
+              latitude={point.coords.coordinates[1]}
+            >
+              <MarkerContent>
+                <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg" />
+              </MarkerContent>
+              <MarkerTooltip>{point.name}</MarkerTooltip>
+              <MarkerPopup>
+                <div className="space-y-1">
+                  <p className="font-medium text-text-main">{point.name}</p>
+                  {point.description && (
+                    <p className="text-sm text-text-muted">{point.description}</p>
+                  )}
+                  <p className="text-xs text-text-muted">
+                    {point.coords.coordinates[1].toFixed(4)}, {point.coords.coordinates[0].toFixed(4)}
+                  </p>
+                </div>
+              </MarkerPopup>
+            </MapMarker>
+            <MapControls
+              position="bottom-right"
+              showZoom
+              showCompass
+              showLocate
+              showFullscreen
+            />
+          </MapComponent>
+        </div>
+        <div className="absolute top-2 right-2 z-10">
+          <select
+            value={mapStyle}
+            onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
+            className="bg-surface text-text-main border border-border rounded-md px-2 py-1 text-sm shadow"
+          >
+            <option value="openstreetmap">OpenStreetMap</option>
+            <option value="openstreetmap3d">OpenStreetMap 3D</option>
+            <option value="default">Default (Carto)</option>
+          </select>
+        </div>
+      </div>
       <div className="mt-4 pt-4 border-t border-border">
         <button
           onClick={() => setShowComments(!showComments)}
