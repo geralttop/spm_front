@@ -1,11 +1,22 @@
 import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle, Flag } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { useAuthStore } from '@/shared/lib/store';
 import { favoritesApi, authApi } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/widgets/Comments';
 import { ReportModal } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
+
+const PointMap = dynamic(
+  () => import('@/shared/ui/point-map').then((mod) => mod.PointMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="mt-4 h-64 w-full animate-pulse rounded-lg bg-gray-100" />
+    ),
+  },
+);
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
 const CACHE_DURATION = 30000;
@@ -276,6 +287,9 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           </span>
         </div>
       </div>
+
+      {/* Карта Яндекс по координатам точки */}
+      <PointMap coordinates={point.coords.coordinates} />
 
       <div className="mt-4 pt-4 border-t border-border">
         <button

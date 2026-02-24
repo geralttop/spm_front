@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AppProviders } from "@/app/providers";
@@ -27,6 +28,12 @@ export default function RootLayout({
   // Язык будет обновляться динамически через LanguageProvider
   return (
     <html lang="ru" suppressHydrationWarning>
+      <head>
+        <Script
+          src={`https://api-maps.yandex.ru/v3/?apikey=${process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY ?? ""}&lang=ru_RU`}
+          strategy="beforeInteractive"
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
