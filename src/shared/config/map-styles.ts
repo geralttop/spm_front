@@ -4,10 +4,10 @@ export const MAP_STYLES = {
   openstreet: {
     name: "OpenStreetMap",
     light: {
-      version: 8,
+      version: 8 as const,
       sources: {
         "osm-tiles": {
-          type: "raster",
+          type: "raster" as const,
           tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
           tileSize: 256,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -16,7 +16,7 @@ export const MAP_STYLES = {
       layers: [
         {
           id: "osm-tiles",
-          type: "raster",
+          type: "raster" as const,
           source: "osm-tiles",
           minzoom: 0,
           maxzoom: 19,
@@ -24,10 +24,10 @@ export const MAP_STYLES = {
       ],
     },
     dark: {
-      version: 8,
+      version: 8 as const,
       sources: {
         "osm-tiles": {
-          type: "raster",
+          type: "raster" as const,
           tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],
           tileSize: 256,
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
@@ -36,7 +36,7 @@ export const MAP_STYLES = {
       layers: [
         {
           id: "osm-tiles",
-          type: "raster",
+          type: "raster" as const,
           source: "osm-tiles",
           minzoom: 0,
           maxzoom: 19,
@@ -52,10 +52,10 @@ export const MAP_STYLES = {
   satellite: {
     name: "Satellite",
     light: {
-      version: 8,
+      version: 8 as const,
       sources: {
         "satellite-tiles": {
-          type: "raster",
+          type: "raster" as const,
           tiles: [
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
           ],
@@ -66,7 +66,7 @@ export const MAP_STYLES = {
       layers: [
         {
           id: "satellite-tiles",
-          type: "raster",
+          type: "raster" as const,
           source: "satellite-tiles",
           minzoom: 0,
           maxzoom: 19,
@@ -74,10 +74,10 @@ export const MAP_STYLES = {
       ],
     },
     dark: {
-      version: 8,
+      version: 8 as const,
       sources: {
         "satellite-tiles": {
-          type: "raster",
+          type: "raster" as const,
           tiles: [
             "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
           ],
@@ -88,7 +88,7 @@ export const MAP_STYLES = {
       layers: [
         {
           id: "satellite-tiles",
-          type: "raster",
+          type: "raster" as const,
           source: "satellite-tiles",
           minzoom: 0,
           maxzoom: 19,
@@ -101,6 +101,6 @@ export const MAP_STYLES = {
     light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
     dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
   },
-} as const;
+};
 
 export type MapStyleKey = keyof typeof MAP_STYLES;
