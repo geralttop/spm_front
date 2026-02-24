@@ -1,6 +1,7 @@
 import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle, Flag } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
+import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { favoritesApi, authApi } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/widgets/Comments';
@@ -48,12 +49,20 @@ interface PointCardProps {
 export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointCardProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>("openstreet");
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
+
+  // Загружаем настройки при монтировании
+  useEffect(() => {
+    if (accessToken) {
+      loadSettings();
+    }
+  }, [accessToken, loadSettings]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -324,9 +333,9 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
             onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
             className="bg-surface text-text-main border border-border rounded-md px-2 py-1 text-sm shadow max-w-[200px]"
           >
-            {Object.entries(MAP_STYLES).map(([key, style]) => (
+            {availableMapStyles.map((key) => (
               <option key={key} value={key}>
-                {style.name}
+                {MAP_STYLES[key].name}
               </option>
             ))}
           </select>

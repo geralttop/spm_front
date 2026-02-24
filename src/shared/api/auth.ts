@@ -98,6 +98,14 @@ export const authApi = {
     return response.data;
   },
 
+  updateSidebarOrder: async (sidebarOrder: string[]): Promise<{ message: string; sidebarOrder: string[] }> => {
+    const response = await apiClient.patch<{ message: string; sidebarOrder: string[] }>(
+      "/auth/sidebar-order",
+      { sidebarOrder }
+    );
+    return response.data;
+  },
+
   getUserById: async (id: number): Promise<SearchUserResult> => {
     const response = await apiClient.get<SearchUserResult>(`/auth/user/${id}`);
     return response.data;

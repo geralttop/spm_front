@@ -6,6 +6,7 @@ import { Button, Input, Textarea } from "@/shared/ui";
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/shared/ui/map";
 import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
+import { useSettingsStore } from "@/shared/lib/store/settings-store";
 import { useTranslation, useToast } from "@/shared/lib/hooks";
 import { 
   useCategoriesQuery, 
@@ -22,6 +23,7 @@ export default function CreatePointPage() {
   const { t } = useTranslation();
   const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
+  const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
   
   const { data: categories = [], isLoading: categoriesLoading } = useCategoriesQuery();
   const { data: containers = [], isLoading: containersLoading } = useContainersQuery();
@@ -37,7 +39,7 @@ export default function CreatePointPage() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
 
-  const [mapStyle, setMapStyle] = useState<keyof typeof MAP_STYLES>("openstreet");
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
 
   const [formData, setFormData] = useState<CreatePointRequest>({
     name: "",
@@ -58,11 +60,13 @@ export default function CreatePointPage() {
       const isAuth = await checkAuth();
       if (!isAuth) {
         router.push("/auth");
+      } else {
+        await loadSettings();
       }
     };
 
     initPage();
-  }, [checkAuth, router]);
+  }, [checkAuth, router, loadSettings]);
 
   const handleInputChange = (field: keyof CreatePointRequest, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -252,12 +256,12 @@ export default function CreatePointPage() {
                     <MapIcon className="h-4 w-4 text-text-muted" />
                     <select
                       value={mapStyle}
-                      onChange={(e) => setMapStyle(e.target.value as keyof typeof MAP_STYLES)}
+                      onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
                       className="text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
                     >
-                      {Object.entries(MAP_STYLES).map(([key, style]) => (
+                      {availableMapStyles.map((key) => (
                         <option key={key} value={key}>
-                          {style.name}
+                          {MAP_STYLES[key].name}
                         </option>
                       ))}
                     </select>

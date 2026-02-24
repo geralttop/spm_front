@@ -1,6 +1,6 @@
 "use client";
 
-import { LanguageSwitcher, ThemeSwitcher } from "@/shared/ui";
+import { ThemeSwitcher } from "@/shared/ui";
 import { useTranslation } from "@/shared/lib/hooks";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -41,15 +41,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">
-          <div className="hidden sm:block">
-            <LanguageSwitcher />
-          </div>
           <ThemeSwitcher />
-          
-          {/* Мобильная версия переключателя языка */}
-          <div className="sm:hidden">
-            <LanguageSwitcher compact />
-          </div>
         </div>
       </div>
     </header>

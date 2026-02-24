@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from "@/shared/lib/store";
+import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
-import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, GripVertical, X } from "lucide-react";
+import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MenuItem {
@@ -25,12 +25,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { t } = useTranslation();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const { sidebarOrder, loadSidebarOrder } = useSidebarStore();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
-  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [isEditMode, setIsEditMode] = useState(false);
 
   // Дефолтный порядок вкладок
   const getDefaultMenuItems = (): MenuItem[] => {
@@ -76,6 +74,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         label: t("sidebar.createPoint"),
         path: "/points/create",
         active: pathname === "/points/create"
+      },
+      {
+        id: "settings",
+        icon: Settings,
+        label: "Настройки",
+        path: "/settings",
+        active: pathname === "/settings"
       }
     ];
 
@@ -108,126 +113,39 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           if (response.ok) {
             const userData = await response.json();
             setUserRole(userData.role);
-            
-            // Восстанавливаем порядок вкладок из профиля
-            const defaultItems = getDefaultMenuItems();
-            
-            if (userData.sidebarOrder && Array.isArray(userData.sidebarOrder)) {
-              // Сортируем вкладки согласно сохраненному порядку
-              const orderedItems = userData.sidebarOrder
-                .map((id: string) => defaultItems.find((item: MenuItem) => item.id === id))
-                .filter((item: MenuItem | undefined): item is MenuItem => item !== undefined);
-              
-              // Добавляем новые вкладки, которых нет в сохраненном порядке
-              const newItems = defaultItems.filter(
-                item => !userData.sidebarOrder.includes(item.id)
-              );
-              
-              setMenuItems([...orderedItems, ...newItems]);
-            } else {
-              setMenuItems(defaultItems);
-            }
           }
         } catch (error) {
           console.error('Error fetching user data:', error);
-          setMenuItems(getDefaultMenuItems());
         }
+        
+        // Загружаем порядок сайдбара из store
+        await loadSidebarOrder();
       }
     };
 
     fetchUserData();
-  }, [checkAuth, accessToken, pathname, userRole]);
+  }, [checkAuth, accessToken, loadSidebarOrder]);
 
-  // Обновляем active состояние при изменении pathname
+  // Обновляем menuItems при изменении sidebarOrder или pathname
   useEffect(() => {
-    setMenuItems(prev => prev.map(item => ({
-      ...item,
-      active: pathname === item.path
-    })));
-  }, [pathname]);
-
-  // Сохраняем порядок на сервер
-  const saveSidebarOrder = async (newOrder: string[]) => {
-    if (!accessToken) return;
+    const defaultItems = getDefaultMenuItems();
     
-    try {
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/sidebar-order`, {
-        method: 'PATCH',
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ sidebarOrder: newOrder }),
-      });
-    } catch (error) {
-      console.error('Error saving sidebar order:', error);
-    }
-  };
-
-  // Drag handlers
-  const handleDragStart = (e: React.DragEvent, index: number) => {
-    if (!isEditMode) {
-      e.preventDefault();
-      return;
-    }
+    // Сортируем согласно порядку из store
+    const orderedItems = sidebarOrder
+      .map((id: string) => defaultItems.find((item: MenuItem) => item.id === id))
+      .filter((item: MenuItem | undefined): item is MenuItem => item !== undefined);
     
-    // Для Firefox обязательно нужно установить данные
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/plain', index.toString());
+    // Добавляем новые пункты, которых нет в сохраненном порядке
+    const newItems = defaultItems.filter(
+      item => !sidebarOrder.includes(item.id)
+    );
     
-    // Добавляем небольшую задержку для Firefox
-    setTimeout(() => {
-      setDraggedIndex(index);
-    }, 0);
-  };
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    if (!isEditMode) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    setDragOverIndex(index);
-  };
-
-  const handleDragLeave = () => {
-    if (!isEditMode) return;
-    setDragOverIndex(null);
-  };
-
-  const handleDrop = (e: React.DragEvent, dropIndex: number) => {
-    if (!isEditMode) return;
-    e.preventDefault();
-    e.stopPropagation();
-    
-    if (draggedIndex === null || draggedIndex === dropIndex) {
-      setDraggedIndex(null);
-      setDragOverIndex(null);
-      return;
-    }
-
-    const newItems = [...menuItems];
-    const [draggedItem] = newItems.splice(draggedIndex, 1);
-    newItems.splice(dropIndex, 0, draggedItem);
-
-    setMenuItems(newItems);
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-
-    // Сохраняем новый порядок на сервер
-    const newOrder = newItems.map(item => item.id);
-    saveSidebarOrder(newOrder);
-  };
-
-  const handleDragEnd = () => {
-    if (!isEditMode) return;
-    setDraggedIndex(null);
-    setDragOverIndex(null);
-  };
+    setMenuItems([...orderedItems, ...newItems]);
+  }, [sidebarOrder, pathname, userRole]);
 
   const handleNavigation = (path: string) => {
-    if (!isEditMode) {
-      router.push(path);
-      onClose(); // Закрываем сайдбар на мобильных после навигации
-    }
+    router.push(path);
+    onClose(); // Закрываем сайдбар на мобильных после навигации
   };
 
   // Не показываем сайдбар на странице авторизации
@@ -247,44 +165,23 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Navigation Menu */}
         <nav className="flex-1 p-4">
-          {isEditMode && (
-            <div className="mb-3 p-2 bg-accent/50 rounded-lg text-xs text-text-muted text-center">
-              Перетащите вкладки для изменения порядка
-            </div>
-          )}
           <ul className="space-y-2">
-            {menuItems.map((item, index) => {
+            {menuItems.map((item) => {
               const Icon = item.icon;
-              const isDragging = draggedIndex === index;
-              const isDragOver = dragOverIndex === index;
               
               return (
-                <li 
-                  key={item.id}
-                  draggable={isEditMode}
-                  onDragStart={(e) => handleDragStart(e, index)}
-                  onDragOver={(e) => handleDragOver(e, index)}
-                  onDragLeave={handleDragLeave}
-                  onDrop={(e) => handleDrop(e, index)}
-                  onDragEnd={handleDragEnd}
-                  onClick={() => handleNavigation(item.path)}
-                  className={`transition-all ${isDragging ? 'opacity-50' : ''} ${isDragOver ? 'scale-105' : ''} ${
-                    isEditMode ? 'cursor-move' : 'cursor-pointer'
-                  }`}
-                >
-                  <div
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                <li key={item.id}>
+                  <button
+                    onClick={() => handleNavigation(item.path)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${
                       item.active
                         ? "bg-primary text-primary-foreground"
                         : "text-text-muted hover:text-text-main hover:bg-accent"
                     }`}
                   >
-                    {isEditMode && (
-                      <GripVertical className="h-4 w-4 opacity-70" />
-                    )}
                     <Icon className="h-5 w-5" />
-                    <span className="font-medium flex-1">{item.label}</span>
-                  </div>
+                    <span className="font-medium">{item.label}</span>
+                  </button>
                 </li>
               );
             })}
@@ -292,18 +189,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </nav>
 
         {/* Footer */}
-        <div className="p-4 border-t border-border space-y-3">
-          <button
-            onClick={() => setIsEditMode(!isEditMode)}
-            className={`w-full px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-              isEditMode
-                ? "bg-primary text-primary-foreground"
-                : "bg-accent text-text-main hover:bg-accent/80"
-            }`}
-          >
-            {isEditMode ? "Готово" : "Изменить порядок"}
-          </button>
-          
+        <div className="p-4 border-t border-border">
           <p className="text-xs text-text-muted text-center">
             © 2026 SPM
           </p>
@@ -346,7 +232,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                     }`}
                   >
                     <Icon className="h-5 w-5" />
-                    <span className="font-medium flex-1">{item.label}</span>
+                    <span className="font-medium">{item.label}</span>
                   </button>
                 </li>
               );
