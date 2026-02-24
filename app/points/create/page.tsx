@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input, Textarea } from "@/shared/ui";
+import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/shared/ui/map";
 import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation, useToast } from "@/shared/lib/hooks";
@@ -13,7 +14,8 @@ import {
   useCreateCategoryMutation,
   useCreateContainerMutation 
 } from "@/shared/lib/hooks/queries";
-import { MapPin, Tag, Package, Plus, ArrowLeft } from "lucide-react";
+import { MapPin, Tag, Package, Plus, ArrowLeft, Map as MapIcon } from "lucide-react";
+import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 export default function CreatePointPage() {
   const router = useRouter();
@@ -35,13 +37,20 @@ export default function CreatePointPage() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
 
+  const [mapStyle, setMapStyle] = useState<keyof typeof MAP_STYLES>("openstreet");
+
   const [formData, setFormData] = useState<CreatePointRequest>({
     name: "",
     description: "",
-    lng: 0,
-    lat: 0,
+    lng: 27.561831, // Минск по умолчанию
+    lat: 53.902496,
     containerId: "",
     categoryId: 0,
+  });
+
+  const [markerPosition, setMarkerPosition] = useState({
+    lng: 27.561831,
+    lat: 53.902496,
   });
 
   useEffect(() => {
@@ -57,6 +66,23 @@ export default function CreatePointPage() {
 
   const handleInputChange = (field: keyof CreatePointRequest, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Синхронизация координат с маркером на карте
+    if (field === "lng" || field === "lat") {
+      setMarkerPosition(prev => ({
+        ...prev,
+        [field]: typeof value === "number" ? value : parseFloat(value as string) || 0,
+      }));
+    }
+  };
+
+  const handleMarkerDragEnd = (lngLat: { lng: number; lat: number }) => {
+    setMarkerPosition(lngLat);
+    setFormData(prev => ({
+      ...prev,
+      lng: lngLat.lng,
+      lat: lngLat.lat,
+    }));
   };
 
   const handleCreateContainer = () => {
@@ -215,6 +241,64 @@ export default function CreatePointPage() {
                 <MapPin className="h-5 w-5" />
                 Координаты
               </h2>
+              
+              {/* Интерактивная карта */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm text-text-muted">
+                    Перетащите маркер на карте для выбора координат
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <MapIcon className="h-4 w-4 text-text-muted" />
+                    <select
+                      value={mapStyle}
+                      onChange={(e) => setMapStyle(e.target.value as keyof typeof MAP_STYLES)}
+                      className="text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
+                    >
+                      {Object.entries(MAP_STYLES).map(([key, style]) => (
+                        <option key={key} value={key}>
+                          {style.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border">
+                  <Map 
+                    center={[markerPosition.lng, markerPosition.lat]} 
+                    zoom={12}
+                    styles={{
+                      light: MAP_STYLES[mapStyle].light,
+                      dark: MAP_STYLES[mapStyle].dark,
+                    }}
+                  >
+                    <MapMarker
+                      draggable
+                      longitude={markerPosition.lng}
+                      latitude={markerPosition.lat}
+                      onDragEnd={handleMarkerDragEnd}
+                    >
+                      <MarkerContent>
+                        <div className="cursor-move">
+                          <MapPin
+                            className="fill-primary stroke-white dark:fill-primary"
+                            size={32}
+                          />
+                        </div>
+                      </MarkerContent>
+                      <MarkerPopup>
+                        <div className="space-y-1">
+                          <p className="font-medium text-foreground">Координаты точки</p>
+                          <p className="text-xs text-muted-foreground">
+                            {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
+                          </p>
+                        </div>
+                      </MarkerPopup>
+                    </MapMarker>
+                    <MapControls showZoom showLocate showFullscreen />
+                  </Map>
+                </div>
+              </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

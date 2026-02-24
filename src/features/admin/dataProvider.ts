@@ -1,6 +1,7 @@
 import { DataProvider, fetchUtils } from 'react-admin';
+import { getApiUrl } from '@/shared/lib/utils/api-url';
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const apiUrl = getApiUrl();
 
 // Функция для получения токена из zustand store
 const getAccessToken = () => {

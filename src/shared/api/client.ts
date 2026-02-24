@@ -1,15 +1,29 @@
 import axios from "axios";
+import { getApiUrl } from "../lib/utils/api-url";
 
 /**
  * Базовый клиент для API запросов
  */
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000",
   withCredentials: true, // ВАЖНО: отправляет cookies
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+// Request interceptor для динамического определения baseURL
+apiClient.interceptors.request.use(
+  (config) => {
+    // Если URL уже абсолютный, не меняем его
+    if (config.url?.startsWith('http')) {
+      return config;
+    }
+    // Иначе добавляем baseURL
+    config.baseURL = getApiUrl();
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 let isRefreshing = false;
 let failedQueue: any[] = [];
@@ -140,7 +154,7 @@ apiClient.interceptors.response.use(
         try {
           console.log('🔄 Making refresh request...');
           const response = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
+            `${getApiUrl()}/auth/refresh`,
             {},
             {
               withCredentials: true,

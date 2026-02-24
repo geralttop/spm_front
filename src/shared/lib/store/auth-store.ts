@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { getApiUrl } from "../utils/api-url";
 
 interface AuthState {
   accessToken: string | null;
@@ -57,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
         if (isTokenExpired() || shouldRefreshToken()) {
           try {
             const response = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
+              `${getApiUrl()}/auth/refresh`,
               {
                 method: "POST",
                 credentials: "include",
@@ -109,7 +110,7 @@ export const useAuthStore = create<AuthState>()(
         if (!accessToken || isTokenExpired() || shouldRefreshToken()) {
           try {
             const response = await fetch(
-              `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/refresh`,
+              `${getApiUrl()}/auth/refresh`,
               {
                 method: "POST",
                 credentials: "include", // Отправляет httpOnly cookie

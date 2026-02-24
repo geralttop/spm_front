@@ -7,17 +7,10 @@ import { Comments } from '@/widgets/Comments';
 import { ReportModal } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
 import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/shared/ui/map";
+import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
 const CACHE_DURATION = 30000;
-
-const mapStyles = {
-  openstreetmap: "https://tiles.openfreemap.org/styles/bright",
-  openstreetmap3d: "https://tiles.openfreemap.org/styles/liberty",
-  default: undefined,
-};
-
-type MapStyleKey = keyof typeof mapStyles;
 
 interface Point {
   id: string;
@@ -60,7 +53,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>("openstreetmap");
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>("openstreet");
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -291,7 +284,10 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           <MapComponent 
             center={[point.coords.coordinates[0], point.coords.coordinates[1]]} 
             zoom={15}
-            styles={mapStyles[mapStyle] ? { light: mapStyles[mapStyle], dark: mapStyles[mapStyle] } : undefined}
+            styles={{
+              light: MAP_STYLES[mapStyle].light,
+              dark: MAP_STYLES[mapStyle].dark,
+            }}
           >
             <MapMarker
               longitude={point.coords.coordinates[0]}
@@ -326,11 +322,13 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
           <select
             value={mapStyle}
             onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-            className="bg-surface text-text-main border border-border rounded-md px-2 py-1 text-sm shadow"
+            className="bg-surface text-text-main border border-border rounded-md px-2 py-1 text-sm shadow max-w-[200px]"
           >
-            <option value="openstreetmap">OpenStreetMap</option>
-            <option value="openstreetmap3d">OpenStreetMap 3D</option>
-            <option value="default">Default (Carto)</option>
+            {Object.entries(MAP_STYLES).map(([key, style]) => (
+              <option key={key} value={key}>
+                {style.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>
