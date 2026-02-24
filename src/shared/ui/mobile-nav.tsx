@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Home, Search, Heart, User, Plus, Menu } from "lucide-react";
+import { Home, Search, Heart, User, Plus, Menu, Map } from "lucide-react";
 import { useTranslation } from "@/shared/lib/hooks";
 import { cn } from "@/shared/lib/utils";
 
@@ -23,10 +23,10 @@ export function MobileNav({ className }: MobileNavProps) {
       active: pathname === "/feed"
     },
     {
-      icon: Search,
-      label: t("sidebar.search"),
-      path: "/search",
-      active: pathname === "/search"
+      icon: Map,
+      label: t("sidebar.map"),
+      path: "/map",
+      active: pathname === "/map"
     },
     {
       icon: Plus,
