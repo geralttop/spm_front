@@ -164,6 +164,17 @@
     "noComments": "You don't have any comments yet",
     "unknownPoint": "Unknown point"
   },
+  "favorites": {
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites"
+  },
+  "errors": {
+    "unexpected": {
+      "title": "Something went wrong",
+      "description": "Try refreshing the page or repeating the action a bit later.",
+      "retry": "Try again"
+    }
+  },
   "reports": {
     "title": "Report",
     "subtitle": "Report {{type}}",

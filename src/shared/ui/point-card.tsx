@@ -1,23 +1,65 @@
-import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle, Flag, Edit2 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { MapPin, Tag, Package, User, Calendar, MessageCircle } from 'lucide-react';
+import { useState, useEffect, type ComponentType } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { favoritesApi, authApi, type Point } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
-import { Comments } from '@/widgets/Comments';
-import { ReportModal, EditPointModal } from '@/shared/ui';
-import { useTranslation } from 'react-i18next';
+import { Comments } from '@/entities/comment';
+import { ReportModal, EditPointModal, FavoriteButton, ReportButton, EditButton } from '@/shared/ui';
+import { useTranslation } from '@/shared/lib/hooks';
 import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/shared/ui/map";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
 const CACHE_DURATION = 30000;
 
+const FavoriteIconButton = FavoriteButton as ComponentType<any>;
+const ReportIconButton = ReportButton as ComponentType<any>;
+const EditIconButton = EditButton as ComponentType<any>;
+
 interface PointCardProps {
   point: Point;
   showAuthor?: boolean;
   onFavoriteChange?: () => void;
   onPointUpdate?: () => void;
+}
+
+interface ActionButtonsProps {
+  isAuthor: boolean;
+  isFavorite: boolean;
+  loading: boolean;
+  canReport: boolean;
+  onEdit: () => void;
+  onToggleFavorite: () => void;
+  onReport: () => void;
+  reportTitle: string;
+}
+
+function ActionButtons({
+  isAuthor,
+  isFavorite,
+  loading,
+  canReport,
+  onEdit,
+  onToggleFavorite,
+  onReport,
+  reportTitle,
+}: ActionButtonsProps) {
+  return (
+    <div className="flex items-center gap-1 sm:gap-2">
+      {isAuthor && (
+        <EditIconButton onClick={onEdit} title="Редактировать точку" />
+      )}
+      <FavoriteIconButton
+        isFavorite={isFavorite}
+        loading={loading}
+        onClick={onToggleFavorite}
+      />
+      {canReport && (
+        <ReportIconButton onClick={onReport} title={reportTitle} />
+      )}
+    </div>
+  );
 }
 
 export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointUpdate }: PointCardProps) {
@@ -132,17 +174,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
   // Проверяем, является ли текущий пользователь автором точки
   const isAuthor = currentUserId && currentUserId === point.author.id;
 
-  // Отладочная информация (можно удалить в продакшене)
-  useEffect(() => {
-    console.log('PointCard debug:', {
-      accessToken: !!accessToken,
-      currentUserId,
-      pointAuthorId: point.author.id,
-      canReport,
-      isAuthor
-    });
-  }, [accessToken, currentUserId, point.author.id, canReport, isAuthor]);
-
   const handleEditSuccess = () => {
     onPointUpdate?.();
   };
@@ -165,40 +196,16 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
               <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
               <span>{formatRelativeDate(point.createdAt)}</span>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2">
-              {isAuthor && (
-                <button
-                  onClick={() => setShowEditModal(true)}
-                  className="p-1.5 sm:p-2 rounded-lg transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100"
-                  title="Редактировать точку"
-                >
-                  <Edit2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                </button>
-              )}
-              <button
-                onClick={toggleFavorite}
-                disabled={loading}
-                className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
-                  isFavorite 
-                    ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-                    : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-                } disabled:opacity-50`}
-                title={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
-              >
-                <Heart 
-                  className={`h-3 w-3 sm:h-4 sm:w-4 ${isFavorite ? 'fill-current' : ''}`} 
-                />
-              </button>
-              {canReport && (
-                <button
-                  onClick={() => setShowReportModal(true)}
-                  className="p-1.5 sm:p-2 rounded-lg transition-colors bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-600"
-                  title={t('reports.button')}
-                >
-                  <Flag className="h-3 w-3 sm:h-4 sm:w-4" />
-                </button>
-              )}
-            </div>
+            <ActionButtons
+              isAuthor={!!isAuthor}
+              isFavorite={isFavorite}
+              loading={loading}
+              canReport={!!canReport}
+              onEdit={() => setShowEditModal(true)}
+              onToggleFavorite={toggleFavorite}
+              onReport={() => setShowReportModal(true)}
+              reportTitle={t('reports.button')}
+            />
           </div>
         </div>
       )}
@@ -209,40 +216,16 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
             <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
             <span>{formatRelativeDate(point.createdAt)}</span>
           </div>
-          <div className="flex items-center gap-1 sm:gap-2">
-            {isAuthor && (
-              <button
-                onClick={() => setShowEditModal(true)}
-                className="p-1.5 sm:p-2 rounded-lg transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100"
-                title="Редактировать точку"
-              >
-                <Edit2 className="h-3 w-3 sm:h-4 sm:w-4" />
-              </button>
-            )}
-            <button
-              onClick={toggleFavorite}
-              disabled={loading}
-              className={`p-1.5 sm:p-2 rounded-lg transition-colors ${
-                isFavorite 
-                  ? 'bg-red-50 text-red-600 hover:bg-red-100' 
-                  : 'bg-gray-50 text-gray-600 hover:bg-gray-100'
-              } disabled:opacity-50`}
-              title={isFavorite ? 'Удалить из избранного' : 'Добавить в избранное'}
-            >
-              <Heart 
-                className={`h-3 w-3 sm:h-4 sm:w-4 ${isFavorite ? 'fill-current' : ''}`} 
-              />
-            </button>
-            {canReport && (
-              <button
-                onClick={() => setShowReportModal(true)}
-                className="p-1.5 sm:p-2 rounded-lg transition-colors bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-600"
-                title={t('reports.button')}
-              >
-                <Flag className="h-3 w-3 sm:h-4 sm:w-4" />
-              </button>
-            )}
-          </div>
+          <ActionButtons
+            isAuthor={!!isAuthor}
+            isFavorite={isFavorite}
+            loading={loading}
+            canReport={!!canReport}
+            onEdit={() => setShowEditModal(true)}
+            onToggleFavorite={toggleFavorite}
+            onReport={() => setShowReportModal(true)}
+            reportTitle={t('reports.button')}
+          />
         </div>
       )}
 
@@ -261,29 +244,35 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
 
       <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
             <Tag className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
-            <span className="text-text-muted">Категория:</span>
+          <span className="text-text-muted">
+            {t('profile.category')}:
+          </span>
             <span 
               className="font-medium px-2 py-1 rounded text-white text-xs flex-shrink-0"
               style={{ backgroundColor: point.category?.color || '#6B7280' }}
             >
-              {point.category?.name || 'Без категории'}
+              {point.category?.name || t('profile.noCategory')}
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2">
             <Package className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
-            <span className="text-text-muted">Контейнер:</span>
+          <span className="text-text-muted">
+            {t('profile.container')}:
+          </span>
             <span className="text-text-main font-medium truncate">
-              {point.container?.title || 'Без контейнера'}
+              {point.container?.title || t('profile.noContainer')}
             </span>
           </div>
         </div>
 
         <div className="flex items-start gap-2">
           <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0 mt-0.5" />
-          <span className="text-text-muted">Координаты:</span>
+          <span className="text-text-muted">
+            {t('profile.coordinates')}:
+          </span>
           <span className="text-text-main font-mono text-xs break-all">
             {point.coords.coordinates[1].toFixed(6)}, {point.coords.coordinates[0].toFixed(6)}
           </span>

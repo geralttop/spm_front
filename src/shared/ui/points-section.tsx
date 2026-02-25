@@ -1,5 +1,5 @@
 import { MapPin } from "lucide-react";
-import { PointCard } from "./point-card";
+import { PointCard } from "@/entities/point";
 import type { Point } from "@/shared/api";
 
 interface PointsSectionProps {

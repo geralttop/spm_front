@@ -42,7 +42,7 @@ export function useForm<T extends Record<string, any>>({
       } catch (error) {
         if (error instanceof z.ZodError) {
           const zodErrors: Record<string, string> = {};
-          error.errors.forEach((err) => {
+          error.issues.forEach((err) => {
             const path = err.path.join('.');
             zodErrors[path] = err.message;
           });

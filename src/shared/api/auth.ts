@@ -30,6 +30,7 @@ export interface ProfileResponse {
   role: string;
   username?: string;
   bio?: string;
+  sidebarOrder?: string[];
 }
 
 export interface UpdateProfileRequest {

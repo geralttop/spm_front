@@ -18,6 +18,8 @@ export interface FeedPoint {
   container: {
     id: string;
     title: string;
+    description?: string;
+    createdAt: string;
   } | null;
   author: {
     id: number;

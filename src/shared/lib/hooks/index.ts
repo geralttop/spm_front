@@ -7,3 +7,6 @@ export { useTranslation } from './useTranslation';
 export { useToast } from './use-toast';
 export { useFollowManagement } from './use-follow-management';
 export { useUserModal } from './use-user-modal';
+
+// Re-export query hooks
+export * from './queries';

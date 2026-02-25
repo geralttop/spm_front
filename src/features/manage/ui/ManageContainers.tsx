@@ -60,10 +60,10 @@ export function ManageContainers() {
     
     setContainersLoading(true);
     try {
-      const result = await containersApi.delete(id);
+      await containersApi.delete(id);
       await loadContainers();
       await loadPoints();
-      alert(result?.message || 'Контейнер успешно удален');
+      alert('Контейнер успешно удален');
     } catch (err: any) {
       console.error('Error deleting container:', err);
       alert(err.response?.data?.message || 'Ошибка удаления контейнера');

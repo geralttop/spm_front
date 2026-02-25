@@ -481,6 +481,6 @@ export const MAP_STYLES = {
       ],
     },
   },
-} as const;
+};
 
 export type MapStyleKey = keyof typeof MAP_STYLES;

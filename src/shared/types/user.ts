@@ -11,8 +11,9 @@ export interface ProfileResponse {
   sub: string;
   userId: string;
   email: string;
-  username: string;
+  username?: string;
   bio?: string;
+  sidebarOrder?: string[];
 }
 
 export interface UpdateProfileRequest {

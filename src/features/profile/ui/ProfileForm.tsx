@@ -9,7 +9,7 @@ import type { ProfileResponse } from '@/shared/types';
 interface ProfileFormProps {
   profile: ProfileResponse;
   isEditing: boolean;
-  onSave: (data: { username: string; bio: string }) => Promise<void>;
+  onSave: (data: { username?: string; bio?: string }) => Promise<void>;
   onCancel: () => void;
 }
 

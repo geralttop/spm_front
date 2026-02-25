@@ -5,7 +5,8 @@ import { useToast } from "../use-toast";
 export function usePointsQuery(userId?: number) {
   return useQuery({
     queryKey: ["points", userId],
-    queryFn: () => pointsApi.getAll(userId),
+    queryFn: () =>
+      pointsApi.getAll(userId ? { userId } : undefined),
   });
 }
 

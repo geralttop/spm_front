@@ -38,17 +38,6 @@ export function UserCard({ user, onClick, actionButton, showReportButton = true 
 
   const canReport = showReportButton && accessToken && currentUserId && currentUserId !== user.id;
 
-  // Отладочная информация (можно удалить в продакшене)
-  useEffect(() => {
-    console.log('UserCard debug:', {
-      accessToken: !!accessToken,
-      currentUserId,
-      userId: user.id,
-      showReportButton,
-      canReport
-    });
-  }, [accessToken, currentUserId, user.id, showReportButton, canReport]);
-
   const handleReportSuccess = () => {
     console.log('Жалоба на пользователя успешно отправлена');
   };

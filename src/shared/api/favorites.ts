@@ -18,6 +18,8 @@ export interface FavoritePoint {
   container?: {
     id: string;
     title: string;
+    description?: string;
+    createdAt: string;
   };
   author: {
     id: number;

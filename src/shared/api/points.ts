@@ -16,11 +16,7 @@ export interface Point {
     name: string;
     color: string;
   } | null;
-  container?: {
-    id: string;
-    title: string;
-    description?: string;
-  } | null;
+  container?: Container | null;
   author: {
     id: number;
     username: string;
@@ -82,8 +78,7 @@ export interface UpdateContainerRequest {
 
 // Points API with custom getAll method
 class PointsApi extends BaseApi<Point, CreatePointRequest, UpdatePointRequest> {
-  async getAll(userId?: number): Promise<Point[]> {
-    const params = userId ? { userId: userId.toString() } : {};
+  async getAll(params?: Record<string, any>): Promise<Point[]> {
     const response = await apiClient.get<Point[]>("/points", { params });
     return response.data;
   }
@@ -98,9 +93,8 @@ export const categoriesApi = new BaseApi<Category, CreateCategoryRequest, Update
 
 // Containers API with custom delete method
 class ContainersApi extends BaseApi<Container, CreateContainerRequest, UpdateContainerRequest> {
-  async delete(id: string): Promise<{ message: string }> {
-    const response = await apiClient.delete<{ message: string }>(`/containers/${id}`);
-    return response.data;
+  async delete(id: string): Promise<void> {
+    await apiClient.delete(`/containers/${id}`);
   }
 }
 

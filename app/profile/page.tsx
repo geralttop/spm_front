@@ -45,7 +45,7 @@ export default function ProfilePage() {
   const handleEdit = () => setIsEditing(true);
   const handleCancel = () => setIsEditing(false);
 
-  const handleSave = async (data: { username: string; bio: string }) => {
+  const handleSave = async (data: { username?: string; bio?: string }) => {
     await updateProfileMutation.mutateAsync(data);
     setIsEditing(false);
     toast.success(t("profile.updateSuccess"));
