@@ -78,7 +78,12 @@ export default function FeedPage() {
         ) : (
           <div className="space-y-4 sm:space-y-6">
             {points.map((point) => (
-              <PointCard key={point.id} point={point} showAuthor={true} />
+              <PointCard 
+                key={point.id} 
+                point={point} 
+                showAuthor={true}
+                onPointUpdate={() => refetch()}
+              />
             ))}
 
             {isFetchingNextPage && (

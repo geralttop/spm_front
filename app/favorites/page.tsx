@@ -134,6 +134,8 @@ export default function FavoritesPage() {
                   <PointCard 
                     point={favorite} 
                     showAuthor={true}
+                    onFavoriteChange={() => refetch()}
+                    onPointUpdate={() => refetch()}
                   />
                   <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-red-50 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
                     <span className="hidden sm:inline">

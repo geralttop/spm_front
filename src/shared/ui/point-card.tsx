@@ -1,11 +1,11 @@
-import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle, Flag } from 'lucide-react';
+import { MapPin, Tag, Package, User, Calendar, Heart, MessageCircle, Flag, Edit2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
-import { favoritesApi, authApi } from '@/shared/api';
+import { favoritesApi, authApi, type Point } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/widgets/Comments';
-import { ReportModal } from '@/shared/ui';
+import { ReportModal, EditPointModal } from '@/shared/ui';
 import { useTranslation } from 'react-i18next';
 import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/shared/ui/map";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
@@ -13,40 +13,14 @@ import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
 const CACHE_DURATION = 30000;
 
-interface Point {
-  id: string;
-  name: string;
-  description?: string;
-  address?: string;
-  coords: {
-    type: 'Point';
-    coordinates: [number, number];
-  };
-  createdAt: string;
-  category?: {
-    id: number;
-    name: string;
-    color: string;
-  } | null;
-  container?: {
-    id: string;
-    title: string;
-  } | null;
-  author: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-  };
-}
-
 interface PointCardProps {
   point: Point;
   showAuthor?: boolean;
   onFavoriteChange?: () => void;
+  onPointUpdate?: () => void;
 }
 
-export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointCardProps) {
+export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointUpdate }: PointCardProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
@@ -55,6 +29,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
 
   // Загружаем настройки при монтировании
@@ -153,6 +128,9 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
 
   // Проверяем, может ли пользователь пожаловаться на эту точку
   const canReport = accessToken && currentUserId && currentUserId !== point.author.id;
+  
+  // Проверяем, является ли текущий пользователь автором точки
+  const isAuthor = currentUserId && currentUserId === point.author.id;
 
   // Отладочная информация (можно удалить в продакшене)
   useEffect(() => {
@@ -160,9 +138,14 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
       accessToken: !!accessToken,
       currentUserId,
       pointAuthorId: point.author.id,
-      canReport
+      canReport,
+      isAuthor
     });
-  }, [accessToken, currentUserId, point.author.id, canReport]);
+  }, [accessToken, currentUserId, point.author.id, canReport, isAuthor]);
+
+  const handleEditSuccess = () => {
+    onPointUpdate?.();
+  };
 
   return (
     <div className="bg-surface border border-border rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
@@ -183,6 +166,15 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
               <span>{formatRelativeDate(point.createdAt)}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2">
+              {isAuthor && (
+                <button
+                  onClick={() => setShowEditModal(true)}
+                  className="p-1.5 sm:p-2 rounded-lg transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100"
+                  title="Редактировать точку"
+                >
+                  <Edit2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                </button>
+              )}
               <button
                 onClick={toggleFavorite}
                 disabled={loading}
@@ -218,6 +210,15 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
             <span>{formatRelativeDate(point.createdAt)}</span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2">
+            {isAuthor && (
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="p-1.5 sm:p-2 rounded-lg transition-colors bg-blue-50 text-blue-600 hover:bg-blue-100"
+                title="Редактировать точку"
+              >
+                <Edit2 className="h-3 w-3 sm:h-4 sm:w-4" />
+              </button>
+            )}
             <button
               onClick={toggleFavorite}
               disabled={loading}
@@ -365,6 +366,14 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange }: PointC
         targetId={point.id}
         targetName={point.name}
         onSuccess={handleReportSuccess}
+      />
+
+      {/* Edit Point Modal */}
+      <EditPointModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        point={point}
+        onSuccess={handleEditSuccess}
       />
     </div>
   );

@@ -225,6 +225,7 @@ export default function UserProfilePage() {
                     point={point} 
                     showAuthor={false}
                     onFavoriteChange={() => refetchPoints()}
+                    onPointUpdate={() => refetchPoints()}
                   />
                 ))}
               </div>

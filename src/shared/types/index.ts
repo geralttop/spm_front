@@ -1,0 +1,12 @@
+// Централизованный экспорт всех типов
+export * from './point';
+export * from './category';
+export * from './container';
+export * from './user';
+export * from './comment';
+export * from './report';
+export * from './subscription';
+export * from './feed';
+export * from './favorite';
+export * from './settings';
+export * from './common';

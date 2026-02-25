@@ -1,4 +1,5 @@
 import { apiClient } from "./client";
+import { BaseApi } from "./base-api";
 
 export interface Point {
   id: string;
@@ -14,12 +15,12 @@ export interface Point {
     id: number;
     name: string;
     color: string;
-  };
+  } | null;
   container?: {
     id: string;
     title: string;
     description?: string;
-  };
+  } | null;
   author: {
     id: number;
     username: string;
@@ -35,6 +36,15 @@ export interface CreatePointRequest {
   lat: number;
   containerId: string;
   categoryId: number;
+}
+
+export interface UpdatePointRequest {
+  name?: string;
+  description?: string;
+  lng?: number;
+  lat?: number;
+  containerId?: string;
+  categoryId?: number;
 }
 
 export interface Category {
@@ -55,49 +65,43 @@ export interface CreateCategoryRequest {
   color?: string;
 }
 
+export interface UpdateCategoryRequest {
+  name?: string;
+  color?: string;
+}
+
 export interface CreateContainerRequest {
   title: string;
   description?: string;
 }
 
-export const pointsApi = {
-  getAll: async (userId?: number): Promise<Point[]> => {
+export interface UpdateContainerRequest {
+  title?: string;
+  description?: string;
+}
+
+// Points API with custom getAll method
+class PointsApi extends BaseApi<Point, CreatePointRequest, UpdatePointRequest> {
+  async getAll(userId?: number): Promise<Point[]> {
     const params = userId ? { userId: userId.toString() } : {};
     const response = await apiClient.get<Point[]>("/points", { params });
     return response.data;
-  },
+  }
+}
 
-  getById: async (id: string): Promise<Point> => {
-    const response = await apiClient.get<Point>(`/points/${id}`);
-    return response.data;
-  },
+export const pointsApi = new PointsApi("/points", apiClient);
 
-  create: async (data: CreatePointRequest): Promise<Point> => {
-    const response = await apiClient.post<Point>("/points", data);
-    return response.data;
-  },
-};
+export const categoriesApi = new BaseApi<Category, CreateCategoryRequest, UpdateCategoryRequest>(
+  "/categories",
+  apiClient
+);
 
-export const categoriesApi = {
-  getAll: async (): Promise<Category[]> => {
-    const response = await apiClient.get<Category[]>("/categories");
+// Containers API with custom delete method
+class ContainersApi extends BaseApi<Container, CreateContainerRequest, UpdateContainerRequest> {
+  async delete(id: string): Promise<{ message: string }> {
+    const response = await apiClient.delete<{ message: string }>(`/containers/${id}`);
     return response.data;
-  },
+  }
+}
 
-  create: async (data: CreateCategoryRequest): Promise<Category> => {
-    const response = await apiClient.post<Category>("/categories", data);
-    return response.data;
-  },
-};
-
-export const containersApi = {
-  getAll: async (): Promise<Container[]> => {
-    const response = await apiClient.get<Container[]>("/containers");
-    return response.data;
-  },
-
-  create: async (data: CreateContainerRequest): Promise<Container> => {
-    const response = await apiClient.post<Container>("/containers", data);
-    return response.data;
-  },
-};
+export const containersApi = new ContainersApi("/containers", apiClient);

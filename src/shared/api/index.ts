@@ -10,6 +10,7 @@ export { feedApi } from "./feed";
 export { commentsApi } from "./comments";
 export { reportsApi, usersApi } from "./reports";
 export { settingsApi } from "./settings-api";
+export { BaseApi } from "./base-api";
 export type {
   RegisterRequest,
   LoginRequest,
@@ -23,11 +24,14 @@ export type {
 } from "./auth";
 export type { 
   Point, 
-  CreatePointRequest, 
-  Category, 
-  Container,
+  CreatePointRequest,
+  UpdatePointRequest, 
+  Category,
   CreateCategoryRequest,
-  CreateContainerRequest 
+  UpdateCategoryRequest, 
+  Container,
+  CreateContainerRequest,
+  UpdateContainerRequest 
 } from "./points";
 export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";
 export type { FavoritePoint, FavoriteCheckResponse } from "./favorites";

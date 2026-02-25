@@ -10,6 +10,7 @@ interface PointsSectionProps {
   loadingMessage: string;
   showAuthor?: boolean;
   onFavoriteChange?: () => void;
+  onPointUpdate?: () => void;
 }
 
 export function PointsSection({
@@ -20,6 +21,7 @@ export function PointsSection({
   loadingMessage,
   showAuthor = false,
   onFavoriteChange,
+  onPointUpdate,
 }: PointsSectionProps) {
   return (
     <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
@@ -44,6 +46,7 @@ export function PointsSection({
               point={point} 
               showAuthor={showAuthor}
               onFavoriteChange={onFavoriteChange}
+              onPointUpdate={onPointUpdate}
             />
           ))}
         </div>

@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
-import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, X, Map } from "lucide-react";
+import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, X, Map, FolderKanban } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface MenuItem {
@@ -81,6 +81,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         label: t("sidebar.createPoint"),
         path: "/points/create",
         active: pathname === "/points/create"
+      },
+      {
+        id: "manage",
+        icon: FolderKanban,
+        label: "Управление",
+        path: "/manage",
+        active: pathname === "/manage"
       },
       {
         id: "settings",
