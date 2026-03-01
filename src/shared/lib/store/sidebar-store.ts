@@ -13,11 +13,13 @@ interface SidebarState {
 
 const DEFAULT_ORDER = [
   "feed",
+  "map",
   "favorites",
   "profile",
   "my-comments",
   "search",
   "create-point",
+  "manage",
   "settings",
 ];
 
@@ -34,11 +36,12 @@ export const useSidebarStore = create<SidebarState>((set, get) => ({
       const profile = await authApi.getProfile();
       
       if (profile.sidebarOrder && Array.isArray(profile.sidebarOrder) && profile.sidebarOrder.length > 0) {
-        const order = profile.sidebarOrder;
-        // Убедимся, что "settings" есть в списке
-        if (!order.includes("settings")) {
-          order.push("settings");
-        }
+        let order = [...profile.sidebarOrder];
+        
+        // Добавляем новые пункты, которых нет в сохраненном порядке
+        const newItems = DEFAULT_ORDER.filter(item => !order.includes(item));
+        order = [...order, ...newItems];
+        
         set({ sidebarOrder: order, isInitialized: true });
       } else {
         set({ sidebarOrder: DEFAULT_ORDER, isInitialized: true });

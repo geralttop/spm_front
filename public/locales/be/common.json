@@ -51,7 +51,9 @@
     "community": "Супольнасць",
     "notifications": "Апавяшчэнні",
     "settings": "Налады",
-    "myComments": "Мае каментарыі"
+    "myComments": "Мае каментарыі",
+    "manage": "Кіраванне",
+    "admin": "Адміністраванне"
   },
   "theme": {
     "switchToDark": "Пераключыць на цёмную тэму",
@@ -295,7 +297,19 @@
     "category": "Катэгорыя:",
     "viewDetails": "Падрабязней",
     "loadingPoints": "Загрузка кропак...",
-    "pointsOnMap": "Кропак на карце:"
+    "pointsOnMap": "Кропак на карце:",
+    "mapStyle": "Стыль карты",
+    "filters": "Фільтры",
+    "filterByAuthor": "Па аўтару",
+    "filterByCategory": "Па катэгорыі",
+    "filterByDate": "Па даце стварэння",
+    "dateFrom": "З",
+    "dateTo": "Па",
+    "clearFilters": "Скінуць фільтры",
+    "noFollowing": "Вы ні на каго не падпісаны",
+    "noAuthors": "Няма аўтараў",
+    "categories": "Катэгорыі",
+    "containers": "Кантэйнеры"
   },
   "createPoint": {
     "title": "Стварыць кропку",

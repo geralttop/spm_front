@@ -22,7 +22,7 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { t } = useTranslation();
+  const { t, currentLanguage } = useTranslation();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const accessToken = useAuthStore((state) => state.accessToken);
   const { sidebarOrder, loadSidebarOrder } = useSidebarStore();
@@ -85,14 +85,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {
         id: "manage",
         icon: FolderKanban,
-        label: "Управление",
+        label: t("sidebar.manage"),
         path: "/manage",
         active: pathname === "/manage"
       },
       {
         id: "settings",
         icon: Settings,
-        label: "Настройки",
+        label: t("sidebar.settings"),
         path: "/settings",
         active: pathname === "/settings"
       }
@@ -103,7 +103,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       items.push({
         id: "admin",
         icon: Settings,
-        label: "Админка",
+        label: t("sidebar.admin"),
         path: "/admin",
         active: pathname === "/admin"
       });
@@ -140,7 +140,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     fetchUserData();
   }, [checkAuth, accessToken, loadSidebarOrder]);
 
-  // Обновляем menuItems при изменении sidebarOrder или pathname
+  // Обновляем menuItems при изменении sidebarOrder, pathname, userRole или языка
   useEffect(() => {
     const defaultItems = getDefaultMenuItems();
     
@@ -155,7 +155,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     );
     
     setMenuItems([...orderedItems, ...newItems]);
-  }, [sidebarOrder, pathname, userRole]);
+  }, [sidebarOrder, pathname, userRole, currentLanguage, t]);
 
   const handleNavigation = (path: string) => {
     router.push(path);

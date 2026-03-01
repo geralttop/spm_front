@@ -11,20 +11,30 @@ import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { MapPin, User, Calendar, Loader2 } from "lucide-react";
 import { formatRelativeDate } from "@/shared/lib/utils";
+import { MapFiltersComponent, type MapFilters } from "@/widgets/map-filters";
 
 export default function MapPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
-  const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
+  const { availableMapStyles, defaultMapStyle, loadSettings, isInitialized } = useSettingsStore();
   
   const [points, setPoints] = useState<FeedPoint[]>([]);
+  const [allPoints, setAllPoints] = useState<FeedPoint[]>([]); // Все точки без фильтров
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
   const [center, setCenter] = useState<[number, number]>([37.6173, 55.7558]); // Москва по умолчанию
   const [zoom, setZoom] = useState(10);
+  const [filters, setFilters] = useState<MapFilters>({
+    authorIds: [],
+    dateFrom: "",
+    dateTo: "",
+    categoryIds: [],
+    containerIds: [],
+  });
 
+  // Загружаем настройки при монтировании
   useEffect(() => {
     if (!accessToken) {
       router.push("/auth");
@@ -32,8 +42,15 @@ export default function MapPage() {
     }
 
     loadSettings();
-    loadPoints();
   }, [accessToken, router, loadSettings]);
+
+  // Обновляем стиль карты когда настройки загрузились
+  useEffect(() => {
+    if (isInitialized) {
+      setMapStyle(defaultMapStyle);
+      loadPoints();
+    }
+  }, [isInitialized, defaultMapStyle]);
 
   const loadPoints = async () => {
     try {
@@ -42,6 +59,7 @@ export default function MapPage() {
       
       // Загружаем все точки из ленты (подписки)
       const response = await feedApi.getFeed(1, 1000);
+      setAllPoints(response.points);
       setPoints(response.points);
 
       // Если есть точки, центрируем карту на первой
@@ -58,12 +76,63 @@ export default function MapPage() {
     }
   };
 
+  // Применяем фильтры к точкам
+  useEffect(() => {
+    let filtered = [...allPoints];
+
+    // Фильтр по авторам - применяем только если не все авторы выбраны
+    const allAuthorIds = Array.from(new Set(allPoints.map(p => p.author.id)));
+    const isAllAuthorsSelected = filters.authorIds.length === allAuthorIds.length;
+    
+    if (filters.authorIds.length > 0 && !isAllAuthorsSelected) {
+      filtered = filtered.filter(point => filters.authorIds.includes(point.author.id));
+    }
+
+    // Фильтр по категориям - применяем только если не все категории выбраны
+    const allCategoryIds = Array.from(new Set(allPoints.filter(p => p.category).map(p => p.category!.id)));
+    const isAllCategoriesSelected = filters.categoryIds.length === allCategoryIds.length;
+    
+    if (filters.categoryIds.length > 0 && !isAllCategoriesSelected) {
+      filtered = filtered.filter(point => point.category && filters.categoryIds.includes(point.category.id));
+    }
+
+    // Фильтр по контейнерам - применяем только если не все контейнеры выбраны
+    const allContainerIds = Array.from(new Set(allPoints.filter(p => p.container).map(p => p.container!.id)));
+    const isAllContainersSelected = filters.containerIds.length === allContainerIds.length;
+    
+    if (filters.containerIds.length > 0 && !isAllContainersSelected) {
+      filtered = filtered.filter(point => point.container && filters.containerIds.includes(point.container.id));
+    }
+
+    // Фильтр по дате от
+    if (filters.dateFrom) {
+      const dateFrom = new Date(filters.dateFrom);
+      filtered = filtered.filter(point => new Date(point.createdAt) >= dateFrom);
+    }
+
+    // Фильтр по дате до
+    if (filters.dateTo) {
+      const dateTo = new Date(filters.dateTo);
+      dateTo.setHours(23, 59, 59, 999); // Включаем весь день
+      filtered = filtered.filter(point => new Date(point.createdAt) <= dateTo);
+    }
+
+    setPoints(filtered);
+  }, [filters, allPoints]);
+
   if (!accessToken) {
     return null;
   }
 
   return (
-    <div className="fixed inset-0 w-screen h-screen">
+    <div className="fixed inset-0 lg:left-64 top-14 sm:top-16 w-full lg:w-[calc(100%-16rem)] h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)]">
+      {/* Фильтры */}
+      <MapFiltersComponent
+        filters={filters}
+        onFiltersChange={setFilters}
+        allPoints={allPoints}
+      />
+
       <MapComponent
         center={center}
         zoom={zoom}
@@ -154,23 +223,28 @@ export default function MapPage() {
       </MapComponent>
 
       {/* Селектор стиля карты */}
-      <div className="absolute top-4 right-4 z-10">
-        <select
-          value={mapStyle}
-          onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-          className="bg-surface text-text-main border border-border rounded-md px-3 py-2 text-sm shadow-lg"
-        >
-          {availableMapStyles.map((key) => (
-            <option key={key} value={key}>
-              {MAP_STYLES[key].name}
-            </option>
-          ))}
-        </select>
+      <div className="absolute top-4 right-4 z-10 bg-card border border-border rounded-lg shadow-xl p-3">
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-medium text-text-muted uppercase tracking-wide">
+            {t('map.mapStyle')}
+          </label>
+          <select
+            value={mapStyle}
+            onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
+            className="bg-background text-text-main border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
+          >
+            {availableMapStyles.map((key) => (
+              <option key={key} value={key}>
+                {MAP_STYLES[key].name}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Индикатор загрузки */}
       {loading && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-surface/90 backdrop-blur-sm rounded-lg p-6 shadow-xl">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-card rounded-lg p-6 shadow-xl border border-border">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <p className="text-sm text-text-muted">{t('map.loadingPoints')}</p>
@@ -187,7 +261,7 @@ export default function MapPage() {
 
       {/* Счетчик точек */}
       {!loading && !error && (
-        <div className="absolute bottom-4 left-4 z-10 bg-surface/90 backdrop-blur-sm border border-border rounded-lg px-4 py-2 shadow-lg">
+        <div className="absolute bottom-4 left-4 z-10 bg-card border border-border rounded-lg px-4 py-2 shadow-lg">
           <p className="text-sm text-text-main">
             {t('map.pointsOnMap')} <span className="font-semibold">{points.length}</span>
           </p>

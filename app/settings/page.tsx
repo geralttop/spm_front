@@ -8,26 +8,35 @@ import { useSettingsStore } from "@/shared/lib/store/settings-store";
 import { useTranslation } from "@/shared/lib/hooks";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
-import { ArrowLeft, Map, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages } from "lucide-react";
+import { ArrowLeft, Map, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban } from "lucide-react";
 
 const MENU_ICONS = {
   feed: Rss,
+  map: Map,
   favorites: Heart,
   profile: User,
   "my-comments": MessageSquare,
   search: Search,
   "create-point": MapPin,
+  manage: FolderKanban,
   settings: SettingsIcon,
+  admin: SettingsIcon,
 };
 
-const MENU_LABELS = {
-  feed: "Лента",
-  favorites: "Избранное",
-  profile: "Профиль",
-  "my-comments": "Мои комментарии",
-  search: "Поиск",
-  "create-point": "Создать точку",
-  settings: "Настройки",
+const getMenuLabel = (itemId: string, t: any): string => {
+  const labelMap: Record<string, string> = {
+    feed: t("sidebar.feed"),
+    map: t("sidebar.map"),
+    favorites: t("sidebar.favorites"),
+    profile: t("sidebar.profile"),
+    "my-comments": t("sidebar.myComments"),
+    search: t("sidebar.search"),
+    "create-point": t("sidebar.createPoint"),
+    manage: t("sidebar.manage"),
+    settings: t("sidebar.settings"),
+    admin: t("sidebar.admin"),
+  };
+  return labelMap[itemId] || itemId;
 };
 
 export default function SettingsPage() {
@@ -203,7 +212,7 @@ export default function SettingsPage() {
             <div className="space-y-2">
               {sidebarOrder.map((itemId, index) => {
                 const Icon = MENU_ICONS[itemId as keyof typeof MENU_ICONS];
-                const label = MENU_LABELS[itemId as keyof typeof MENU_LABELS];
+                const label = getMenuLabel(itemId, t);
                 const isDragging = draggedIndex === index;
                 const isDragOver = dragOverIndex === index;
 

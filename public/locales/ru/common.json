@@ -51,7 +51,9 @@
     "community": "Сообщество",
     "notifications": "Уведомления",
     "settings": "Настройки",
-    "myComments": "Мои комментарии"
+    "myComments": "Мои комментарии",
+    "manage": "Управление",
+    "admin": "Админка"
   },
   "theme": {
     "switchToDark": "Переключить на темную тему",
@@ -279,7 +281,19 @@
     "category": "Категория:",
     "viewDetails": "Подробнее",
     "loadingPoints": "Загрузка точек...",
-    "pointsOnMap": "Точек на карте:"
+    "pointsOnMap": "Точек на карте:",
+    "mapStyle": "Стиль карты",
+    "filters": "Фильтры",
+    "filterByAuthor": "По автору",
+    "filterByCategory": "По категории",
+    "filterByDate": "По дате создания",
+    "dateFrom": "С",
+    "dateTo": "По",
+    "clearFilters": "Сбросить фильтры",
+    "noFollowing": "Вы ни на кого не подписаны",
+    "noAuthors": "Нет авторов",
+    "categories": "Категории",
+    "containers": "Контейнеры"
   },
   "createPoint": {
     "title": "Создать точку",

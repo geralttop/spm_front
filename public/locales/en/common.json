@@ -51,7 +51,9 @@
     "community": "Community",
     "notifications": "Notifications",
     "settings": "Settings",
-    "myComments": "My Comments"
+    "myComments": "My Comments",
+    "manage": "Manage",
+    "admin": "Admin"
   },
   "theme": {
     "switchToDark": "Switch to dark theme",
@@ -279,7 +281,19 @@
     "category": "Category:",
     "viewDetails": "View details",
     "loadingPoints": "Loading points...",
-    "pointsOnMap": "Points on map:"
+    "pointsOnMap": "Points on map:",
+    "mapStyle": "Map style",
+    "filters": "Filters",
+    "filterByAuthor": "By author",
+    "filterByCategory": "By category",
+    "filterByDate": "By creation date",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "clearFilters": "Clear filters",
+    "noFollowing": "You are not following anyone",
+    "noAuthors": "No authors",
+    "categories": "Categories",
+    "containers": "Containers"
   },
   "createPoint": {
     "title": "Create Point",

@@ -11,12 +11,11 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const { ToastContainer } = useToast();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
-  // Не показываем сайдбар и хедер на страницах админки, авторизации и карты
+  // Не показываем сайдбар и хедер на страницах админки и авторизации
   const isAdminPage = pathname?.startsWith('/admin');
   const isAuthPage = pathname === '/auth';
-  const isMapPage = pathname === '/map';
   
-  if (isAdminPage || isAuthPage || isMapPage) {
+  if (isAdminPage || isAuthPage) {
     return (
       <ErrorBoundary>
         <>
