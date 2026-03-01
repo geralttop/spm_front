@@ -1,11 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { pointsApi, type Point } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
 import { MapPin, Tag, Package, Trash2, Loader2 } from 'lucide-react';
 
 export function ManagePoints() {
+  const { t } = useTranslation();
   const { points, pointsLoading, setPoints, setPointsLoading } = useManageStore();
 
   useEffect(() => {
@@ -25,16 +27,16 @@ export function ManagePoints() {
   };
 
   const handleDeletePoint = async (id: string) => {
-    if (!confirm('Удалить эту точку?')) return;
+    if (!confirm(t('manage.managePoints.deleteConfirm'))) return;
     
     setPointsLoading(true);
     try {
       await pointsApi.delete(id);
       await loadPoints();
-      alert('Точка успешно удалена');
+      alert(t('manage.managePoints.deleteSuccess'));
     } catch (err: any) {
       console.error('Error deleting point:', err);
-      const errorMessage = err.response?.data?.message || 'Ошибка удаления точки';
+      const errorMessage = err.response?.data?.message || t('manage.managePoints.deleteError');
       alert(errorMessage);
     } finally {
       setPointsLoading(false);
@@ -50,7 +52,7 @@ export function ManagePoints() {
   }
 
   if (points.length === 0) {
-    return <p className="text-center py-8 text-text-muted">У вас пока нет точек</p>;
+    return <p className="text-center py-8 text-text-muted">{t('manage.managePoints.noPoints')}</p>;
   }
 
   return (
@@ -65,18 +67,18 @@ export function ManagePoints() {
             <div className="flex gap-4 mt-2 text-sm text-text-muted">
               <span className="flex items-center gap-1">
                 <Tag className="h-4 w-4" />
-                {point.category?.name || 'Без категории'}
+                {point.category?.name || t('manage.managePoints.noCategory')}
               </span>
               <span className="flex items-center gap-1">
                 <Package className="h-4 w-4" />
-                {point.container?.title || 'Без контейнера'}
+                {point.container?.title || t('manage.managePoints.noContainer')}
               </span>
             </div>
           </div>
           <button
             onClick={() => handleDeletePoint(point.id)}
             className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-            title="Удалить"
+            title={t('manage.managePoints.delete')}
           >
             <Trash2 className="h-5 w-5" />
           </button>

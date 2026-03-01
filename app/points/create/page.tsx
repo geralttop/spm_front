@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation as useI18n } from "react-i18next";
 import { Button, Input, Textarea } from "@/shared/ui";
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/shared/ui/map";
 import { type CreatePointRequest } from "@/shared/api";
@@ -20,6 +21,7 @@ import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 export default function CreatePointPage() {
   const router = useRouter();
+  const { t: tI18n } = useI18n();
   const { t } = useTranslation();
   const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -175,7 +177,7 @@ export default function CreatePointPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-text-muted">Загрузка...</div>
+        <div className="text-text-muted">{tI18n('createPoint.loading')}</div>
       </div>
     );
   }
@@ -196,8 +198,8 @@ export default function CreatePointPage() {
               Назад
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-text-main">Создать точку</h1>
-              <p className="text-text-muted mt-1">Добавьте новую точку на карту</p>
+              <h1 className="text-3xl font-bold text-text-main">{tI18n('createPoint.title')}</h1>
+              <p className="text-text-muted mt-1">{tI18n('createPoint.subtitle')}</p>
             </div>
           </div>
 
@@ -206,7 +208,7 @@ export default function CreatePointPage() {
             {/* Basic Info Card */}
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-text-main mb-4">
-                Основная информация
+                {tI18n('createPoint.basicInfo')}
               </h2>
               
               <div className="space-y-4">
@@ -226,7 +228,7 @@ export default function CreatePointPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
-                    Описание
+                    {tI18n('createPoint.description')}
                   </label>
                   <Textarea
                     value={formData.description}
@@ -243,14 +245,14 @@ export default function CreatePointPage() {
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-text-main mb-4 flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
-                Координаты
+                {tI18n('createPoint.coordinates')}
               </h2>
               
               {/* Интерактивная карта */}
               <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm text-text-muted">
-                    Перетащите маркер на карте для выбора координат
+                    {tI18n('createPoint.dragMarker')}
                   </p>
                   <div className="flex items-center gap-2">
                     <MapIcon className="h-4 w-4 text-text-muted" />
@@ -292,7 +294,7 @@ export default function CreatePointPage() {
                       </MarkerContent>
                       <MarkerPopup>
                         <div className="space-y-1">
-                          <p className="font-medium text-foreground">Координаты точки</p>
+                          <p className="font-medium text-foreground">{tI18n('createPoint.pointCoordinates')}</p>
                           <p className="text-xs text-muted-foreground">
                             {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
                           </p>
@@ -307,7 +309,7 @@ export default function CreatePointPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
-                    Долгота (lng) *
+                    {tI18n('createPoint.longitude')}
                   </label>
                   <Input
                     type="number"
@@ -318,13 +320,13 @@ export default function CreatePointPage() {
                     required
                   />
                   <p className="text-xs text-text-muted mt-1">
-                    Пример: 27.561831 (для Минска)
+                    {tI18n('createPoint.longitudeExample')}
                   </p>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
-                    Широта (lat) *
+                    {tI18n('createPoint.latitude')}
                   </label>
                   <Input
                     type="number"
@@ -335,7 +337,7 @@ export default function CreatePointPage() {
                     required
                   />
                   <p className="text-xs text-text-muted mt-1">
-                    Пример: 53.902496 (для Минска)
+                    {tI18n('createPoint.latitudeExample')}
                   </p>
                 </div>
               </div>
@@ -345,13 +347,13 @@ export default function CreatePointPage() {
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-text-main mb-4 flex items-center gap-2">
                 <Tag className="h-5 w-5" />
-                Категория
+                {tI18n('createPoint.category')}
               </h2>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
-                    Выберите категорию *
+                    {tI18n('createPoint.selectCategory')}
                   </label>
                   <select
                     value={formData.categoryId}
@@ -359,7 +361,7 @@ export default function CreatePointPage() {
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
                     required
                   >
-                    <option value={0}>Выберите категорию</option>
+                    <option value={0}>{tI18n('createPoint.selectCategoryOption')}</option>
                     {categories.map((category) => (
                       <option key={category.id} value={category.id}>
                         {category.name}
@@ -376,13 +378,13 @@ export default function CreatePointPage() {
                     className="gap-2"
                   >
                     <Plus className="h-4 w-4" />
-                    Создать новую категорию
+                    {tI18n('createPoint.createNewCategory')}
                   </Button>
                 </div>
 
                 {showCreateCategory && (
                   <div className="border border-border rounded-lg p-4 bg-muted/50">
-                    <h3 className="font-medium text-text-main mb-3">Новая категория</h3>
+                    <h3 className="font-medium text-text-main mb-3">{tI18n('createPoint.newCategory')}</h3>
                     <div className="space-y-3">
                       <Input
                         type="text"
@@ -393,7 +395,7 @@ export default function CreatePointPage() {
                       />
                       <div className="flex items-center gap-3">
                         <label className="text-sm font-medium text-text-muted">
-                          Цвет:
+                          {tI18n('createPoint.color')}
                         </label>
                         <input
                           type="color"
@@ -418,7 +420,7 @@ export default function CreatePointPage() {
                           onClick={() => setShowCreateCategory(false)}
                           size="sm"
                         >
-                          Отмена
+                          {tI18n('createPoint.cancel')}
                         </Button>
                       </div>
                     </div>
@@ -431,13 +433,13 @@ export default function CreatePointPage() {
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
               <h2 className="text-lg font-semibold text-text-main mb-4 flex items-center gap-2">
                 <Package className="h-5 w-5" />
-                Контейнер
+                {tI18n('createPoint.container')}
               </h2>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
-                    Выберите контейнер *
+                    {tI18n('createPoint.selectContainer')}
                   </label>
                   <select
                     value={formData.containerId}
@@ -445,7 +447,7 @@ export default function CreatePointPage() {
                     className="w-full rounded-lg border border-border bg-background px-3 py-2 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
                     required
                   >
-                    <option value="">Выберите контейнер</option>
+                    <option value="">{tI18n('createPoint.selectContainerOption')}</option>
                     {containers.map((container) => (
                       <option key={container.id} value={container.id}>
                         {container.title}
@@ -462,13 +464,13 @@ export default function CreatePointPage() {
                     className="gap-2"
                   >
                     <Plus className="h-4 w-4" />
-                    Создать новый контейнер
+                    {tI18n('createPoint.createNewContainer')}
                   </Button>
                 </div>
 
                 {showCreateContainer && (
                   <div className="border border-border rounded-lg p-4 bg-muted/50">
-                    <h3 className="font-medium text-text-main mb-3">Новый контейнер</h3>
+                    <h3 className="font-medium text-text-main mb-3">{tI18n('createPoint.newContainer')}</h3>
                     <div className="space-y-3">
                       <Input
                         type="text"
@@ -499,7 +501,7 @@ export default function CreatePointPage() {
                           onClick={() => setShowCreateContainer(false)}
                           size="sm"
                         >
-                          Отмена
+                          {tI18n('createPoint.cancel')}
                         </Button>
                       </div>
                     </div>
@@ -523,7 +525,7 @@ export default function CreatePointPage() {
                 onClick={() => router.back()}
                 disabled={createPointMutation.isPending}
               >
-                Отмена
+                {tI18n('createPoint.cancel')}
               </Button>
             </div>
           </form>

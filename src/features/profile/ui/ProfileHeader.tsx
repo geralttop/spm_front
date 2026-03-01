@@ -1,6 +1,7 @@
 'use client';
 
 import { Edit2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Button } from '@/shared/ui';
 
 interface ProfileHeaderProps {
@@ -11,6 +12,8 @@ interface ProfileHeaderProps {
 }
 
 export function ProfileHeader({ username, email, isEditing, onEdit }: ProfileHeaderProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="min-w-0 flex-1">
@@ -23,7 +26,7 @@ export function ProfileHeader({ username, email, isEditing, onEdit }: ProfileHea
       {!isEditing && (
         <Button onClick={onEdit} variant="outline" className="gap-2 w-full sm:w-auto">
           <Edit2 className="h-4 w-4" />
-          <span>Редактировать</span>
+          <span>{t('profile.profileHeader.edit')}</span>
         </Button>
       )}
     </div>

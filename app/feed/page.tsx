@@ -37,7 +37,7 @@ export default function FeedPage() {
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading) {
-    return <Loading message="Загрузка ленты..." fullScreen />;
+    return <Loading message={t('feed.loading')} fullScreen />;
   }
 
   if (error) {
@@ -56,23 +56,23 @@ export default function FeedPage() {
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-text-main">Лента точек</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-text-main">{t('feed.title')}</h1>
           <button
             onClick={() => refetch()}
             disabled={isLoading}
             className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-surface border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50 w-full sm:w-auto"
           >
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            <span className="sm:inline">Обновить</span>
+            <span className="sm:inline">{t('feed.refresh')}</span>
           </button>
         </div>
         
         {points.length === 0 ? (
           <div className="text-center py-12 px-4">
             <MapPin className="h-12 w-12 text-text-muted mx-auto mb-4" />
-            <p className="text-text-muted mb-2 text-lg">Ваша лента пуста</p>
+            <p className="text-text-muted mb-2 text-lg">{t('feed.empty')}</p>
             <p className="text-sm text-text-muted max-w-md mx-auto">
-              Подпишитесь на других пользователей или создайте свои точки, чтобы увидеть их здесь
+              {t('feed.emptyDescription')}
             </p>
           </div>
         ) : (
@@ -90,14 +90,14 @@ export default function FeedPage() {
               <div className="flex items-center justify-center py-6">
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-5 w-5 animate-spin" />
-                  <span className="text-text-muted">Загрузка...</span>
+                  <span className="text-text-muted">{t('feed.loading')}</span>
                 </div>
               </div>
             )}
 
             {!hasNextPage && points.length > 0 && (
               <div className="text-center py-6">
-                <p className="text-text-muted">Все точки загружены</p>
+                <p className="text-text-muted">{t('feed.allLoaded')}</p>
               </div>
             )}
           </div>

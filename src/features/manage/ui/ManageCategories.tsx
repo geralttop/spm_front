@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { categoriesApi, pointsApi } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
 import { Tag, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
 import { CategoryForm } from './CategoryForm';
 
 export function ManageCategories() {
+  const { t } = useTranslation();
   const {
     categories,
     categoriesLoading,
@@ -51,16 +53,16 @@ export function ManageCategories() {
   };
 
   const handleDeleteCategory = async (id: number) => {
-    if (!confirm('Удалить эту категорию? Если она используется в точках, удаление будет невозможно.')) return;
+    if (!confirm(t('manage.manageCategories.deleteConfirm'))) return;
     
     setCategoriesLoading(true);
     try {
       await categoriesApi.delete(id);
       await loadCategories();
-      alert('Категория успешно удалена');
+      alert(t('manage.manageCategories.deleteSuccess'));
     } catch (err: any) {
       console.error('Error deleting category:', err);
-      alert(err.response?.data?.message || 'Ошибка удаления категории');
+      alert(err.response?.data?.message || t('manage.manageCategories.deleteError'));
     } finally {
       setCategoriesLoading(false);
     }
@@ -90,7 +92,7 @@ export function ManageCategories() {
       await loadPoints();
     } catch (err: any) {
       console.error('Error updating point category:', err);
-      alert(err.response?.data?.message || 'Ошибка перемещения точки');
+      alert(err.response?.data?.message || t('manage.manageCategories.moveError'));
     } finally {
       setCategoriesLoading(false);
       setDraggedPoint(null);
@@ -108,21 +110,21 @@ export function ManageCategories() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-text-main">Категории</h2>
+        <h2 className="text-xl font-semibold text-text-main">{t('manage.manageCategories.title')}</h2>
         {!showCategoryForm && !editingCategory && (
           <button
             onClick={() => setShowCategoryForm(true)}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Создать
+            {t('manage.manageCategories.create')}
           </button>
         )}
       </div>
 
       <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm text-blue-800">
-          💡 Нажмите на стрелку, чтобы раскрыть список точек. Перетаскивайте точки между категориями для изменения.
+          {t('manage.manageCategories.tip')}
         </p>
       </div>
 
@@ -135,7 +137,7 @@ export function ManageCategories() {
       )}
 
       {categories.length === 0 ? (
-        <p className="text-center py-8 text-text-muted">У вас пока нет категорий</p>
+        <p className="text-center py-8 text-text-muted">{t('manage.manageCategories.noCategories')}</p>
       ) : (
         <div className="space-y-3">
           {/* Без категории */}
@@ -152,9 +154,9 @@ export function ManageCategories() {
                   <Tag className="h-4 w-4 text-gray-600" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-text-main">Без категории</h3>
+                  <h3 className="font-medium text-text-main">{t('manage.manageCategories.noCategory')}</h3>
                   <p className="text-xs text-text-muted mt-1">
-                    {points.filter(p => !p.category).length} точек
+                    {points.filter(p => !p.category).length} {t('manage.manageCategories.points')}
                   </p>
                 </div>
               </div>
@@ -186,7 +188,7 @@ export function ManageCategories() {
                     <div className="flex-1">
                       <span className="font-medium text-text-main">{category.name}</span>
                       {categoryPoints.length > 0 && (
-                        <p className="text-xs text-text-muted mt-1">{categoryPoints.length} точек</p>
+                        <p className="text-xs text-text-muted mt-1">{categoryPoints.length} {t('manage.manageCategories.points')}</p>
                       )}
                     </div>
                   </div>
@@ -225,7 +227,7 @@ export function ManageCategories() {
                           {point.description && <p className="text-xs text-text-muted truncate">{point.description}</p>}
                         </div>
                         <span className="text-xs text-text-muted shrink-0">
-                          {point.container?.title || 'Без контейнера'}
+                          {point.container?.title || t('manage.manageCategories.noContainer')}
                         </span>
                       </div>
                     ))}
@@ -234,7 +236,7 @@ export function ManageCategories() {
 
                 {isExpanded && categoryPoints.length === 0 && (
                   <div className="px-4 pb-4">
-                    <p className="text-sm text-text-muted text-center py-4">Нет точек в этой категории</p>
+                    <p className="text-sm text-text-muted text-center py-4">{t('manage.manageCategories.noPointsInCategory')}</p>
                   </div>
                 )}
               </div>

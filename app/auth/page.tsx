@@ -203,7 +203,7 @@ export default function AuthPage() {
             <h1 className="text-xl sm:text-2xl font-bold text-text-main">
               {t("auth.resetPasswordTitle")}
             </h1>
-            <p className="mt-2 text-sm text-text-muted break-words">
+            <p className="mt-2 text-sm text-text-muted wrap-break-word">
               {t("auth.resetPasswordSubtitle")} <span className="font-medium">{pendingEmail}</span>
             </p>
           </div>
@@ -311,7 +311,7 @@ export default function AuthPage() {
             <h1 className="text-xl sm:text-2xl font-bold text-text-main">
               {t("auth.verifyTitle")}
             </h1>
-            <p className="mt-2 text-sm text-text-muted break-words">
+            <p className="mt-2 text-sm text-text-muted wrap-break-word">
               {t("auth.verifySubtitle")} <span className="font-medium">{pendingEmail}</span>
             </p>
           </div>

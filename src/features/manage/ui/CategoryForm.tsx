@@ -1,6 +1,7 @@
 'use client';
 
 import { useForm } from '@/shared/lib/hooks';
+import { useTranslation } from 'react-i18next';
 import { categoriesApi, type Category } from '@/shared/api';
 
 interface CategoryFormProps {
@@ -10,6 +11,7 @@ interface CategoryFormProps {
 }
 
 export function CategoryForm({ editingCategory, onSuccess, onCancel }: CategoryFormProps) {
+  const { t } = useTranslation();
   const { values, handleChange, handleSubmit, isSubmitting } = useForm({
     initialValues: {
       name: editingCategory?.name || '',
@@ -28,12 +30,12 @@ export function CategoryForm({ editingCategory, onSuccess, onCancel }: CategoryF
   return (
     <form onSubmit={handleSubmit} className="mb-6 p-4 bg-surface rounded-lg border border-border">
       <h3 className="font-medium text-text-main mb-4">
-        {editingCategory ? 'Редактировать категорию' : 'Новая категория'}
+        {editingCategory ? t('manage.categoryForm.edit') : t('manage.categoryForm.new')}
       </h3>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-text-main mb-2">
-            Название <span className="text-red-500">*</span>
+            {t('manage.categoryForm.name')} <span className="text-red-500">{t('manage.categoryForm.required')}</span>
           </label>
           <input
             type="text"
@@ -46,7 +48,7 @@ export function CategoryForm({ editingCategory, onSuccess, onCancel }: CategoryF
         </div>
         <div>
           <label className="block text-sm font-medium text-text-main mb-2">
-            Цвет
+            {t('manage.categoryForm.color')}
           </label>
           <input
             type="color"
@@ -61,14 +63,14 @@ export function CategoryForm({ editingCategory, onSuccess, onCancel }: CategoryF
             disabled={isSubmitting}
             className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
-            {isSubmitting ? 'Сохранение...' : editingCategory ? 'Сохранить' : 'Создать'}
+            {isSubmitting ? t('manage.categoryForm.saving') : editingCategory ? t('manage.categoryForm.save') : t('manage.categoryForm.create')}
           </button>
           <button
             type="button"
             onClick={onCancel}
             className="px-4 py-2 border border-border rounded-lg text-text-main hover:bg-surface transition-colors"
           >
-            Отмена
+            {t('manage.categoryForm.cancel')}
           </button>
         </div>
       </div>

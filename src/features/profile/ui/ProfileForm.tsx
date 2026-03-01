@@ -1,6 +1,7 @@
 'use client';
 
 import { User, Mail, Check, X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { Input, Textarea, Button } from '@/shared/ui';
 import { useForm } from '@/shared/lib/hooks';
 import { updateProfileSchema } from '@/shared/schemas';
@@ -14,6 +15,7 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFormProps) {
+  const { t } = useTranslation();
   const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm({
     initialValues: {
       username: profile.username || '',
@@ -26,14 +28,14 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
   return (
     <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm">
       <h2 className="mb-4 text-base sm:text-lg font-semibold text-text-main">
-        Информация профиля
+        {t('profile.profileForm.title')}
       </h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
             <User className="h-4 w-4" />
-            Имя пользователя
+            {t('profile.profileForm.username')}
           </label>
           {isEditing ? (
             <>
@@ -41,7 +43,7 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
                 type="text"
                 value={values.username}
                 onChange={(e) => handleChange('username', e.target.value)}
-                placeholder="Введите имя пользователя"
+                placeholder={t('profile.profileForm.usernamePlaceholder')}
                 maxLength={30}
                 minLength={3}
               />
@@ -59,21 +61,21 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
         <div>
           <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
             <Mail className="h-4 w-4" />
-            Email
+            {t('profile.email')}
           </label>
           <p className="text-text-main font-medium break-all">{profile.email}</p>
         </div>
 
         <div>
           <label className="mb-2 block text-sm font-medium text-text-muted">
-            Биография
+            {t('profile.profileForm.bio')}
           </label>
           {isEditing ? (
             <>
               <Textarea
                 value={values.bio}
                 onChange={(e) => handleChange('bio', e.target.value)}
-                placeholder="Расскажите о себе"
+                placeholder={t('profile.profileForm.bioPlaceholder')}
                 maxLength={1000}
                 rows={4}
               />
@@ -96,7 +98,7 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
               className="flex-1 gap-2 w-full"
             >
               <Check className="h-4 w-4" />
-              {isSubmitting ? 'Сохранение...' : 'Сохранить'}
+              {isSubmitting ? t('profile.profileForm.saving') : t('profile.profileForm.save')}
             </Button>
             <Button 
               type="button"
@@ -106,7 +108,7 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
               className="flex-1 gap-2 w-full"
             >
               <X className="h-4 w-4" />
-              Отмена
+              {t('profile.profileForm.cancel')}
             </Button>
           </div>
         )}

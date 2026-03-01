@@ -1,4 +1,5 @@
 import { X, User as UserIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./button";
 import { useRouter } from "next/navigation";
 import type { SubscriptionUser } from "@/shared/api";
@@ -32,6 +33,7 @@ export function UserListModal({
   followLabel,
   unfollowLabel,
 }: UserListModalProps) {
+  const { t } = useTranslation();
   const router = useRouter();
 
   if (!isOpen) return null;
@@ -65,7 +67,7 @@ export function UserListModal({
         </div>
 
         {loading ? (
-          <div className="text-center py-8 text-text-muted">Загрузка...</div>
+          <div className="text-center py-8 text-text-muted">{t('common.loading')}</div>
         ) : users.length === 0 ? (
           <div className="text-center py-8 text-text-muted">{emptyMessage}</div>
         ) : (

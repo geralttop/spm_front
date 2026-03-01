@@ -1,12 +1,14 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { containersApi, pointsApi } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
 import { Package, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
 import { ContainerForm } from './ContainerForm';
 
 export function ManageContainers() {
+  const { t } = useTranslation();
   const {
     containers,
     containersLoading,
@@ -53,8 +55,8 @@ export function ManageContainers() {
   const handleDeleteContainer = async (id: string) => {
     const pointsCount = points.filter(p => p.container?.id === id).length;
     const confirmMessage = pointsCount > 0
-      ? `Удалить этот контейнер? ${pointsCount} точек останутся без контейнера.`
-      : 'Удалить этот контейнер?';
+      ? t('manage.manageContainers.deleteConfirmWithPoints', { count: pointsCount })
+      : t('manage.manageContainers.deleteConfirm');
     
     if (!confirm(confirmMessage)) return;
     
@@ -63,10 +65,10 @@ export function ManageContainers() {
       await containersApi.delete(id);
       await loadContainers();
       await loadPoints();
-      alert('Контейнер успешно удален');
+      alert(t('manage.manageContainers.deleteSuccess'));
     } catch (err: any) {
       console.error('Error deleting container:', err);
-      alert(err.response?.data?.message || 'Ошибка удаления контейнера');
+      alert(err.response?.data?.message || t('manage.manageContainers.deleteError'));
     } finally {
       setContainersLoading(false);
     }
@@ -96,7 +98,7 @@ export function ManageContainers() {
       await loadPoints();
     } catch (err: any) {
       console.error('Error updating point container:', err);
-      alert(err.response?.data?.message || 'Ошибка перемещения точки');
+      alert(err.response?.data?.message || t('manage.manageContainers.moveError'));
     } finally {
       setContainersLoading(false);
       setDraggedPoint(null);
@@ -114,21 +116,21 @@ export function ManageContainers() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-text-main">Контейнеры</h2>
+        <h2 className="text-xl font-semibold text-text-main">{t('manage.manageContainers.title')}</h2>
         {!showContainerForm && !editingContainer && (
           <button
             onClick={() => setShowContainerForm(true)}
             className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
             <Plus className="h-5 w-5" />
-            Создать
+            {t('manage.manageContainers.create')}
           </button>
         )}
       </div>
 
       <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm text-blue-800">
-          💡 Нажмите на стрелку, чтобы раскрыть список точек. Перетаскивайте точки между контейнерами для изменения.
+          {t('manage.manageContainers.tip')}
         </p>
       </div>
 
@@ -141,7 +143,7 @@ export function ManageContainers() {
       )}
 
       {containers.length === 0 ? (
-        <p className="text-center py-8 text-text-muted">У вас пока нет контейнеров</p>
+        <p className="text-center py-8 text-text-muted">{t('manage.manageContainers.noContainers')}</p>
       ) : (
         <div className="space-y-3">
           {/* Без контейнера */}
@@ -156,9 +158,9 @@ export function ManageContainers() {
               <div className="flex items-center gap-3">
                 <Package className="h-5 w-5 text-text-muted" />
                 <div>
-                  <h3 className="font-medium text-text-main">Без контейнера</h3>
+                  <h3 className="font-medium text-text-main">{t('manage.manageContainers.noContainer')}</h3>
                   <p className="text-xs text-text-muted mt-1">
-                    {points.filter(p => !p.container).length} точек
+                    {points.filter(p => !p.container).length} {t('manage.manageContainers.points')}
                   </p>
                 </div>
               </div>
@@ -192,7 +194,7 @@ export function ManageContainers() {
                         <p className="text-sm text-text-muted mt-1">{container.description}</p>
                       )}
                       {containerPoints.length > 0 && (
-                        <p className="text-xs text-blue-600 mt-1">📍 {containerPoints.length} точек</p>
+                        <p className="text-xs text-blue-600 mt-1">📍 {containerPoints.length} {t('manage.manageContainers.points')}</p>
                       )}
                     </div>
                   </div>
@@ -238,7 +240,7 @@ export function ManageContainers() {
                             />
                           )}
                           <span className="text-xs text-text-muted">
-                            {point.category?.name || 'Без категории'}
+                            {point.category?.name || t('manage.manageContainers.noCategory')}
                           </span>
                         </div>
                       </div>
@@ -248,7 +250,7 @@ export function ManageContainers() {
 
                 {isExpanded && containerPoints.length === 0 && (
                   <div className="px-4 pb-4">
-                    <p className="text-sm text-text-muted text-center py-4">Нет точек в этом контейнере</p>
+                    <p className="text-sm text-text-muted text-center py-4">{t('manage.manageContainers.noPointsInContainer')}</p>
                   </div>
                 )}
               </div>

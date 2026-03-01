@@ -13,50 +13,67 @@ import {
   DeleteButton,
   ReferenceField,
 } from 'react-admin';
+import { useTranslation } from 'react-i18next';
 
-export const CategoryList = () => (
-  <List>
-    <Datagrid>
-      <TextField source="id" label="ID" />
-      <TextField source="name" label="Название" />
-      <TextField source="color" label="Цвет" />
-      <ReferenceField source="authorId" reference="users" label="Автор" emptyText="Системная">
-        <TextField source="username" />
-      </ReferenceField>
-      <EditButton />
-      <ShowButton />
-      <DeleteButton />
-    </Datagrid>
-  </List>
-);
+export const CategoryList = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <List>
+      <Datagrid>
+        <TextField source="id" label={t('admin.categories.id')} />
+        <TextField source="name" label={t('admin.categories.name')} />
+        <TextField source="color" label={t('admin.categories.color')} />
+        <ReferenceField source="authorId" reference="users" label={t('admin.categories.author')} emptyText={t('admin.categories.system')}>
+          <TextField source="username" />
+        </ReferenceField>
+        <EditButton />
+        <ShowButton />
+        <DeleteButton />
+      </Datagrid>
+    </List>
+  );
+};
 
-export const CategoryEdit = () => (
-  <Edit>
-    <SimpleForm>
-      <TextInput source="name" label="Название" />
-      <TextInput source="color" label="Цвет" />
-    </SimpleForm>
-  </Edit>
-);
+export const CategoryEdit = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <Edit>
+      <SimpleForm>
+        <TextInput source="name" label={t('admin.categories.name')} />
+        <TextInput source="color" label={t('admin.categories.color')} />
+      </SimpleForm>
+    </Edit>
+  );
+};
 
-export const CategoryCreate = () => (
-  <Create>
-    <SimpleForm>
-      <TextInput source="name" label="Название" />
-      <TextInput source="color" label="Цвет" defaultValue="#000000" />
-    </SimpleForm>
-  </Create>
-);
+export const CategoryCreate = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <Create>
+      <SimpleForm>
+        <TextInput source="name" label={t('admin.categories.name')} />
+        <TextInput source="color" label={t('admin.categories.color')} defaultValue="#000000" />
+      </SimpleForm>
+    </Create>
+  );
+};
 
-export const CategoryShow = () => (
-  <Show>
-    <SimpleShowLayout>
-      <TextField source="id" label="ID" />
-      <TextField source="name" label="Название" />
-      <TextField source="color" label="Цвет" />
-      <ReferenceField source="authorId" reference="users" label="Автор" emptyText="Системная">
-        <TextField source="username" />
-      </ReferenceField>
-    </SimpleShowLayout>
-  </Show>
-);
+export const CategoryShow = () => {
+  const { t } = useTranslation();
+  
+  return (
+    <Show>
+      <SimpleShowLayout>
+        <TextField source="id" label={t('admin.categories.id')} />
+        <TextField source="name" label={t('admin.categories.name')} />
+        <TextField source="color" label={t('admin.categories.color')} />
+        <ReferenceField source="authorId" reference="users" label={t('admin.categories.author')} emptyText={t('admin.categories.system')}>
+          <TextField source="username" />
+        </ReferenceField>
+      </SimpleShowLayout>
+    </Show>
+  );
+};

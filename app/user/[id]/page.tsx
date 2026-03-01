@@ -109,7 +109,7 @@ export default function UserProfilePage() {
   if (!user && !stats) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-text-muted">Пользователь не найден</div>
+        <div className="text-text-muted">{t("profile.userNotFound")}</div>
       </div>
     );
   }
@@ -206,16 +206,16 @@ export default function UserProfilePage() {
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
             <h2 className="mb-4 text-lg font-semibold text-text-main flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              Точки пользователя {user?.username}
+              {t("profile.userPoints")} {user?.username}
             </h2>
 
             {pointsLoading ? (
               <div className="text-center py-8 text-text-muted">
-                Загрузка точек...
+                {t("profile.loadingPoints")}
               </div>
             ) : points.length === 0 ? (
               <div className="text-center py-8 text-text-muted">
-                У пользователя пока нет точек
+                {t("profile.noUserPoints")}
               </div>
             ) : (
               <div className="space-y-6">

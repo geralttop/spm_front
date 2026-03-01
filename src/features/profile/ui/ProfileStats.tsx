@@ -1,6 +1,7 @@
 'use client';
 
 import { Users } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { SubscriptionStats } from '@/shared/types';
 
 interface ProfileStatsProps {
@@ -10,6 +11,8 @@ interface ProfileStatsProps {
 }
 
 export function ProfileStats({ stats, onShowFollowers, onShowFollowing }: ProfileStatsProps) {
+  const { t } = useTranslation();
+  
   return (
     <div className="grid grid-cols-2 gap-3 sm:gap-4 sm:flex sm:w-auto">
       <button
@@ -19,7 +22,7 @@ export function ProfileStats({ stats, onShowFollowers, onShowFollowing }: Profil
         <Users className="h-4 w-4 sm:h-5 sm:w-5 text-text-muted shrink-0" />
         <div className="text-left min-w-0">
           <div className="text-lg sm:text-2xl font-bold text-text-main">{stats.followersCount}</div>
-          <div className="text-xs sm:text-sm text-text-muted truncate">Подписчики</div>
+          <div className="text-xs sm:text-sm text-text-muted truncate">{t('profile.profileStats.followers')}</div>
         </div>
       </button>
       
@@ -30,7 +33,7 @@ export function ProfileStats({ stats, onShowFollowers, onShowFollowing }: Profil
         <Users className="h-4 w-4 sm:h-5 sm:w-5 text-text-muted shrink-0" />
         <div className="text-left min-w-0">
           <div className="text-lg sm:text-2xl font-bold text-text-main">{stats.followingCount}</div>
-          <div className="text-xs sm:text-sm text-text-muted truncate">Подписки</div>
+          <div className="text-xs sm:text-sm text-text-muted truncate">{t('profile.profileStats.following')}</div>
         </div>
       </button>
     </div>

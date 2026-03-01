@@ -9,7 +9,11 @@
     "fsdStructure": "FSD Structure",
     "fsdDescription": "The project is organized using Feature-Sliced Design methodology for scalability and code maintainability.",
     "primary": "Primary",
-    "secondary": "Secondary"
+    "secondary": "Secondary",
+    "loading": "Loading...",
+    "error": "Error",
+    "errorLoading": "Error loading data",
+    "errorUpdating": "Error updating"
   },
   "navigation": {
     "home": "Home",
@@ -137,7 +141,31 @@
     "noFollowing": "No following",
     "close": "Close",
     "follow": "Follow",
-    "unfollow": "Unfollow"
+    "unfollow": "Unfollow",
+    "userNotFound": "User not found",
+    "userPoints": "User's points",
+    "noUserPoints": "User has no points yet",
+    "loadingPoints": "Loading points...",
+    "followSuccess": "You followed",
+    "unfollowSuccess": "You unfollowed",
+    "followError": "Follow error",
+    "profileForm": {
+      "title": "Profile Information",
+      "username": "Username",
+      "usernamePlaceholder": "Enter username",
+      "bio": "Biography",
+      "bioPlaceholder": "Tell us about yourself",
+      "saving": "Saving...",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "profileHeader": {
+      "edit": "Edit"
+    },
+    "profileStats": {
+      "followers": "Followers",
+      "following": "Following"
+    }
   },
   "comments": {
     "title": "Comments",
@@ -164,9 +192,157 @@
     "noComments": "You don't have any comments yet",
     "unknownPoint": "Unknown point"
   },
+  "feed": {
+    "title": "Points Feed",
+    "empty": "Feed is empty",
+    "emptyDescription": "Follow other users or create your own points to see them here",
+    "loading": "Loading...",
+    "allLoaded": "All points loaded",
+    "refresh": "Refresh"
+  },
+  "manage": {
+    "title": "Data Management",
+    "categories": "Categories",
+    "containers": "Containers",
+    "categoryForm": {
+      "edit": "Edit Category",
+      "new": "New Category",
+      "name": "Name",
+      "color": "Color",
+      "required": "*",
+      "saving": "Saving...",
+      "save": "Save",
+      "create": "Create",
+      "cancel": "Cancel"
+    },
+    "containerForm": {
+      "edit": "Edit Container",
+      "new": "New Container",
+      "title": "Title",
+      "description": "Description",
+      "required": "*",
+      "saving": "Saving...",
+      "save": "Save",
+      "create": "Create",
+      "cancel": "Cancel"
+    },
+    "manageCategories": {
+      "title": "Categories",
+      "create": "Create",
+      "tip": "💡 Click the arrow to expand the list of points. Drag points between categories to change them.",
+      "noCategories": "You don't have any categories yet",
+      "noCategory": "No category",
+      "points": "points",
+      "noPointsInCategory": "No points in this category",
+      "deleteConfirm": "Delete this category? If it is used in points, deletion will be impossible.",
+      "deleteSuccess": "Category successfully deleted",
+      "deleteError": "Error deleting category",
+      "moveError": "Error moving point",
+      "noContainer": "No container"
+    },
+    "manageContainers": {
+      "title": "Containers",
+      "create": "Create",
+      "tip": "💡 Click the arrow to expand the list of points. Drag points between containers to change them.",
+      "noContainers": "You don't have any containers yet",
+      "noContainer": "No container",
+      "points": "points",
+      "noPointsInContainer": "No points in this container",
+      "deleteConfirm": "Delete this container?",
+      "deleteConfirmWithPoints": "Delete this container? {{count}} points will remain without a container.",
+      "deleteSuccess": "Container successfully deleted",
+      "deleteError": "Error deleting container",
+      "moveError": "Error moving point",
+      "noCategory": "No category"
+    },
+    "managePoints": {
+      "noPoints": "You don't have any points yet",
+      "noCategory": "No category",
+      "noContainer": "No container",
+      "deleteConfirm": "Delete this point?",
+      "deleteSuccess": "Point successfully deleted",
+      "deleteError": "Error deleting point",
+      "delete": "Delete"
+    }
+  },
+  "admin": {
+    "loading": "Loading...",
+    "categories": {
+      "id": "ID",
+      "name": "Name",
+      "color": "Color",
+      "author": "Author",
+      "system": "System"
+    }
+  },
+  "map": {
+    "category": "Category:",
+    "viewDetails": "View details",
+    "loadingPoints": "Loading points...",
+    "pointsOnMap": "Points on map:"
+  },
+  "createPoint": {
+    "title": "Create Point",
+    "subtitle": "Add a new point to the map",
+    "loading": "Loading...",
+    "basicInfo": "Basic Information",
+    "description": "Description",
+    "coordinates": "Coordinates",
+    "dragMarker": "Drag the marker on the map to select coordinates",
+    "pointCoordinates": "Point Coordinates",
+    "longitude": "Longitude (lng) *",
+    "latitude": "Latitude (lat) *",
+    "longitudeExample": "Example: 27.561831 (for Minsk)",
+    "latitudeExample": "Example: 53.902496 (for Minsk)",
+    "category": "Category",
+    "selectCategory": "Select category *",
+    "selectCategoryOption": "Select category",
+    "createNewCategory": "Create new category",
+    "newCategory": "New Category",
+    "color": "Color:",
+    "cancel": "Cancel",
+    "container": "Container",
+    "selectContainer": "Select container *",
+    "selectContainerOption": "Select container",
+    "createNewContainer": "Create new container",
+    "newContainer": "New Container"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Customize the application",
+    "loading": "Loading...",
+    "back": "Back",
+    "sidebarOrder": "Menu Order",
+    "dragToReorder": "Drag items to change the order in the sidebar",
+    "reset": "Reset",
+    "tip": "Tip:",
+    "dragTip": "Drag items with your mouse to change the order. Changes are saved automatically.",
+    "language": "Interface Language",
+    "languageDescription": "Select the language for the application interface",
+    "mapStyles": "Map Styles",
+    "mapStylesDescription": "Select which map styles will be available in the dropdown",
+    "default": "Default",
+    "recommended": "Recommended",
+    "setAsDefault": "Set as default",
+    "mapStylesTip": "Selected map styles will be available when creating points and viewing point cards. The default style will be used when opening the map for the first time. It is recommended to keep basic styles enabled for the best experience.",
+    "otherSettings": "Other Settings",
+    "otherSettingsDescription": "Additional settings will be added in future updates"
+  },
   "favorites": {
     "addToFavorites": "Add to favorites",
-    "removeFromFavorites": "Remove from favorites"
+    "removeFromFavorites": "Remove from favorites",
+    "title": "Favorites",
+    "empty": "Your favorites are empty",
+    "emptyDescription": "Add interesting points to favorites by clicking the heart icon. They will be displayed here for quick access.",
+    "exploreFeed": "Explore feed",
+    "addToFavoritesAction": "Add to favorites",
+    "sortBy": "Sort by:",
+    "sortByDate": "Date added",
+    "sortByDateShort": "Date",
+    "sortByName": "Name",
+    "sortByAuthor": "Author",
+    "addedAt": "Added",
+    "refresh": "Refresh"
   },
   "errors": {
     "unexpected": {

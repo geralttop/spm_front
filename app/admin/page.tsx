@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/shared/lib/store';
 import AdminApp from '@/src/features/admin/AdminApp';
 
 export default function AdminPage() {
+  const { t } = useTranslation();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -60,7 +62,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-lg">Загрузка...</div>
+        <div className="text-lg">{t('admin.loading')}</div>
       </div>
     );
   }

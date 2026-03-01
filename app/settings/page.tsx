@@ -151,7 +151,7 @@ export default function SettingsPage() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-text-muted">Загрузка...</div>
+        <div className="text-text-muted">{t('settings.loading')}</div>
       </div>
     );
   }
@@ -169,11 +169,11 @@ export default function SettingsPage() {
               className="gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Назад
+              {t('settings.back')}
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-text-main">Настройки</h1>
-              <p className="text-text-muted mt-1">Настройте приложение под себя</p>
+              <h1 className="text-3xl font-bold text-text-main">{t('settings.title')}</h1>
+              <p className="text-text-muted mt-1">{t('settings.subtitle')}</p>
             </div>
           </div>
 
@@ -183,10 +183,10 @@ export default function SettingsPage() {
               <div>
                 <h2 className="text-xl font-semibold text-text-main flex items-center gap-2">
                   <GripVertical className="h-5 w-5" />
-                  Порядок пунктов меню
+                  {t('settings.sidebarOrder')}
                 </h2>
                 <p className="text-sm text-text-muted mt-1">
-                  Перетащите пункты для изменения порядка в боковом меню
+                  {t('settings.dragToReorder')}
                 </p>
               </div>
               <Button
@@ -196,7 +196,7 @@ export default function SettingsPage() {
                 className="gap-2"
               >
                 <RotateCcw className="h-4 w-4" />
-                Сбросить
+                {t('settings.reset')}
               </Button>
             </div>
 
@@ -220,8 +220,8 @@ export default function SettingsPage() {
                       isDragging ? 'opacity-50 scale-95' : ''
                     } ${isDragOver ? 'border-primary scale-105' : 'border-border'} hover:border-primary/50`}
                   >
-                    <GripVertical className="h-5 w-5 text-text-muted flex-shrink-0" />
-                    {Icon && <Icon className="h-5 w-5 text-text-main flex-shrink-0" />}
+                    <GripVertical className="h-5 w-5 text-text-muted shrink-0" />
+                    {Icon && <Icon className="h-5 w-5 text-text-main shrink-0" />}
                     <span className="font-medium text-text-main flex-1">{label}</span>
                     <span className="text-xs text-text-muted">#{index + 1}</span>
                   </div>
@@ -231,8 +231,7 @@ export default function SettingsPage() {
 
             <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border">
               <p className="text-xs text-text-muted">
-                <strong className="text-text-main">Совет:</strong> Перетащите пункты мышью для изменения порядка. 
-                Изменения сохраняются автоматически.
+                <strong className="text-text-main">{t('settings.tip')}</strong> {t('settings.dragTip')}
               </p>
             </div>
           </div>
@@ -242,10 +241,10 @@ export default function SettingsPage() {
             <div className="mb-4">
               <h2 className="text-xl font-semibold text-text-main flex items-center gap-2">
                 <Languages className="h-5 w-5" />
-                Язык интерфейса
+                {t('settings.language')}
               </h2>
               <p className="text-sm text-text-muted mt-1">
-                Выберите язык для отображения интерфейса приложения
+                {t('settings.languageDescription')}
               </p>
             </div>
 
@@ -281,10 +280,10 @@ export default function SettingsPage() {
               <div>
                 <h2 className="text-xl font-semibold text-text-main flex items-center gap-2">
                   <Map className="h-5 w-5" />
-                  Стили карт
+                  {t('settings.mapStyles')}
                 </h2>
                 <p className="text-sm text-text-muted mt-1">
-                  Выберите, какие стили карт будут доступны в выпадающем списке
+                  {t('settings.mapStylesDescription')}
                 </p>
               </div>
               <Button
@@ -294,7 +293,7 @@ export default function SettingsPage() {
                 className="gap-2"
               >
                 <RotateCcw className="h-4 w-4" />
-                Сбросить
+                {t('settings.reset')}
               </Button>
             </div>
 
@@ -318,7 +317,7 @@ export default function SettingsPage() {
                   >
                     <div className="flex items-start gap-3">
                       <div
-                        className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 transition-colors ${
+                        className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
                           isEnabled
                             ? 'border-primary bg-primary'
                             : 'border-border bg-background'
@@ -332,7 +331,7 @@ export default function SettingsPage() {
                           <h3 className="font-medium text-sm text-text-main truncate">{style.name}</h3>
                           {isDefault && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium whitespace-nowrap">
-                              По умолч.
+                              {t('settings.default')}
                             </span>
                           )}
                         </div>
@@ -341,7 +340,7 @@ export default function SettingsPage() {
                         </p>
                         {isDefaultStyle && !isEnabled && (
                           <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-text-muted font-medium">
-                            Рекомендуется
+                            {t('settings.recommended')}
                           </span>
                         )}
                       </div>
@@ -356,7 +355,7 @@ export default function SettingsPage() {
                         disabled={settingsLoading}
                         className="absolute top-2 right-2 text-[10px] px-2 py-1 rounded bg-background border border-border hover:bg-accent transition-colors disabled:opacity-50"
                       >
-                        Сделать основным
+                        {t('settings.setAsDefault')}
                       </button>
                     )}
                   </div>
@@ -366,9 +365,7 @@ export default function SettingsPage() {
 
             <div className="mt-6 p-4 rounded-lg bg-muted/50 border border-border">
               <p className="text-sm text-text-muted">
-                <strong className="text-text-main">Совет:</strong> Выбранные стили карт будут доступны 
-                при создании точек и просмотре карточек точек. Стиль по умолчанию будет использоваться 
-                при первом открытии карты. Рекомендуется оставить включенными базовые стили для лучшего опыта.
+                <strong className="text-text-main">{t('settings.tip')}</strong> {t('settings.mapStylesTip')}
               </p>
             </div>
           </div>
@@ -376,10 +373,10 @@ export default function SettingsPage() {
           {/* Future Settings Sections */}
           <div className="rounded-lg border border-border bg-card p-6 shadow-sm opacity-50">
             <h2 className="text-xl font-semibold text-text-main mb-4">
-              Другие настройки
+              {t('settings.otherSettings')}
             </h2>
             <p className="text-sm text-text-muted">
-              Дополнительные настройки будут добавлены в будущих обновлениях
+              {t('settings.otherSettingsDescription')}
             </p>
           </div>
         </div>

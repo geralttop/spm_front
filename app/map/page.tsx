@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { feedApi } from "@/shared/api";
 import type { FeedPoint } from "@/shared/api/feed";
 import { useAuthStore } from "@/shared/lib/store";
@@ -12,6 +13,7 @@ import { MapPin, User, Calendar, Loader2 } from "lucide-react";
 import { formatRelativeDate } from "@/shared/lib/utils";
 
 export default function MapPage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
@@ -116,7 +118,7 @@ export default function MapPage() {
 
                 {point.category && (
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-text-muted">Категория:</span>
+                    <span className="text-xs text-text-muted">{t('map.category')}</span>
                     <span
                       className="text-xs font-medium px-2 py-0.5 rounded text-white"
                       style={{ backgroundColor: point.category.color }}
@@ -135,7 +137,7 @@ export default function MapPage() {
                   onClick={() => router.push(`/points/${point.id}`)}
                   className="w-full mt-2 px-3 py-1.5 text-xs font-medium text-white bg-primary hover:bg-primary/90 rounded transition-colors"
                 >
-                  Подробнее
+                  {t('map.viewDetails')}
                 </button>
               </div>
             </MarkerPopup>
@@ -171,7 +173,7 @@ export default function MapPage() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-surface/90 backdrop-blur-sm rounded-lg p-6 shadow-xl">
           <div className="flex flex-col items-center gap-3">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="text-sm text-text-muted">Загрузка точек...</p>
+            <p className="text-sm text-text-muted">{t('map.loadingPoints')}</p>
           </div>
         </div>
       )}
@@ -187,7 +189,7 @@ export default function MapPage() {
       {!loading && !error && (
         <div className="absolute bottom-4 left-4 z-10 bg-surface/90 backdrop-blur-sm border border-border rounded-lg px-4 py-2 shadow-lg">
           <p className="text-sm text-text-main">
-            Точек на карте: <span className="font-semibold">{points.length}</span>
+            {t('map.pointsOnMap')} <span className="font-semibold">{points.length}</span>
           </p>
         </div>
       )}

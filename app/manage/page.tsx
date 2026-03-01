@@ -2,12 +2,14 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore, useManageStore } from '@/shared/lib/store';
 import { ManagePoints, ManageCategories, ManageContainers } from '@/features/manage';
 import { MapPin, Tag, Package } from 'lucide-react';
-import { Loading, ErrorMessage } from '@/shared/ui';
+import { Loading } from '@/shared/ui';
 
 export default function ManagePage() {
+  const { t } = useTranslation();
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { activeTab, setActiveTab, points, categories, containers } = useManageStore();
@@ -25,7 +27,7 @@ export default function ManagePage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-text-main mb-8">Управление данными</h1>
+        <h1 className="text-3xl font-bold text-text-main mb-8">{t('manage.title')}</h1>
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b border-border">
@@ -38,7 +40,7 @@ export default function ManagePage() {
             }`}
           >
             <MapPin className="inline h-5 w-5 mr-2" />
-            Точки ({points.length})
+            {t('sidebar.map')} ({points.length})
           </button>
           <button
             onClick={() => setActiveTab('categories')}
@@ -49,7 +51,7 @@ export default function ManagePage() {
             }`}
           >
             <Tag className="inline h-5 w-5 mr-2" />
-            Категории ({categories.length})
+            {t('manage.categories')} ({categories.length})
           </button>
           <button
             onClick={() => setActiveTab('containers')}
@@ -60,7 +62,7 @@ export default function ManagePage() {
             }`}
           >
             <Package className="inline h-5 w-5 mr-2" />
-            Контейнеры ({containers.length})
+            {t('manage.containers')} ({containers.length})
           </button>
         </div>
 
