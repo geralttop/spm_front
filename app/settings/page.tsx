@@ -263,7 +263,8 @@ export default function SettingsPage() {
                 const languageNames: Record<SupportedLocale, string> = {
                   ru: "Русский",
                   be: "Беларуская",
-                  en: "English"
+                  en: "English",
+                  fr: "Français"
                 };
 
                 return (
@@ -313,6 +314,10 @@ export default function SettingsPage() {
                 const isDefault = defaultMapStyle === styleKey;
                 const canDisable = availableMapStyles.length > 1 || !isEnabled;
                 const isDefaultStyle = ['openstreet', 'openstreet3d', 'satellite', 'carto'].includes(styleKey);
+                
+                // Получаем локализованные название и описание
+                const styleName = t(`mapStyles.${styleKey}.name`);
+                const styleDescription = t(`mapStyles.${styleKey}.description`);
 
                 return (
                   <div
@@ -337,7 +342,7 @@ export default function SettingsPage() {
                       
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-medium text-sm text-text-main truncate">{style.name}</h3>
+                          <h3 className="font-medium text-sm text-text-main truncate">{styleName}</h3>
                           {isDefault && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium whitespace-nowrap">
                               {t('settings.default')}
@@ -345,7 +350,7 @@ export default function SettingsPage() {
                           )}
                         </div>
                         <p className="text-xs text-text-muted line-clamp-2">
-                          {style.description || 'Стиль карты'}
+                          {styleDescription}
                         </p>
                         {isDefaultStyle && !isEnabled && (
                           <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-text-muted font-medium">

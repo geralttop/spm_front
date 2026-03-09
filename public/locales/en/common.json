@@ -24,7 +24,7 @@
   },
   "language": {
     "ru": "Русский",
-    "be": "Беларускі",
+    "be": "Беларуская",
     "en": "English"
   },
   "search": {
@@ -294,6 +294,56 @@
     "noAuthors": "No authors",
     "categories": "Categories",
     "containers": "Containers"
+  },
+  "mapStyles": {
+    "openstreet": {
+      "name": "OpenStreetMap",
+      "description": "Classic OpenStreetMap"
+    },
+    "openstreet3d": {
+      "name": "OpenStreetMap 3D",
+      "description": "3D version of OpenStreetMap with vector tiles"
+    },
+    "satellite": {
+      "name": "Satellite",
+      "description": "High resolution satellite imagery"
+    },
+    "carto": {
+      "name": "Carto",
+      "description": "Minimalist map by Carto"
+    },
+    "terrain": {
+      "name": "Terrain",
+      "description": "Topographic map with terrain"
+    },
+    "osmHumanitarian": {
+      "name": "OSM Humanitarian",
+      "description": "Humanitarian version of OpenStreetMap"
+    },
+    "streets": {
+      "name": "Esri Streets",
+      "description": "Detailed street map by Esri"
+    },
+    "natGeo": {
+      "name": "National Geographic",
+      "description": "National Geographic style"
+    },
+    "stamenTerrain": {
+      "name": "Stamen Terrain",
+      "description": "Artistic topographic map"
+    },
+    "stamenToner": {
+      "name": "Stamen Toner",
+      "description": "Black and white contrast map"
+    },
+    "stamenWatercolor": {
+      "name": "Stamen Watercolor",
+      "description": "Watercolor artistic style"
+    },
+    "openTopoMap": {
+      "name": "OpenTopoMap",
+      "description": "Detailed topographic map"
+    }
   },
   "createPoint": {
     "title": "Create Point",

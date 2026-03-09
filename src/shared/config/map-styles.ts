@@ -2,8 +2,6 @@
 
 export const MAP_STYLES = {
   openstreet: {
-    name: "OpenStreetMap",
-    description: "Классическая карта OpenStreetMap",
     light: {
       version: 8 as const,
       sources: {
@@ -46,14 +44,10 @@ export const MAP_STYLES = {
     },
   },
   openstreet3d: {
-    name: "OpenStreetMap 3D",
-    description: "3D версия OpenStreetMap с векторными тайлами",
     light: "https://tiles.openfreemap.org/styles/liberty",
     dark: "https://tiles.openfreemap.org/styles/liberty",
   },
   satellite: {
-    name: "Satellite",
-    description: "Спутниковые снимки высокого разрешения",
     light: {
       version: 8 as const,
       sources: {
@@ -100,14 +94,10 @@ export const MAP_STYLES = {
     },
   },
   carto: {
-    name: "Carto",
-    description: "Минималистичная карта от Carto",
     light: "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
     dark: "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json",
   },
   terrain: {
-    name: "Terrain",
-    description: "Топографическая карта с рельефом",
     light: {
       version: 8 as const,
       sources: {
@@ -154,8 +144,6 @@ export const MAP_STYLES = {
     },
   },
   osmHumanitarian: {
-    name: "OSM Humanitarian",
-    description: "Гуманитарная версия OpenStreetMap",
     light: {
       version: 8 as const,
       sources: {
@@ -198,8 +186,6 @@ export const MAP_STYLES = {
     },
   },
   streets: {
-    name: "Esri Streets",
-    description: "Детальная карта улиц от Esri",
     light: {
       version: 8 as const,
       sources: {
@@ -246,8 +232,6 @@ export const MAP_STYLES = {
     },
   },
   natGeo: {
-    name: "National Geographic",
-    description: "Стиль National Geographic",
     light: {
       version: 8 as const,
       sources: {
@@ -294,8 +278,6 @@ export const MAP_STYLES = {
     },
   },
   stamenTerrain: {
-    name: "Stamen Terrain",
-    description: "Художественная топографическая карта",
     light: {
       version: 8 as const,
       sources: {
@@ -342,8 +324,6 @@ export const MAP_STYLES = {
     },
   },
   stamenToner: {
-    name: "Stamen Toner",
-    description: "Черно-белая контрастная карта",
     light: {
       version: 8 as const,
       sources: {
@@ -390,8 +370,6 @@ export const MAP_STYLES = {
     },
   },
   stamenWatercolor: {
-    name: "Stamen Watercolor",
-    description: "Акварельный художественный стиль",
     light: {
       version: 8 as const,
       sources: {
@@ -438,8 +416,6 @@ export const MAP_STYLES = {
     },
   },
   openTopoMap: {
-    name: "OpenTopoMap",
-    description: "Детальная топографическая карта",
     light: {
       version: 8 as const,
       sources: {

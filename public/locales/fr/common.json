@@ -1,0 +1,468 @@
+{
+  "common": {
+    "title": "SPM",
+    "fullTitle": "SharePlacesMaps",
+    "description": "Exploration personnalisée de l'espace et partage d'expériences locales",
+    "createCollection": "Créer une collection",
+    "explorePlaces": "Explorer les lieux",
+    "colorScheme": "Schéma de couleurs",
+    "fsdStructure": "Structure FSD",
+    "fsdDescription": "Le projet est organisé selon la méthodologie Feature-Sliced Design pour la scalabilité et la maintenabilité du code.",
+    "primary": "Primaire",
+    "secondary": "Secondaire",
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "errorLoading": "Erreur de chargement des données",
+    "errorUpdating": "Erreur de mise à jour"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "places": "Lieux",
+    "collections": "Collections",
+    "guides": "Guides",
+    "profile": "Profil"
+  },
+  "language": {
+    "ru": "Русский",
+    "be": "Беларуская",
+    "en": "English",
+    "fr": "Français"
+  },
+  "search": {
+    "placeholder": "Rechercher des utilisateurs...",
+    "searching": "Recherche...",
+    "noResults": "Aucun résultat trouvé",
+    "title": "Rechercher des utilisateurs",
+    "description": "Trouvez et connectez-vous avec d'autres utilisateurs",
+    "button": "Rechercher",
+    "results": "Résultats de recherche",
+    "viewProfile": "Voir le profil",
+    "startSearching": "Commencer à rechercher des utilisateurs",
+    "enterUsername": "Entrez un nom d'utilisateur ou un email pour trouver des utilisateurs",
+    "tryDifferent": "Essayez un autre terme de recherche"
+  },
+  "sidebar": {
+    "home": "Accueil",
+    "feed": "Fil",
+    "favorites": "Favoris",
+    "profile": "Profil",
+    "search": "Recherche",
+    "createPoint": "Créer un point",
+    "map": "Carte",
+    "community": "Communauté",
+    "notifications": "Notifications",
+    "settings": "Paramètres",
+    "myComments": "Mes commentaires",
+    "manage": "Gérer",
+    "admin": "Admin"
+  },
+  "theme": {
+    "switchToDark": "Passer au thème sombre",
+    "switchToLight": "Passer au thème clair"
+  },
+  "auth": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "loginSubtitle": "Connectez-vous à votre compte",
+    "registerSubtitle": "Créer un nouveau compte",
+    "verifyTitle": "Vérification du code",
+    "verifySubtitle": "Entrez le code à 6 chiffres envoyé à",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "password": "Mot de passe",
+    "code": "Code",
+    "loginButton": "Se connecter",
+    "registerButton": "S'inscrire",
+    "verifyButton": "Vérifier",
+    "backButton": "Retour",
+    "loading": "Envoi...",
+    "verifying": "Vérification...",
+    "noAccount": "Vous n'avez pas de compte ?",
+    "hasAccount": "Vous avez déjà un compte ?",
+    "errorRegister": "Erreur d'inscription",
+    "errorLogin": "Erreur de connexion",
+    "errorCode": "Code invalide",
+    "showPassword": "Afficher le mot de passe",
+    "hidePassword": "Masquer le mot de passe",
+    "forgotPassword": "Mot de passe oublié ?",
+    "forgotPasswordTitle": "Récupération du mot de passe",
+    "forgotPasswordSubtitle": "Entrez votre email pour recevoir un code de récupération",
+    "resetPasswordTitle": "Réinitialiser le mot de passe",
+    "resetPasswordSubtitle": "Entrez le code et le nouveau mot de passe pour",
+    "verificationCode": "Code de vérification",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "sendResetCode": "Envoyer le code",
+    "resetPasswordButton": "Réinitialiser le mot de passe",
+    "backToLogin": "Retour à la connexion",
+    "sending": "Envoi...",
+    "resetting": "Réinitialisation...",
+    "resetCodeSent": "Code de récupération envoyé par email",
+    "passwordResetSuccess": "Mot de passe modifié avec succès",
+    "passwordMismatch": "Les mots de passe ne correspondent pas",
+    "errorForgotPassword": "Erreur d'envoi du code de récupération",
+    "errorResetPassword": "Erreur de réinitialisation du mot de passe",
+    "verificationSent": "Code de vérification envoyé par email",
+    "verificationSuccess": "Code vérifié avec succès"
+  },
+  "profile": {
+    "title": "Profil",
+    "welcome": "Bienvenue sur votre profil",
+    "email": "Email",
+    "id": "ID",
+    "role": "Rôle",
+    "username": "Nom d'utilisateur",
+    "bio": "Bio",
+    "logout": "Déconnexion",
+    "loggingOut": "Déconnexion...",
+    "loading": "Chargement...",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "editProfile": "Modifier le profil",
+    "profileInfo": "Informations du profil",
+    "bioPlaceholder": "Parlez-nous de vous...",
+    "usernamePlaceholder": "Entrez le nom d'utilisateur",
+    "updateSuccess": "Profil mis à jour avec succès",
+    "updateError": "Erreur de mise à jour du profil",
+    "myPoints": "Mes points",
+    "noPoints": "Vous n'avez pas encore de points",
+    "pointsLoading": "Chargement des points...",
+    "category": "Catégorie",
+    "container": "Conteneur",
+    "coordinates": "Coordonnées",
+    "createdAt": "Créé",
+    "noCategory": "Pas de catégorie",
+    "noContainer": "Pas de conteneur",
+    "noDescription": "Pas de description",
+    "followers": "Abonnés",
+    "following": "Abonnements",
+    "followersCount": "abonnés",
+    "followingCount": "abonnements",
+    "noFollowers": "Pas d'abonnés",
+    "noFollowing": "Pas d'abonnements",
+    "close": "Fermer",
+    "follow": "S'abonner",
+    "unfollow": "Se désabonner",
+    "userNotFound": "Utilisateur non trouvé",
+    "userPoints": "Points de l'utilisateur",
+    "noUserPoints": "L'utilisateur n'a pas encore de points",
+    "loadingPoints": "Chargement des points...",
+    "followSuccess": "Vous êtes abonné",
+    "unfollowSuccess": "Vous êtes désabonné",
+    "followError": "Erreur d'abonnement",
+    "profileForm": {
+      "title": "Informations du profil",
+      "username": "Nom d'utilisateur",
+      "usernamePlaceholder": "Entrez le nom d'utilisateur",
+      "bio": "Biographie",
+      "bioPlaceholder": "Parlez-nous de vous",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "cancel": "Annuler"
+    },
+    "profileHeader": {
+      "edit": "Modifier"
+    },
+    "profileStats": {
+      "followers": "Abonnés",
+      "following": "Abonnements"
+    }
+  },
+  "comments": {
+    "title": "Commentaires",
+    "add": "Ajouter un commentaire",
+    "placeholder": "Écrire un commentaire...",
+    "submit": "Envoyer",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "noComments": "Pas encore de commentaires",
+    "beFirst": "Soyez le premier à commenter",
+    "loading": "Chargement des commentaires...",
+    "submitting": "Envoi...",
+    "deleting": "Suppression...",
+    "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
+    "edited": "modifié",
+    "show": "Afficher les commentaires",
+    "hide": "Masquer les commentaires"
+  },
+  "myComments": {
+    "title": "Mes commentaires",
+    "subtitle": "Tous les commentaires que vous avez publiés",
+    "noComments": "Vous n'avez pas encore de commentaires",
+    "unknownPoint": "Point inconnu"
+  },
+  "favorites": {
+    "addToFavorites": "Ajouter aux favoris",
+    "removeFromFavorites": "Retirer des favoris",
+    "title": "Favoris",
+    "empty": "Vos favoris sont vides",
+    "emptyDescription": "Ajoutez des points intéressants aux favoris en cliquant sur l'icône cœur. Ils seront affichés ici pour un accès rapide.",
+    "exploreFeed": "Explorer le fil",
+    "addToFavoritesAction": "Ajouter aux favoris",
+    "sortBy": "Trier par :",
+    "sortByDate": "Date d'ajout",
+    "sortByDateShort": "Date",
+    "sortByName": "Nom",
+    "sortByAuthor": "Auteur",
+    "addedAt": "Ajouté",
+    "refresh": "Actualiser"
+  },
+  "feed": {
+    "title": "Fil des points",
+    "empty": "Le fil est vide",
+    "emptyDescription": "Suivez d'autres utilisateurs ou créez vos propres points pour les voir ici",
+    "loading": "Chargement...",
+    "allLoaded": "Tous les points sont chargés",
+    "refresh": "Actualiser"
+  },
+  "manage": {
+    "title": "Gestion des données",
+    "categories": "Catégories",
+    "containers": "Conteneurs",
+    "categoryForm": {
+      "edit": "Modifier la catégorie",
+      "new": "Nouvelle catégorie",
+      "name": "Nom",
+      "color": "Couleur",
+      "required": "*",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "create": "Créer",
+      "cancel": "Annuler"
+    },
+    "containerForm": {
+      "edit": "Modifier le conteneur",
+      "new": "Nouveau conteneur",
+      "title": "Titre",
+      "description": "Description",
+      "required": "*",
+      "saving": "Enregistrement...",
+      "save": "Enregistrer",
+      "create": "Créer",
+      "cancel": "Annuler"
+    },
+    "manageCategories": {
+      "title": "Catégories",
+      "create": "Créer",
+      "tip": "💡 Cliquez sur la flèche pour développer la liste des points. Faites glisser les points entre les catégories pour les modifier.",
+      "noCategories": "Vous n'avez pas encore de catégories",
+      "noCategory": "Pas de catégorie",
+      "points": "points",
+      "noPointsInCategory": "Pas de points dans cette catégorie",
+      "deleteConfirm": "Supprimer cette catégorie ? Si elle est utilisée dans des points, la suppression sera impossible.",
+      "deleteSuccess": "Catégorie supprimée avec succès",
+      "deleteError": "Erreur de suppression de la catégorie",
+      "moveError": "Erreur de déplacement du point",
+      "noContainer": "Pas de conteneur"
+    },
+    "manageContainers": {
+      "title": "Conteneurs",
+      "create": "Créer",
+      "tip": "💡 Cliquez sur la flèche pour développer la liste des points. Faites glisser les points entre les conteneurs pour les modifier.",
+      "noContainers": "Vous n'avez pas encore de conteneurs",
+      "noContainer": "Pas de conteneur",
+      "points": "points",
+      "noPointsInContainer": "Pas de points dans ce conteneur",
+      "deleteConfirm": "Supprimer ce conteneur ?",
+      "deleteConfirmWithPoints": "Supprimer ce conteneur ? {{count}} points resteront sans conteneur.",
+      "deleteSuccess": "Conteneur supprimé avec succès",
+      "deleteError": "Erreur de suppression du conteneur",
+      "moveError": "Erreur de déplacement du point",
+      "noCategory": "Pas de catégorie"
+    },
+    "managePoints": {
+      "noPoints": "Vous n'avez pas encore de points",
+      "noCategory": "Pas de catégorie",
+      "noContainer": "Pas de conteneur",
+      "deleteConfirm": "Supprimer ce point ?",
+      "deleteSuccess": "Point supprimé avec succès",
+      "deleteError": "Erreur de suppression du point",
+      "delete": "Supprimer"
+    }
+  },
+  "admin": {
+    "loading": "Chargement...",
+    "categories": {
+      "id": "ID",
+      "name": "Nom",
+      "color": "Couleur",
+      "author": "Auteur",
+      "system": "Système"
+    }
+  },
+  "map": {
+    "category": "Catégorie :",
+    "viewDetails": "Voir les détails",
+    "loadingPoints": "Chargement des points...",
+    "pointsOnMap": "Points sur la carte :",
+    "mapStyle": "Style de carte",
+    "filters": "Filtres",
+    "filterByAuthor": "Par auteur",
+    "filterByCategory": "Par catégorie",
+    "filterByDate": "Par date de création",
+    "dateFrom": "De",
+    "dateTo": "À",
+    "clearFilters": "Effacer les filtres",
+    "noFollowing": "Vous ne suivez personne",
+    "noAuthors": "Pas d'auteurs",
+    "categories": "Catégories",
+    "containers": "Conteneurs"
+  },
+  "mapStyles": {
+    "openstreet": {
+      "name": "OpenStreetMap",
+      "description": "Carte classique OpenStreetMap"
+    },
+    "openstreet3d": {
+      "name": "OpenStreetMap 3D",
+      "description": "Version 3D d'OpenStreetMap avec tuiles vectorielles"
+    },
+    "satellite": {
+      "name": "Satellite",
+      "description": "Images satellite haute résolution"
+    },
+    "carto": {
+      "name": "Carto",
+      "description": "Carte minimaliste par Carto"
+    },
+    "terrain": {
+      "name": "Terrain",
+      "description": "Carte topographique avec relief"
+    },
+    "osmHumanitarian": {
+      "name": "OSM Humanitaire",
+      "description": "Version humanitaire d'OpenStreetMap"
+    },
+    "streets": {
+      "name": "Esri Rues",
+      "description": "Carte détaillée des rues par Esri"
+    },
+    "natGeo": {
+      "name": "National Geographic",
+      "description": "Style National Geographic"
+    },
+    "stamenTerrain": {
+      "name": "Stamen Terrain",
+      "description": "Carte topographique artistique"
+    },
+    "stamenToner": {
+      "name": "Stamen Toner",
+      "description": "Carte contrastée noir et blanc"
+    },
+    "stamenWatercolor": {
+      "name": "Stamen Aquarelle",
+      "description": "Style artistique aquarelle"
+    },
+    "openTopoMap": {
+      "name": "OpenTopoMap",
+      "description": "Carte topographique détaillée"
+    }
+  },
+  "createPoint": {
+    "title": "Créer un point",
+    "subtitle": "Ajouter un nouveau point sur la carte",
+    "loading": "Chargement...",
+    "basicInfo": "Informations de base",
+    "description": "Description",
+    "coordinates": "Coordonnées",
+    "dragMarker": "Faites glisser le marqueur sur la carte pour sélectionner les coordonnées",
+    "pointCoordinates": "Coordonnées du point",
+    "longitude": "Longitude (lng) *",
+    "latitude": "Latitude (lat) *",
+    "longitudeExample": "Exemple : 27.561831 (pour Minsk)",
+    "latitudeExample": "Exemple : 53.902496 (pour Minsk)",
+    "category": "Catégorie",
+    "selectCategory": "Sélectionner une catégorie *",
+    "selectCategoryOption": "Sélectionner une catégorie",
+    "createNewCategory": "Créer une nouvelle catégorie",
+    "newCategory": "Nouvelle catégorie",
+    "color": "Couleur :",
+    "cancel": "Annuler",
+    "container": "Conteneur",
+    "selectContainer": "Sélectionner un conteneur *",
+    "selectContainerOption": "Sélectionner un conteneur",
+    "createNewContainer": "Créer un nouveau conteneur",
+    "newContainer": "Nouveau conteneur"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "subtitle": "Personnalisez l'application",
+    "loading": "Chargement...",
+    "back": "Retour",
+    "sidebarOrder": "Ordre du menu",
+    "dragToReorder": "Faites glisser les éléments pour modifier l'ordre dans la barre latérale",
+    "reset": "Réinitialiser",
+    "tip": "Astuce :",
+    "dragTip": "Faites glisser les éléments avec votre souris pour modifier l'ordre. Les modifications sont enregistrées automatiquement.",
+    "language": "Langue de l'interface",
+    "languageDescription": "Sélectionnez la langue de l'interface de l'application",
+    "mapStyles": "Styles de carte",
+    "mapStylesDescription": "Sélectionnez les styles de carte qui seront disponibles dans la liste déroulante",
+    "default": "Par défaut",
+    "recommended": "Recommandé",
+    "setAsDefault": "Définir par défaut",
+    "mapStylesTip": "Les styles de carte sélectionnés seront disponibles lors de la création de points et de la visualisation des cartes de points. Le style par défaut sera utilisé lors de l'ouverture de la carte pour la première fois. Il est recommandé de garder les styles de base activés pour une meilleure expérience.",
+    "otherSettings": "Autres paramètres",
+    "otherSettingsDescription": "Des paramètres supplémentaires seront ajoutés dans les futures mises à jour"
+  },
+  "editPoint": {
+    "title": "Modifier le point",
+    "name": "Nom",
+    "description": "Description",
+    "longitude": "Longitude (lng)",
+    "latitude": "Latitude (lat)",
+    "category": "Catégorie",
+    "container": "Conteneur",
+    "selectCategory": "Sélectionner une catégorie",
+    "selectContainer": "Sélectionner un conteneur",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "required": "*",
+    "errorLoading": "Erreur de chargement des données",
+    "errorUpdating": "Erreur de mise à jour du point",
+    "editTitle": "Modifier le point"
+  },
+  "errors": {
+    "unexpected": {
+      "title": "Une erreur s'est produite",
+      "description": "Essayez de rafraîchir la page ou de répéter l'action un peu plus tard.",
+      "retry": "Réessayer"
+    }
+  },
+  "reports": {
+    "title": "Signaler",
+    "subtitle": "Signaler {{type}}",
+    "target": "Cible du signalement",
+    "reasonLabel": "Raison du signalement",
+    "descriptionLabel": "Description supplémentaire",
+    "descriptionPlaceholder": "Décrivez le problème plus en détail (facultatif)...",
+    "submit": "Envoyer le signalement",
+    "submitting": "Envoi...",
+    "cancel": "Annuler",
+    "success": "Signalement envoyé",
+    "successMessage": "Votre signalement a été envoyé et sera examiné par l'administration",
+    "button": "Signaler",
+    "types": {
+      "point": "le point",
+      "comment": "le commentaire",
+      "user": "l'utilisateur"
+    },
+    "reasons": {
+      "spam": "Spam",
+      "inappropriate": "Contenu inapproprié",
+      "harassment": "Harcèlement",
+      "fake": "Fausse information",
+      "other": "Autre"
+    },
+    "errors": {
+      "submitFailed": "Échec de l'envoi du signalement. Veuillez réessayer.",
+      "alreadyReported": "Vous avez déjà signalé cet élément",
+      "cannotReportSelf": "Vous ne pouvez pas vous signaler vous-même"
+    }
+  }
+}

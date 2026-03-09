@@ -24,8 +24,9 @@
   },
   "language": {
     "ru": "Русский",
-    "be": "Беларускі",
-    "en": "English"
+    "be": "Беларуская",
+    "en": "English",
+    "fr": "Français"
   },
   "search": {
     "placeholder": "Поиск пользователей...",
@@ -310,6 +311,56 @@
     "noAuthors": "Нет авторов",
     "categories": "Категории",
     "containers": "Контейнеры"
+  },
+  "mapStyles": {
+    "openstreet": {
+      "name": "OpenStreetMap",
+      "description": "Классическая карта OpenStreetMap"
+    },
+    "openstreet3d": {
+      "name": "OpenStreetMap 3D",
+      "description": "3D версия OpenStreetMap с векторными тайлами"
+    },
+    "satellite": {
+      "name": "Спутник",
+      "description": "Спутниковые снимки высокого разрешения"
+    },
+    "carto": {
+      "name": "Carto",
+      "description": "Минималистичная карта от Carto"
+    },
+    "terrain": {
+      "name": "Рельеф",
+      "description": "Топографическая карта с рельефом"
+    },
+    "osmHumanitarian": {
+      "name": "OSM Гуманитарная",
+      "description": "Гуманитарная версия OpenStreetMap"
+    },
+    "streets": {
+      "name": "Esri Улицы",
+      "description": "Детальная карта улиц от Esri"
+    },
+    "natGeo": {
+      "name": "National Geographic",
+      "description": "Стиль National Geographic"
+    },
+    "stamenTerrain": {
+      "name": "Stamen Рельеф",
+      "description": "Художественная топографическая карта"
+    },
+    "stamenToner": {
+      "name": "Stamen Тонер",
+      "description": "Черно-белая контрастная карта"
+    },
+    "stamenWatercolor": {
+      "name": "Stamen Акварель",
+      "description": "Акварельный художественный стиль"
+    },
+    "openTopoMap": {
+      "name": "OpenTopoMap",
+      "description": "Детальная топографическая карта"
+    }
   },
   "createPoint": {
     "title": "Создать точку",

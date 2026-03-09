@@ -24,8 +24,9 @@
   },
   "language": {
     "ru": "Русский",
-    "be": "Беларускі",
-    "en": "English"
+    "be": "Беларуская",
+    "en": "English",
+    "fr": "Français"
   },
   "search": {
     "placeholder": "Пошук карыстальнікаў...",
@@ -176,7 +177,7 @@
     "submit": "Адправіць",
     "edit": "Рэдагаваць",
     "delete": "Выдаліць",
-    "cancel": "Адмена",
+    "cancel": "Скасаванне",
     "save": "Захаваць",
     "noComments": "Пакуль няма каментароў",
     "beFirst": "Будзьце першым, хто пакіне каментар",
@@ -231,7 +232,7 @@
       "saving": "Захаванне...",
       "save": "Захаваць",
       "create": "Стварыць",
-      "cancel": "Адмена"
+      "cancel": "Скасаванне"
     },
     "containerForm": {
       "edit": "Рэдагаваць кантэйнер",
@@ -311,6 +312,56 @@
     "categories": "Катэгорыі",
     "containers": "Кантэйнеры"
   },
+  "mapStyles": {
+    "openstreet": {
+      "name": "OpenStreetMap",
+      "description": "Класічная карта OpenStreetMap"
+    },
+    "openstreet3d": {
+      "name": "OpenStreetMap 3D",
+      "description": "3D версія OpenStreetMap з вектарнымі тайламі"
+    },
+    "satellite": {
+      "name": "Спадарожнік",
+      "description": "Спадарожнікавыя здымкі высокай раздзяляльнасці"
+    },
+    "carto": {
+      "name": "Carto",
+      "description": "Мінімалістычная карта ад Carto"
+    },
+    "terrain": {
+      "name": "Рэльеф",
+      "description": "Тапаграфічная карта з рэльефам"
+    },
+    "osmHumanitarian": {
+      "name": "OSM Гуманітарная",
+      "description": "Гуманітарная версія OpenStreetMap"
+    },
+    "streets": {
+      "name": "Esri Вуліцы",
+      "description": "Дэтальная карта вуліц ад Esri"
+    },
+    "natGeo": {
+      "name": "National Geographic",
+      "description": "Стыль National Geographic"
+    },
+    "stamenTerrain": {
+      "name": "Stamen Рэльеф",
+      "description": "Мастацкая тапаграфічная карта"
+    },
+    "stamenToner": {
+      "name": "Stamen Тонер",
+      "description": "Чорна-белая кантрастная карта"
+    },
+    "stamenWatercolor": {
+      "name": "Stamen Акварэль",
+      "description": "Акварэльны мастацкі стыль"
+    },
+    "openTopoMap": {
+      "name": "OpenTopoMap",
+      "description": "Дэтальная тапаграфічная карта"
+    }
+  },
   "createPoint": {
     "title": "Стварыць кропку",
     "subtitle": "Дадайце новую кропку на мапу",
@@ -330,7 +381,7 @@
     "createNewCategory": "Стварыць новую катэгорыю",
     "newCategory": "Новая катэгорыя",
     "color": "Колер:",
-    "cancel": "Адмена",
+    "cancel": "Скасаванне",
     "container": "Кантэйнер",
     "selectContainer": "Выберыце кантэйнер *",
     "selectContainerOption": "Выберыце кантэйнер",
@@ -359,7 +410,22 @@
     "otherSettingsDescription": "Дадатковыя налады будуць дададзены ў будучых абнаўленнях"
   },
   "editPoint": {
-    "Ivan" : "Я хв, чаму нейронка не зрабіла тут нічога. Калі жадаеш, можаш зрабіць, але дастаткова, калі проста пашукаеш памылкі "
+    "title": "Рэдагаваць кропку",
+    "name": "Назва",
+    "description": "Апісанне",
+    "longitude": "Даўгата (lng)",
+    "latitude": "Шырата (lat)",
+    "category": "Катэгорыя",
+    "container": "Кантэйнер",
+    "selectCategory": "Выберыце катэгорыю",
+    "selectContainer": "Выберыце кантэйнер",
+    "cancel": "Скасаванне",
+    "save": "Захаваць",
+    "saving": "Захаванне...",
+    "required": "*",
+    "errorLoading": "Памылка загрузкі даных",
+    "errorUpdating": "Памылка пры абнаўленні кропкі",
+    "editTitle": "Рэдагаваць кропку"
   },
   "errors": {
     "unexpected": {
