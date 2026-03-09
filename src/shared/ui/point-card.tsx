@@ -325,7 +325,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
           >
             {availableMapStyles.map((key) => (
               <option key={key} value={key}>
-                {MAP_STYLES[key].name}
+                {t(`mapStyles.${key}.name`)}
               </option>
             ))}
           </select>

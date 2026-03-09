@@ -4,7 +4,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
 import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, X, Map, FolderKanban } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 interface MenuItem {
   icon: any;
@@ -30,8 +30,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [userRole, setUserRole] = useState<string | null>(null);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
-  // Дефолтный порядок вкладок
-  const getDefaultMenuItems = (): MenuItem[] => {
+  // Дефолтный порядок вкладок (мемоизируем для предотвращения бесконечного цикла)
+  const defaultMenuItems = useMemo((): MenuItem[] => {
     const items = [
       {
         id: "feed",
@@ -110,7 +110,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     }
 
     return items;
-  };
+  }, [pathname, userRole, currentLanguage, t]);
 
   // Загружаем данные пользователя и порядок вкладок
   useEffect(() => {
@@ -142,20 +142,18 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   // Обновляем menuItems при изменении sidebarOrder, pathname, userRole или языка
   useEffect(() => {
-    const defaultItems = getDefaultMenuItems();
-    
     // Сортируем согласно порядку из store
     const orderedItems = sidebarOrder
-      .map((id: string) => defaultItems.find((item: MenuItem) => item.id === id))
+      .map((id: string) => defaultMenuItems.find((item: MenuItem) => item.id === id))
       .filter((item: MenuItem | undefined): item is MenuItem => item !== undefined);
     
     // Добавляем новые пункты, которых нет в сохраненном порядке
-    const newItems = defaultItems.filter(
+    const newItems = defaultMenuItems.filter(
       item => !sidebarOrder.includes(item.id)
     );
     
     setMenuItems([...orderedItems, ...newItems]);
-  }, [sidebarOrder, pathname, userRole, currentLanguage, t]);
+  }, [sidebarOrder, defaultMenuItems]);
 
   const handleNavigation = (path: string) => {
     router.push(path);

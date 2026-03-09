@@ -235,7 +235,7 @@ export default function MapPage() {
           >
             {availableMapStyles.map((key) => (
               <option key={key} value={key}>
-                {MAP_STYLES[key].name}
+                {t(`mapStyles.${key}.name`)}
               </option>
             ))}
           </select>
