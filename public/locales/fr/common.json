@@ -459,6 +459,7 @@
       "fake": "Fausse information",
       "other": "Autre"
     },
+    
     "errors": {
       "submitFailed": "Échec de l'envoi du signalement. Veuillez réessayer.",
       "alreadyReported": "Vous avez déjà signalé cet élément",
