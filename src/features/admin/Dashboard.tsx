@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from 'recharts';
+import { getApiUrl } from '@/shared/lib/utils/api-url';
 import './dashboard.css';
 
 // Функция для получения токена
@@ -69,7 +70,7 @@ export const Dashboard = () => {
         
         // Загружаем основную статистику
         const statsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/admin/stats`,
+          `${getApiUrl()}/admin/stats`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -84,7 +85,7 @@ export const Dashboard = () => {
 
         // Загружаем статистику жалоб
         const reportsResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/admin/reports?_start=0&_end=1000`,
+          `${getApiUrl()}/admin/reports?_start=0&_end=1000`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

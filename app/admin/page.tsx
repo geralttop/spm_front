@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '@/shared/lib/store';
+import { getApiUrl } from '@/shared/lib/utils/api-url';
 import AdminApp from '@/src/features/admin/AdminApp';
 
 export default function AdminPage() {
@@ -27,7 +28,7 @@ export default function AdminPage() {
         }
 
         // Получаем информацию о пользователе
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
+        const response = await fetch(`${getApiUrl()}/auth/profile`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`,
           },

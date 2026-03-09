@@ -64,7 +64,6 @@ export const useAuthStore = create<AuthState>()(
                 credentials: "include",
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${accessToken}`,
                 },
               }
             );
@@ -99,8 +98,8 @@ export const useAuthStore = create<AuthState>()(
       shouldRefreshToken: () => {
         const { tokenExpiry } = get();
         if (!tokenExpiry) return false;
-        // Обновляем токен за 2 минуты до истечения
-        return Date.now() >= tokenExpiry - 2 * 60 * 1000;
+        // Обновляем токен за 5 минут до истечения
+        return Date.now() >= tokenExpiry - 5 * 60 * 1000;
       },
 
       initializeAuth: async () => {
@@ -116,7 +115,6 @@ export const useAuthStore = create<AuthState>()(
                 credentials: "include", // Отправляет httpOnly cookie
                 headers: {
                   "Content-Type": "application/json",
-                  ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
                 },
               }
             );

@@ -1,8 +1,6 @@
 import { DataProvider, fetchUtils } from 'react-admin';
 import { getApiUrl } from '@/shared/lib/utils/api-url';
 
-const apiUrl = getApiUrl();
-
 // Функция для получения токена из zustand store
 const getAccessToken = () => {
   if (typeof window === 'undefined') return null;
@@ -43,7 +41,7 @@ export const dataProvider: DataProvider = {
       _order: order,
     };
     
-    const url = `${apiUrl}/admin/${resource}?${new URLSearchParams(query)}`;
+    const url = `${getApiUrl()}/admin/${resource}?${new URLSearchParams(query)}`;
 
     return httpClient(url).then(({ json }) => ({
       data: json.data,
@@ -52,14 +50,14 @@ export const dataProvider: DataProvider = {
   },
 
   getOne: (resource, params) =>
-    httpClient(`${apiUrl}/admin/${resource}/${params.id}`).then(({ json }) => ({
+    httpClient(`${getApiUrl()}/admin/${resource}/${params.id}`).then(({ json }) => ({
       data: json,
     })),
 
   getMany: (resource, params) => {
     // Для простоты делаем несколько запросов
     const promises = params.ids.map(id => 
-      httpClient(`${apiUrl}/admin/${resource}/${id}`)
+      httpClient(`${getApiUrl()}/admin/${resource}/${id}`)
     );
     
     return Promise.all(promises).then(responses => ({
@@ -79,7 +77,7 @@ export const dataProvider: DataProvider = {
       [params.target]: params.id.toString(),
     };
     
-    const url = `${apiUrl}/admin/${resource}?${new URLSearchParams(query)}`;
+    const url = `${getApiUrl()}/admin/${resource}?${new URLSearchParams(query)}`;
 
     return httpClient(url).then(({ json }) => ({
       data: json.data,
@@ -91,13 +89,13 @@ export const dataProvider: DataProvider = {
     // Специальная обработка для жалоб с действиями
     if (resource === 'reports' && params.data.action) {
       const { action, ...otherData } = params.data;
-      return httpClient(`${apiUrl}/admin/${resource}/${params.id}/resolve`, {
+      return httpClient(`${getApiUrl()}/admin/${resource}/${params.id}/resolve`, {
         method: 'POST',
         body: JSON.stringify({ action, adminNotes: otherData.adminNotes }),
       }).then(({ json }) => ({ data: json }));
     }
     
-    return httpClient(`${apiUrl}/admin/${resource}/${params.id}`, {
+    return httpClient(`${getApiUrl()}/admin/${resource}/${params.id}`, {
       method: 'PUT',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({ data: json }));
@@ -105,7 +103,7 @@ export const dataProvider: DataProvider = {
 
   updateMany: (resource, params) => {
     const promises = params.ids.map(id =>
-      httpClient(`${apiUrl}/admin/${resource}/${id}`, {
+      httpClient(`${getApiUrl()}/admin/${resource}/${id}`, {
         method: 'PUT',
         body: JSON.stringify(params.data),
       })
@@ -115,7 +113,7 @@ export const dataProvider: DataProvider = {
   },
 
   create: (resource, params) =>
-    httpClient(`${apiUrl}/admin/${resource}`, {
+    httpClient(`${getApiUrl()}/admin/${resource}`, {
       method: 'POST',
       body: JSON.stringify(params.data),
     }).then(({ json }) => ({
@@ -123,13 +121,13 @@ export const dataProvider: DataProvider = {
     })),
 
   delete: (resource, params) =>
-    httpClient(`${apiUrl}/admin/${resource}/${params.id}`, {
+    httpClient(`${getApiUrl()}/admin/${resource}/${params.id}`, {
       method: 'DELETE',
     }).then(() => ({ data: { id: params.id } as any })),
 
   deleteMany: (resource, params) => {
     const promises = params.ids.map(id =>
-      httpClient(`${apiUrl}/admin/${resource}/${id}`, {
+      httpClient(`${getApiUrl()}/admin/${resource}/${id}`, {
         method: 'DELETE',
       })
     );
