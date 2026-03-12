@@ -30,6 +30,7 @@ export interface ProfileResponse {
   role: string;
   username?: string;
   bio?: string;
+  avatar?: string;
   sidebarOrder?: string[];
 }
 
@@ -123,6 +124,26 @@ export const authApi = {
 
   resetPassword: async (data: ResetPasswordRequest): Promise<AuthResponse> => {
     const response = await apiClient.post<AuthResponse>("/auth/reset-password", data);
+    return response.data;
+  },
+
+  uploadAvatar: async (file: File): Promise<{ message: string; avatarUrl: string }> => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await apiClient.post<{ message: string; avatarUrl: string }>(
+      "/auth/upload-avatar",
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  },
+
+  deleteAvatar: async (): Promise<{ message: string }> => {
+    const response = await apiClient.delete<{ message: string }>("/auth/delete-avatar");
     return response.data;
   },
 

@@ -28,7 +28,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const { sidebarOrder, loadSidebarOrder } = useSidebarStore();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<string | null>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
 
   // Дефолтный порядок вкладок (мемоизируем для предотвращения бесконечного цикла)
   const defaultMenuItems = useMemo((): MenuItem[] => {
@@ -140,8 +139,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     fetchUserData();
   }, [checkAuth, accessToken, loadSidebarOrder]);
 
-  // Обновляем menuItems при изменении sidebarOrder, pathname, userRole или языка
-  useEffect(() => {
+  // Вычисляем menuItems на основе sidebarOrder и defaultMenuItems
+  const menuItems = useMemo(() => {
     // Сортируем согласно порядку из store
     const orderedItems = sidebarOrder
       .map((id: string) => defaultMenuItems.find((item: MenuItem) => item.id === id))
@@ -152,7 +151,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       item => !sidebarOrder.includes(item.id)
     );
     
-    setMenuItems([...orderedItems, ...newItems]);
+    return [...orderedItems, ...newItems];
   }, [sidebarOrder, defaultMenuItems]);
 
   const handleNavigation = (path: string) => {

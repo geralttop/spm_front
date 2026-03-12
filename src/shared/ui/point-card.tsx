@@ -182,8 +182,18 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
     <div className="bg-surface border border-border rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
       {showAuthor && (
         <div className="flex items-start gap-3 mb-4">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-            <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-primary/10 flex-shrink-0 border-2 border-border">
+            {point.author.avatar ? (
+              <img 
+                src={`${process.env.NEXT_PUBLIC_API_URL}${point.author.avatar}`}
+                alt={point.author.username}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center">
+                <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+              </div>
+            )}
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-text-main text-sm sm:text-base truncate">

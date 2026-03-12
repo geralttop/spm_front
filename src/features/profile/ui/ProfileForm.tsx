@@ -1,20 +1,23 @@
 'use client';
 
-import { User, Mail, Check, X } from 'lucide-react';
+import { User, Mail, Check, X, Edit2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input, Textarea, Button } from '@/shared/ui';
 import { useForm } from '@/shared/lib/hooks';
 import { updateProfileSchema } from '@/shared/schemas';
 import type { ProfileResponse } from '@/shared/types';
+import { AvatarUpload } from './AvatarUpload';
 
 interface ProfileFormProps {
   profile: ProfileResponse;
   isEditing: boolean;
+  onEdit: () => void;
   onSave: (data: { username?: string; bio?: string }) => Promise<void>;
   onCancel: () => void;
+  onAvatarChange: () => void;
 }
 
-export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFormProps) {
+export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAvatarChange }: ProfileFormProps) {
   const { t } = useTranslation();
   const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm({
     initialValues: {
@@ -25,13 +28,61 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
     onSubmit: onSave,
   });
 
+  const avatarUrl = profile.avatar 
+    ? `${process.env.NEXT_PUBLIC_API_URL}${profile.avatar}`
+    : null;
+
   return (
     <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm">
-      <h2 className="mb-4 text-base sm:text-lg font-semibold text-text-main">
-        {t('profile.profileForm.title')}
-      </h2>
+      {/* Шапка с аватаркой и кнопкой редактирования */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6 pb-6 border-b border-border">
+        {/* Аватарка */}
+        <div className="shrink-0">
+          <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-muted border-4 border-border">
+            {avatarUrl ? (
+              <img 
+                src={avatarUrl} 
+                alt={profile.username} 
+                className="h-full w-full object-cover"
+              />
+            ) : (
+              <div className="h-full w-full flex items-center justify-center bg-primary/10">
+                <User className="h-10 w-10 sm:h-12 sm:w-12 text-primary/50" />
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Информация */}
+        <div className="flex-1 min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-text-main truncate">
+            {profile.username || t("profile.title")}
+          </h1>
+          <p className="mt-1 text-sm text-text-muted truncate">{profile.email}</p>
+        </div>
+        
+        {/* Кнопка редактирования */}
+        {!isEditing && (
+          <Button onClick={onEdit} variant="outline" className="gap-2 w-full sm:w-auto">
+            <Edit2 className="h-4 w-4" />
+            <span>{t('profile.profileHeader.edit')}</span>
+          </Button>
+        )}
+      </div>
       
       <form onSubmit={handleSubmit} className="space-y-4">
+        {isEditing && (
+          <div className="pb-4 border-b border-border">
+            <label className="mb-2 block text-sm font-medium text-text-muted">
+              {t('profile.avatar.upload')}
+            </label>
+            <AvatarUpload 
+              currentAvatar={profile.avatar} 
+              onAvatarChange={onAvatarChange}
+            />
+          </div>
+        )}
+        
         <div>
           <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
             <User className="h-4 w-4" />
@@ -65,7 +116,7 @@ export function ProfileForm({ profile, isEditing, onSave, onCancel }: ProfileFor
           </label>
           <p className="text-text-main font-medium break-all">{profile.email}</p>
         </div>
-
+        
         <div>
           <label className="mb-2 block text-sm font-medium text-text-muted">
             {t('profile.profileForm.bio')}

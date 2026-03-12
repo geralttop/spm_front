@@ -12,7 +12,7 @@ import {
   useSubscriptionStatsQuery,
   useLogoutMutation 
 } from "@/shared/lib/hooks/queries";
-import { ProfileHeader, ProfileStats, ProfileForm, ProfilePoints } from "@/features/profile";
+import { ProfileStats, ProfileForm, ProfilePoints } from "@/features/profile";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -86,13 +86,6 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
       <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div className="space-y-4 sm:space-y-6">
-          <ProfileHeader
-            username={profile.username || t("profile.title")}
-            email={profile.email}
-            isEditing={isEditing}
-            onEdit={handleEdit}
-          />
-
           {stats && (
             <ProfileStats
               stats={stats}
@@ -104,8 +97,13 @@ export default function ProfilePage() {
           <ProfileForm
             profile={profile}
             isEditing={isEditing}
+            onEdit={handleEdit}
             onSave={handleSave}
             onCancel={handleCancel}
+            onAvatarChange={() => {
+              // Перезагружаем профиль после изменения аватарки
+              window.location.reload();
+            }}
           />
 
           {!isEditing && (

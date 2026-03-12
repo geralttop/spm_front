@@ -22,6 +22,7 @@ export interface Point {
     username: string;
     firstName: string;
     lastName: string;
+    avatar?: string;
   };
 }
 
