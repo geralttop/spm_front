@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { X, MapPin } from 'lucide-react';
 import { pointsApi, categoriesApi, containersApi, type Point, type Category, type Container } from '@/shared/api';
 import { useTranslation } from 'react-i18next';
+import { Map as MapComponent, MapMarker, MarkerContent } from '@/shared/ui/map';
 
 interface EditPointModalProps {
   isOpen: boolean;
@@ -23,6 +24,11 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const [markerPosition, setMarkerPosition] = useState({
+    lng: point.coords.coordinates[0],
+    lat: point.coords.coordinates[1],
+  });
+
   useEffect(() => {
     if (isOpen) {
       loadData();
@@ -40,6 +46,22 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
     } catch (err) {
       console.error('Error loading data:', err);
       setError('Ошибка загрузки данных');
+    }
+  };
+
+  const handleMarkerDragEnd = (lngLat: { lng: number; lat: number }) => {
+    setMarkerPosition(lngLat);
+    setLng(lngLat.lng);
+    setLat(lngLat.lat);
+  };
+
+  const handleCoordinateChange = (field: 'lng' | 'lat', value: number) => {
+    if (field === 'lng') {
+      setLng(value);
+      setMarkerPosition(prev => ({ ...prev, lng: value }));
+    } else {
+      setLat(value);
+      setMarkerPosition(prev => ({ ...prev, lat: value }));
     }
   };
 
@@ -119,35 +141,65 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Долгота (lng) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={lng}
-                onChange={(e) => setLng(parseFloat(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                required
-                disabled={loading}
-              />
+          <div>
+            <label className="block text-sm font-medium text-gray-900 mb-2">
+              Координаты <span className="text-red-500">*</span>
+            </label>
+
+            <div className="mb-4 border border-gray-300 rounded-lg overflow-hidden">
+              <MapComponent
+                center={[markerPosition.lng, markerPosition.lat]}
+                zoom={13}
+                className="h-[300px]"
+              >
+                <MapMarker
+                  longitude={markerPosition.lng}
+                  latitude={markerPosition.lat}
+                  draggable
+                  onDragEnd={handleMarkerDragEnd}
+                >
+                  <MarkerContent>
+                    <div className="cursor-move">
+                      <MapPin
+                        className="fill-primary stroke-white"
+                        size={32}
+                      />
+                    </div>
+                  </MarkerContent>
+                </MapMarker>
+              </MapComponent>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Широта (lat) <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                step="any"
-                value={lat}
-                onChange={(e) => setLat(parseFloat(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                required
-                disabled={loading}
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Долгота (lng)
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  value={lng}
+                  onChange={(e) => handleCoordinateChange('lng', parseFloat(e.target.value) || 0)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  required
+                  disabled={loading}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-900 mb-2">
+                  Широта (lat)
+                </label>
+                <input
+                  type="number"
+                  step="any"
+                  value={lat}
+                  onChange={(e) => handleCoordinateChange('lat', parseFloat(e.target.value) || 0)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  required
+                  disabled={loading}
+                />
+              </div>
             </div>
           </div>
 

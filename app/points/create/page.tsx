@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation as useI18n } from "react-i18next";
 import { Button, Input, Textarea } from "@/shared/ui";
@@ -57,6 +57,14 @@ export default function CreatePointPage() {
     lat: 53.902496,
   });
 
+  const [isMapReady, setIsMapReady] = useState(false);
+
+  // Мемоизация стилей карты для предотвращения лишних ререндеров
+  const mapStyles = useMemo(() => ({
+    light: MAP_STYLES[mapStyle].light,
+    dark: MAP_STYLES[mapStyle].dark,
+  }), [mapStyle]);
+
   useEffect(() => {
     const initPage = async () => {
       const isAuth = await checkAuth();
@@ -64,13 +72,15 @@ export default function CreatePointPage() {
         router.push("/auth");
       } else {
         await loadSettings();
+        // Задержка загрузки карты для улучшения производительности
+        setTimeout(() => setIsMapReady(true), 100);
       }
     };
 
     initPage();
   }, [checkAuth, router, loadSettings]);
 
-  const handleInputChange = (field: keyof CreatePointRequest, value: string | number) => {
+  const handleInputChange = useCallback((field: keyof CreatePointRequest, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Синхронизация координат с маркером на карте
@@ -80,16 +90,16 @@ export default function CreatePointPage() {
         [field]: typeof value === "number" ? value : parseFloat(value as string) || 0,
       }));
     }
-  };
+  }, []);
 
-  const handleMarkerDragEnd = (lngLat: { lng: number; lat: number }) => {
+  const handleMarkerDragEnd = useCallback((lngLat: { lng: number; lat: number }) => {
     setMarkerPosition(lngLat);
     setFormData(prev => ({
       ...prev,
       lng: lngLat.lng,
       lat: lngLat.lat,
     }));
-  };
+  }, []);
 
   const handleCreateContainer = () => {
     if (!newContainerTitle.trim()) {
@@ -270,39 +280,42 @@ export default function CreatePointPage() {
                   </div>
                 </div>
                 <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border">
-                  <Map 
-                    center={[markerPosition.lng, markerPosition.lat]} 
-                    zoom={12}
-                    styles={{
-                      light: MAP_STYLES[mapStyle].light,
-                      dark: MAP_STYLES[mapStyle].dark,
-                    }}
-                  >
-                    <MapMarker
-                      draggable
-                      longitude={markerPosition.lng}
-                      latitude={markerPosition.lat}
-                      onDragEnd={handleMarkerDragEnd}
+                  {isMapReady ? (
+                    <Map 
+                      center={[markerPosition.lng, markerPosition.lat]} 
+                      zoom={12}
+                      styles={mapStyles}
                     >
-                      <MarkerContent>
-                        <div className="cursor-move">
-                          <MapPin
-                            className="fill-primary stroke-white dark:fill-primary"
-                            size={32}
-                          />
-                        </div>
-                      </MarkerContent>
-                      <MarkerPopup>
-                        <div className="space-y-1">
-                          <p className="font-medium text-foreground">{tI18n('createPoint.pointCoordinates')}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
-                          </p>
-                        </div>
-                      </MarkerPopup>
-                    </MapMarker>
-                    <MapControls showZoom showLocate showFullscreen />
-                  </Map>
+                      <MapMarker
+                        draggable
+                        longitude={markerPosition.lng}
+                        latitude={markerPosition.lat}
+                        onDragEnd={handleMarkerDragEnd}
+                      >
+                        <MarkerContent>
+                          <div className="cursor-move">
+                            <MapPin
+                              className="fill-primary stroke-white dark:fill-primary"
+                              size={32}
+                            />
+                          </div>
+                        </MarkerContent>
+                        <MarkerPopup>
+                          <div className="space-y-1">
+                            <p className="font-medium text-foreground">{tI18n('createPoint.pointCoordinates')}</p>
+                            <p className="text-xs text-muted-foreground">
+                              {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
+                            </p>
+                          </div>
+                        </MarkerPopup>
+                      </MapMarker>
+                      <MapControls showZoom showLocate showFullscreen />
+                    </Map>
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center bg-muted">
+                      <div className="text-text-muted">Загрузка карты...</div>
+                    </div>
+                  )}
                 </div>
               </div>
               

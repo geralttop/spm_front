@@ -140,6 +140,10 @@ type MapProps = {
    * to enable controlled mode where the map viewport is driven by your state.
    */
   onViewportChange?: (viewport: MapViewport) => void;
+  /**
+   * Callback fired when the map is clicked.
+   */
+  onClick?: (e: MapLibreGL.MapMouseEvent & { lngLat: MapLibreGL.LngLat }) => void;
 } & Omit<MapLibreGL.MapOptions, "container" | "style">;
 
 function DefaultLoader() {
@@ -173,6 +177,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
     projection,
     viewport,
     onViewportChange,
+    onClick,
     ...props
   },
   ref
@@ -190,6 +195,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
   const onViewportChangeRef = useRef(onViewportChange);
   onViewportChangeRef.current = onViewportChange;
+
+  const onClickRef = useRef(onClick);
+  onClickRef.current = onClick;
 
   const mapStyles = useMemo(
     () => ({
@@ -248,9 +256,15 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       onViewportChangeRef.current?.(getViewport(map));
     };
 
+    // Click handler
+    const handleClick = (e: MapLibreGL.MapMouseEvent & { lngLat: MapLibreGL.LngLat }) => {
+      onClickRef.current?.(e);
+    };
+
     map.on("load", loadHandler);
     map.on("styledata", styleDataHandler);
     map.on("move", handleMove);
+    map.on("click", handleClick);
     setMapInstance(map);
 
     return () => {
@@ -258,6 +272,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       map.off("load", loadHandler);
       map.off("styledata", styleDataHandler);
       map.off("move", handleMove);
+      map.off("click", handleClick);
       map.remove();
       setIsLoaded(false);
       setIsStyleLoaded(false);
