@@ -1,10 +1,10 @@
 import { User as UserIcon, Flag } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./button";
 import { ReportModal } from "./report-modal";
 import { useAuthStore } from "@/shared/lib/store";
-import { authApi } from "@/shared/api";
+import { useProfileQuery } from "@/shared/lib/hooks";
 import type { SearchUserResult } from "@/shared/api";
 
 interface UserCardProps {
@@ -17,25 +17,10 @@ interface UserCardProps {
 export function UserCard({ user, onClick, actionButton, showReportButton = true }: UserCardProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const { data: profile } = useProfileQuery();
   const [showReportModal, setShowReportModal] = useState(false);
 
-  // Загружаем информацию о текущем пользователе
-  useEffect(() => {
-    const loadCurrentUser = async () => {
-      if (!accessToken) return;
-      
-      try {
-        const profile = await authApi.getProfile();
-        setCurrentUserId(Number(profile.userId));
-      } catch (error) {
-        console.error('Error loading current user:', error);
-      }
-    };
-
-    loadCurrentUser();
-  }, [accessToken]);
-
+  const currentUserId = profile ? Number(profile.userId) : null;
   const canReport = showReportButton && accessToken && currentUserId && currentUserId !== user.id;
 
   const handleReportSuccess = () => {

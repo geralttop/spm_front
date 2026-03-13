@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
-import { useTranslation } from "@/shared/lib/hooks";
+import { useTranslation, useMapSettingsQuery } from "@/shared/lib/hooks";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
 import { ArrowLeft, Map, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban } from "lucide-react";
@@ -44,6 +44,7 @@ export default function SettingsPage() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const [isLoading, setIsLoading] = useState(true);
   const { t, currentLanguage, changeLanguage } = useTranslation();
+  const { data: mapSettings } = useMapSettingsQuery();
   
   const {
     availableMapStyles,
@@ -71,13 +72,16 @@ export default function SettingsPage() {
       if (!isAuth) {
         router.push("/auth");
       } else {
-        await Promise.all([loadSettings(), loadSidebarOrder()]);
+        if (mapSettings) {
+          await loadSettings(mapSettings);
+        }
+        await loadSidebarOrder();
         setIsLoading(false);
       }
     };
 
     initPage();
-  }, [checkAuth, router, loadSettings, loadSidebarOrder]);
+  }, [checkAuth, router, mapSettings, loadSettings, loadSidebarOrder]);
 
   const handleToggleStyle = async (styleKey: MapStyleKey) => {
     try {

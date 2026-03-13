@@ -6,7 +6,7 @@ interface SidebarState {
   isLoading: boolean;
   isInitialized: boolean;
   
-  loadSidebarOrder: () => Promise<void>;
+  loadSidebarOrder: (profileData?: { sidebarOrder?: string[] }) => Promise<void>;
   setSidebarOrder: (order: string[]) => Promise<void>;
   resetToDefaults: () => Promise<void>;
 }
@@ -28,15 +28,22 @@ export const useSidebarStore = create<SidebarState>((set, get) => ({
   isLoading: false,
   isInitialized: false,
 
-  loadSidebarOrder: async () => {
+  loadSidebarOrder: async (profileData?: { sidebarOrder?: string[] }) => {
     if (get().isInitialized) return;
     
     set({ isLoading: true });
     try {
-      const profile = await authApi.getProfile();
+      // Если данные профиля переданы, используем их
+      let sidebarOrderData = profileData?.sidebarOrder;
       
-      if (profile.sidebarOrder && Array.isArray(profile.sidebarOrder) && profile.sidebarOrder.length > 0) {
-        let order = [...profile.sidebarOrder];
+      // Если данные не переданы, запрашиваем их (fallback)
+      if (!sidebarOrderData) {
+        const profile = await authApi.getProfile();
+        sidebarOrderData = profile.sidebarOrder;
+      }
+      
+      if (sidebarOrderData && Array.isArray(sidebarOrderData) && sidebarOrderData.length > 0) {
+        let order = [...sidebarOrderData];
         
         // Добавляем новые пункты, которых нет в сохраненном порядке
         const newItems = DEFAULT_ORDER.filter(item => !order.includes(item));

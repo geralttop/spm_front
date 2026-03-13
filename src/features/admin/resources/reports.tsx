@@ -13,15 +13,16 @@ import {
   useRecordContext,
   FunctionField,
   Button,
-  useUpdate,
   useNotify,
   useRefresh,
   ChipField,
   ReferenceField,
   BooleanField,
+  useDataProvider,
 } from 'react-admin';
 import { Card, CardContent, Typography, Box, Chip } from '@mui/material';
 import { Flag, User, MessageSquare, MapPin, CheckCircle, XCircle } from 'lucide-react';
+import React from 'react';
 
 // Choices для статусов и причин
 const statusChoices = [
@@ -128,33 +129,38 @@ const ReportTargetField = () => {
 // Кнопки действий для жалоб
 const ReportActions = () => {
   const record = useRecordContext();
-  const [update] = useUpdate();
+  const dataProvider = useDataProvider();
   const notify = useNotify();
   const refresh = useRefresh();
+  const [loading, setLoading] = React.useState(false);
 
   if (!record || record.status !== 'pending') return null;
 
-  const handleResolve = async (action: 'block' | 'dismiss') => {
+  const handleResolve = async (e: React.MouseEvent, action: 'block' | 'dismiss') => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    if (loading) return;
+    
+    setLoading(true);
     try {
-      await update('reports', {
+      // Используем dataProvider напрямую для полного контроля
+      await dataProvider.update('reports', {
         id: record.id,
         data: { action },
         previousData: record,
-      }, {
-        mutationMode: 'pessimistic',
-        onSuccess: () => {
-          const actionText = action === 'block' ? 'заблокирован пользователь' : 'жалоба отклонена';
-          notify(`Действие выполнено: ${actionText}`, { type: 'success' });
-          refresh();
-        },
-        onError: (error) => {
-          console.error('Error resolving report:', error);
-          notify('Ошибка при обработке жалобы', { type: 'error' });
-        }
       });
+      
+      const actionText = action === 'block' ? 'заблокирован пользователь' : 'жалоба отклонена';
+      notify(`Действие выполнено: ${actionText}`, { type: 'success' });
+      
+      // Обновляем данные без редиректа
+      refresh();
     } catch (error) {
-      console.error('Error in handleResolve:', error);
+      console.error('Error resolving report:', error);
       notify('Ошибка при обработке жалобы', { type: 'error' });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -162,17 +168,19 @@ const ReportActions = () => {
     <Box display="flex" gap={1}>
       <Button
         label="Заблокировать"
-        onClick={() => handleResolve('block')}
+        onClick={(e) => handleResolve(e, 'block')}
         color="warning"
         size="small"
+        disabled={loading}
       >
         <XCircle size={16} />
       </Button>
       <Button
         label="Отклонить"
-        onClick={() => handleResolve('dismiss')}
+        onClick={(e) => handleResolve(e, 'dismiss')}
         color="success"
         size="small"
+        disabled={loading}
       >
         <CheckCircle size={16} />
       </Button>
@@ -190,7 +198,7 @@ export const ReportList = () => (
       <SelectInput source="reason" choices={reasonChoices} />,
     ]}
   >
-    <Datagrid rowClick="show">
+    <Datagrid rowClick="show" bulkActionButtons={false}>
       <TextField source="id" label="ID" />
       <FunctionField 
         label="Тип" 
@@ -216,6 +224,7 @@ export const ReportList = () => (
       <FunctionField 
         label="Действия" 
         render={() => <ReportActions />}
+        onClick={(e: React.MouseEvent) => e.stopPropagation()}
       />
     </Datagrid>
   </List>

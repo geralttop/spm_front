@@ -24,6 +24,7 @@ export interface Point {
     lastName: string;
     avatar?: string;
   };
+  commentsCount?: number;
 }
 
 export interface CreatePointRequest {

@@ -2,11 +2,11 @@ import { MapPin, Tag, Package, User, Calendar, MessageCircle } from 'lucide-reac
 import { useState, useEffect, type ComponentType } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
-import { favoritesApi, authApi, type Point } from '@/shared/api';
+import { favoritesApi, type Point } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/entities/comment';
 import { ReportModal, EditPointModal, FavoriteButton, ReportButton, EditButton } from '@/shared/ui';
-import { useTranslation } from '@/shared/lib/hooks';
+import { useTranslation, useProfileQuery, useMapSettingsQuery } from '@/shared/lib/hooks';
 import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/shared/ui/map";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
@@ -66,7 +66,8 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const { data: profile } = useProfileQuery();
+  const { data: mapSettings } = useMapSettingsQuery();
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -74,12 +75,14 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
   const [showEditModal, setShowEditModal] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
 
+  const currentUserId = profile ? Number(profile.userId) : null;
+
   // Загружаем настройки при монтировании
   useEffect(() => {
-    if (accessToken) {
-      loadSettings();
+    if (accessToken && mapSettings) {
+      loadSettings(mapSettings);
     }
-  }, [accessToken, loadSettings]);
+  }, [accessToken, mapSettings, loadSettings]);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -117,22 +120,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
       }
     };
   }, [point.id, accessToken]);
-
-  // Загружаем информацию о текущем пользователе
-  useEffect(() => {
-    const loadCurrentUser = async () => {
-      if (!accessToken) return;
-      
-      try {
-        const profile = await authApi.getProfile();
-        setCurrentUserId(Number(profile.userId));
-      } catch (error) {
-        console.error('Error loading current user:', error);
-      }
-    };
-
-    loadCurrentUser();
-  }, [accessToken]);
 
   const toggleFavorite = async () => {
     if (!accessToken || loading) return;
@@ -344,10 +331,17 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
       <div className="mt-4 pt-4 border-t border-border">
         <button
           onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors"
+          className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
         >
           <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span>{showComments ? t('comments.hide') : t('comments.show')}</span>
+          <span>
+            {showComments ? t('comments.hide') : t('comments.show')}
+          </span>
+          {point.commentsCount !== undefined && point.commentsCount > 0 && (
+            <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-semibold">
+              {point.commentsCount}
+            </span>
+          )}
         </button>
         
         {showComments && (
