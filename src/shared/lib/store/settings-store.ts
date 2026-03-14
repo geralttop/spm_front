@@ -13,7 +13,7 @@ interface SettingsState {
   isInitialized: boolean;
   
   // Действия
-  loadSettings: () => Promise<void>;
+  loadSettings: (settingsData?: { availableMapStyles: MapStyleKey[]; defaultMapStyle: MapStyleKey }) => Promise<void>;
   setAvailableMapStyles: (styles: MapStyleKey[]) => Promise<void>;
   setDefaultMapStyle: (style: MapStyleKey) => Promise<void>;
   toggleMapStyle: (style: MapStyleKey) => Promise<void>;
@@ -29,12 +29,19 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   isLoading: false,
   isInitialized: false,
 
-  loadSettings: async () => {
+  loadSettings: async (settingsData?: { availableMapStyles: MapStyleKey[]; defaultMapStyle: MapStyleKey }) => {
     if (get().isInitialized) return;
     
     set({ isLoading: true });
     try {
-      const settings = await settingsApi.getMapSettings();
+      // Если данные переданы, используем их
+      let settings = settingsData;
+      
+      // Если данные не переданы, запрашиваем их (fallback)
+      if (!settings) {
+        settings = await settingsApi.getMapSettings();
+      }
+      
       set({
         availableMapStyles: settings.availableMapStyles,
         defaultMapStyle: settings.defaultMapStyle,

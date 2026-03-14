@@ -15,6 +15,7 @@ export interface Point {
   category?: Category | null;
   container?: Container | null;
   author: User;
+  commentsCount?: number;
 }
 
 export interface CreatePointRequest {

@@ -8,7 +8,7 @@ import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/share
 import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
-import { useTranslation, useToast } from "@/shared/lib/hooks";
+import { useTranslation, useToast, useMapSettingsQuery } from "@/shared/lib/hooks";
 import { 
   useCategoriesQuery, 
   useContainersQuery, 
@@ -16,7 +16,7 @@ import {
   useCreateCategoryMutation,
   useCreateContainerMutation 
 } from "@/shared/lib/hooks/queries";
-import { MapPin, Tag, Package, Plus, ArrowLeft, Map as MapIcon } from "lucide-react";
+import { MapPin, Tag, Package, Plus, ArrowLeft, Map as MapIcon, Info, HelpCircle } from "lucide-react";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 export default function CreatePointPage() {
@@ -26,6 +26,7 @@ export default function CreatePointPage() {
   const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
+  const { data: mapSettings } = useMapSettingsQuery();
   
   const { data: categories = [], isLoading: categoriesLoading } = useCategoriesQuery();
   const { data: containers = [], isLoading: containersLoading } = useContainersQuery();
@@ -62,13 +63,13 @@ export default function CreatePointPage() {
       const isAuth = await checkAuth();
       if (!isAuth) {
         router.push("/auth");
-      } else {
-        await loadSettings();
+      } else if (mapSettings) {
+        await loadSettings(mapSettings);
       }
     };
 
     initPage();
-  }, [checkAuth, router, loadSettings]);
+  }, [checkAuth, router, mapSettings, loadSettings]);
 
   const handleInputChange = (field: keyof CreatePointRequest, value: string | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -431,10 +432,28 @@ export default function CreatePointPage() {
 
             {/* Container Card */}
             <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-text-main mb-4 flex items-center gap-2">
-                <Package className="h-5 w-5" />
-                {tI18n('createPoint.container')}
-              </h2>
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-lg font-semibold text-text-main flex items-center gap-2">
+                  <Package className="h-5 w-5" />
+                  {tI18n('createPoint.container')}
+                </h2>
+                <div className="group relative">
+                  <HelpCircle className="h-4 w-4 text-text-muted cursor-help" />
+                  <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute left-0 top-6 z-10 w-80 p-4 bg-popover border border-border rounded-lg shadow-lg">
+                    <p className="font-medium text-sm text-text-main mb-2">Что такое контейнер?</p>
+                    <p className="text-sm text-text-muted mb-3">
+                      Контейнер — это коллекция или группа точек. Например: "Мои любимые места", "Рестораны Минска", "Достопримечательности".
+                    </p>
+                    <div className="pt-2 border-t border-border">
+                      <p className="text-xs font-medium text-text-main mb-1">Отличие от категорий:</p>
+                      <p className="text-xs text-text-muted">
+                        <span className="font-medium">Категория</span> — это тип точки (ресторан, парк, музей). 
+                        <span className="font-medium ml-1">Контейнер</span> — это ваша личная коллекция точек любых типов.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               
               <div className="space-y-4">
                 <div>

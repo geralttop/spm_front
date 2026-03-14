@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Flag } from 'lucide-react';
-import { commentsApi, Comment, authApi } from '@/shared/api';
+import { commentsApi, Comment } from '@/shared/api';
 import { ReportModal } from '@/shared/ui';
+import { useProfileQuery } from '@/shared/lib/hooks';
 import styles from './Comments.module.css';
 
 interface CommentsProps {
@@ -13,19 +14,20 @@ interface CommentsProps {
 
 export function Comments({ pointId }: CommentsProps) {
   const { t } = useTranslation();
+  const { data: profile } = useProfileQuery();
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState('');
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportingCommentId, setReportingCommentId] = useState<number | null>(null);
 
+  const currentUserId = profile ? Number(profile.userId) : null;
+
   useEffect(() => {
     loadComments();
-    loadCurrentUser();
   }, [pointId]);
 
   const loadComments = async () => {
@@ -37,15 +39,6 @@ export function Comments({ pointId }: CommentsProps) {
       console.error('Error loading comments:', error);
     } finally {
       setLoading(false);
-    }
-  };
-  const loadCurrentUser = async () => {
-    try {
-      const profile = await authApi.getProfile();
-      setCurrentUserId(Number(profile.userId));
-    } catch (error) {
-      console.error('Error loading current user:', error);
-      setCurrentUserId(null);
     }
   };
 

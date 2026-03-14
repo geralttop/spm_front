@@ -13,6 +13,7 @@ export interface ProfileResponse {
   email: string;
   username?: string;
   bio?: string;
+  avatar?: string;
   sidebarOrder?: string[];
 }
 
@@ -24,6 +25,7 @@ export interface UpdateProfileRequest {
 export interface SearchUserResult {
   id: number;
   username: string;
-  firstName: string;
-  lastName: string;
+  email: string;
+  bio: string | null;
+  avatar?: string;
 }

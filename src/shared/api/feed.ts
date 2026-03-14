@@ -26,6 +26,7 @@ export interface FeedPoint {
     username: string;
     firstName: string;
     lastName: string;
+    avatar?: string;
   };
 }
 

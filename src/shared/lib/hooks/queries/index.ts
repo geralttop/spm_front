@@ -7,3 +7,4 @@ export * from "./use-search-query";
 export * from "./use-auth-query";
 export * from "./use-categories-query";
 export * from "./use-containers-query";
+export * from "./use-map-settings-query";

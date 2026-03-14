@@ -7,6 +7,7 @@ import { feedApi } from "@/shared/api";
 import type { FeedPoint } from "@/shared/api/feed";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
+import { useMapSettingsQuery } from "@/shared/lib/hooks";
 import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup } from "@/shared/ui/map";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { MapPin, User, Calendar, Loader2 } from "lucide-react";
@@ -18,6 +19,7 @@ export default function MapPage() {
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, defaultMapStyle, loadSettings, isInitialized } = useSettingsStore();
+  const { data: mapSettings } = useMapSettingsQuery();
   
   const [points, setPoints] = useState<FeedPoint[]>([]);
   const [allPoints, setAllPoints] = useState<FeedPoint[]>([]); // Все точки без фильтров
@@ -41,8 +43,10 @@ export default function MapPage() {
       return;
     }
 
-    loadSettings();
-  }, [accessToken, router, loadSettings]);
+    if (mapSettings) {
+      loadSettings(mapSettings);
+    }
+  }, [accessToken, router, mapSettings, loadSettings]);
 
   // Обновляем стиль карты когда настройки загрузились
   useEffect(() => {

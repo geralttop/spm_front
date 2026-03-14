@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
-import { useTranslation } from "@/shared/lib/hooks";
+import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, X, Map, FolderKanban } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 
@@ -26,9 +26,10 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const accessToken = useAuthStore((state) => state.accessToken);
   const { sidebarOrder, loadSidebarOrder } = useSidebarStore();
+  const { data: profile } = useProfileQuery();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  const userRole = profile?.role || null;
 
   // Дефолтный порядок вкладок (мемоизируем для предотвращения бесконечного цикла)
   const defaultMenuItems = useMemo((): MenuItem[] => {
@@ -118,30 +119,17 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       const isAuth = await checkAuth();
       setIsAuthenticated(isAuth);
       
-      if (isAuth && accessToken) {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/auth/profile`, {
-            headers: { 'Authorization': `Bearer ${accessToken}` },
-          });
-          
-          if (response.ok) {
-            const userData = await response.json();
-            setUserRole(userData.role);
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        }
-        
-        // Загружаем порядок сайдбара из store
-        await loadSidebarOrder();
+      if (isAuth && accessToken && profile) {
+        // Загружаем порядок сайдбара из store, передавая данные профиля
+        await loadSidebarOrder(profile);
       }
     };
 
     fetchUserData();
-  }, [checkAuth, accessToken, loadSidebarOrder]);
+  }, [checkAuth, accessToken, loadSidebarOrder, profile]);
 
-  // Обновляем menuItems при изменении sidebarOrder, pathname, userRole или языка
-  useEffect(() => {
+  // Вычисляем menuItems на основе sidebarOrder и defaultMenuItems
+  const menuItems = useMemo(() => {
     // Сортируем согласно порядку из store
     const orderedItems = sidebarOrder
       .map((id: string) => defaultMenuItems.find((item: MenuItem) => item.id === id))
@@ -152,7 +140,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       item => !sidebarOrder.includes(item.id)
     );
     
-    setMenuItems([...orderedItems, ...newItems]);
+    return [...orderedItems, ...newItems];
   }, [sidebarOrder, defaultMenuItems]);
 
   const handleNavigation = (path: string) => {
