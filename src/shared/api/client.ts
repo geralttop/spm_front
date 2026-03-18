@@ -106,26 +106,28 @@ apiClient.interceptors.request.use(
   }
 );
 
+// Эндпоинты авторизации: 401 здесь = "неверный email/пароль/код", а не "истёк токен". Refresh не делаем.
+const isAuthEndpoint = (url: string = '') =>
+  /\/auth\/(login|register|verify-email|verify-login|forgot-password|reset-password)/.test(url);
+
 // Интерцептор для обработки ошибок 401
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
+    const requestUrl = originalRequest?.url ?? '';
 
-    console.log('🔍 Interceptor triggered:', {
-      status: error.response?.status,
-      url: originalRequest.url,
-      fullUrl: originalRequest.baseURL + originalRequest.url,
-      isRefreshUrl: originalRequest.url?.includes("/auth/refresh") || originalRequest.url?.includes("refresh"),
-      hasRetry: originalRequest._retry
-    });
+    // На эндпоинтах входа/регистрации/верификации 401 — это ответ сервера (неверный email или пароль и т.д.), пробрасываем как есть
+    if (error.response?.status === 401 && isAuthEndpoint(requestUrl)) {
+      return Promise.reject(error);
+    }
 
     // Если ошибка 401 и это не запрос на обновление токена
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/auth/refresh") &&
-      !originalRequest.url?.includes("refresh")
+      !requestUrl.includes("/auth/refresh") &&
+      !requestUrl.includes("refresh")
     ) {
       console.log('🔄 Starting token refresh process...');
       

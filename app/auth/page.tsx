@@ -1,14 +1,131 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/shared/ui";
 import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
 import { useRegisterMutation, useLoginMutation, useVerifyEmailMutation, useVerifyLoginMutation, useForgotPasswordMutation, useResetPasswordMutation } from "@/shared/lib/hooks/queries";
+import { loginSchema, registerSchema, verifyCodeSchema, forgotPasswordSchema, resetPasswordSchema } from "@/shared/schemas/user.schema";
 import { Eye, EyeOff } from "lucide-react";
+import type { z } from "zod";
+import { cn } from "@/shared/lib/utils";
+
+const CODE_LENGTH = 6;
 
 type AuthMode = "login" | "register" | "verify" | "forgot-password" | "reset-password";
+
+function CodeInput({
+  value,
+  onChange,
+  label,
+  disabled,
+}: {
+  value: string;
+  onChange: (code: string) => void;
+  label?: string;
+  disabled?: boolean;
+}) {
+  const digits = value.replace(/\D/g, "").slice(0, CODE_LENGTH).padEnd(CODE_LENGTH, "");
+  const refs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const setCode = useCallback(
+    (next: string) => {
+      const digitsOnly = next.replace(/\D/g, "").slice(0, CODE_LENGTH);
+      onChange(digitsOnly);
+    },
+    [onChange]
+  );
+
+  const handleChange = (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const v = e.target.value.replace(/\D/g, "").slice(-1);
+    if (v) {
+      const arr = digits.split("");
+      arr[index] = v;
+      setCode(arr.join(""));
+      refs.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace") {
+      e.preventDefault();
+      const arr = digits.split("");
+      if (digits[index]) {
+        arr[index] = "";
+        setCode(arr.join(""));
+      } else if (index > 0) {
+        arr[index - 1] = "";
+        setCode(arr.join(""));
+        refs.current[index - 1]?.focus();
+      }
+    } else if (e.key === "ArrowLeft" && index > 0) {
+      refs.current[index - 1]?.focus();
+      e.preventDefault();
+    } else if (e.key === "ArrowRight" && index < CODE_LENGTH - 1) {
+      refs.current[index + 1]?.focus();
+      e.preventDefault();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, CODE_LENGTH);
+    setCode(pasted);
+    const nextIndex = Math.min(pasted.length, CODE_LENGTH - 1);
+    refs.current[nextIndex]?.focus();
+  };
+
+  return (
+    <div>
+      {label && (
+        <label className="mb-2 block text-sm font-medium text-text-main">{label}</label>
+      )}
+      <div className="flex justify-center gap-2 sm:gap-2.5">
+        {Array.from({ length: CODE_LENGTH }, (_, i) => (
+          <input
+            key={i}
+            ref={(el) => { refs.current[i] = el; }}
+            type="text"
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={1}
+            value={digits[i] ?? ""}
+            disabled={disabled}
+            onFocus={(e) => e.target.select()}
+            onChange={(e) => handleChange(i, e)}
+            onKeyDown={(e) => handleKeyDown(i, e)}
+            onPaste={handlePaste}
+            className={cn(
+              "h-12 w-10 sm:h-14 sm:w-12 rounded-xl border-2 border-border bg-card text-center text-xl sm:text-2xl font-semibold text-text-main",
+              "transition-all duration-200 ease-out",
+              "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 focus:scale-110",
+              "placeholder:text-text-muted/50",
+              "disabled:opacity-50 disabled:cursor-not-allowed",
+              "touch-target"
+            )}
+            aria-label={`${label || "Код"} цифра ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function getErrorMessage(error: any, fallback: string): string {
+  const msg = error?.response?.data?.message;
+  if (Array.isArray(msg)) return msg[0] ?? fallback;
+  if (typeof msg === "string") return msg;
+  return error?.message && error.message !== "No access token available" ? error.message : fallback;
+}
+
+function getValidationError(result: { error: { issues: Array<{ path?: unknown[]; message?: unknown }> } }, invalidEmailT: string): string {
+  const issues = result.error.issues;
+  const first = issues[0];
+  if (!first) return invalidEmailT;
+  if (first.path?.[0] === "email") return invalidEmailT;
+  return first.message != null ? String(first.message) : invalidEmailT;
+}
 
 export default function AuthPage() {
   const router = useRouter();
@@ -38,6 +155,7 @@ export default function AuthPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const registerMutation = useRegisterMutation();
   const loginMutation = useLoginMutation();
@@ -48,7 +166,12 @@ export default function AuthPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setFormError(null);
+    const parsed = registerSchema.safeParse({ email, password, username: username || undefined });
+    if (!parsed.success) {
+      setFormError(getValidationError(parsed, t("auth.invalidEmail")));
+      return;
+    }
     registerMutation.mutate(
       { email, password, username },
       {
@@ -57,13 +180,21 @@ export default function AuthPage() {
           setIsFromRegister(true);
           setMode("verify");
         },
+        onError: (error: any) => {
+          setFormError(getErrorMessage(error, t("auth.errorRegister")));
+        },
       }
     );
   };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setFormError(null);
+    const parsed = loginSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      setFormError(getValidationError(parsed, t("auth.invalidEmail")));
+      return;
+    }
     loginMutation.mutate(
       { email, password },
       {
@@ -72,13 +203,21 @@ export default function AuthPage() {
           setIsFromRegister(false);
           setMode("verify");
         },
+        onError: (error: any) => {
+          setFormError(getErrorMessage(error, t("auth.errorWrongEmailOrPassword")));
+        },
       }
     );
   };
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setFormError(null);
+    const parsed = verifyCodeSchema.safeParse({ email: pendingEmail, code });
+    if (!parsed.success) {
+      setFormError(getValidationError(parsed, t("auth.invalidEmail")));
+      return;
+    }
     const mutation = isFromRegister ? verifyEmailMutation : verifyLoginMutation;
     
     mutation.mutate(
@@ -87,18 +226,29 @@ export default function AuthPage() {
         onSuccess: () => {
           router.push("/profile");
         },
+        onError: (error: any) => {
+          setFormError(getErrorMessage(error, t("auth.errorCode")));
+        },
       }
     );
   };
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    setFormError(null);
+    const parsed = forgotPasswordSchema.safeParse({ email });
+    if (!parsed.success) {
+      setFormError(getValidationError(parsed, t("auth.invalidEmail")));
+      return;
+    }
     forgotPasswordMutation.mutate(
       { email },
       {
         onSuccess: () => {
           setPendingEmail(email);
           setMode("reset-password");
+        },
+        onError: (error: any) => {
+          setFormError(getErrorMessage(error, t("auth.errorForgotPassword")));
         },
       }
     );
@@ -107,8 +257,16 @@ export default function AuthPage() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (newPassword !== confirmPassword) return;
-
+    if (newPassword !== confirmPassword) {
+      setFormError(t("auth.passwordMismatch"));
+      return;
+    }
+    setFormError(null);
+    const parsed = resetPasswordSchema.safeParse({ email: pendingEmail, code, newPassword });
+    if (!parsed.success) {
+      setFormError(getValidationError(parsed, t("auth.invalidEmail")));
+      return;
+    }
     resetPasswordMutation.mutate(
       { email: pendingEmail, code, newPassword },
       {
@@ -118,6 +276,9 @@ export default function AuthPage() {
           setNewPassword("");
           setConfirmPassword("");
         },
+        onError: (error: any) => {
+          setFormError(getErrorMessage(error, t("auth.errorResetPassword")));
+        },
       }
     );
   };
@@ -125,6 +286,13 @@ export default function AuthPage() {
   const loading = registerMutation.isPending || loginMutation.isPending || 
                   verifyEmailMutation.isPending || verifyLoginMutation.isPending ||
                   forgotPasswordMutation.isPending || resetPasswordMutation.isPending;
+
+  const errorBlock = formError ? (
+    <div className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+      {formError}
+    </div>
+  ) : null;
+
   if (mode === "forgot-password") {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
@@ -138,7 +306,8 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <form onSubmit={handleForgotPassword} className="space-y-4">
+          <form onSubmit={handleForgotPassword} className="space-y-4" noValidate>
+            {errorBlock}
             <div>
               <label className="mb-2 block text-sm font-medium text-text-main">
                 {t("auth.email")}
@@ -184,21 +353,14 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <form onSubmit={handleResetPassword} className="space-y-4">
-            <div>
-              <label className="mb-2 block text-sm font-medium text-text-main">
-                {t("auth.verificationCode")}
-              </label>
-              <Input
-                type="text"
-                placeholder="000000"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                maxLength={6}
-                required
-                className="text-center text-xl sm:text-2xl tracking-widest touch-target"
-              />
-            </div>
+          <form onSubmit={handleResetPassword} className="space-y-4" noValidate>
+            {errorBlock}
+            <CodeInput
+              value={code}
+              onChange={setCode}
+              label={t("auth.verificationCode")}
+              disabled={loading}
+            />
 
             <div>
               <label className="mb-2 block text-sm font-medium text-text-main">
@@ -292,18 +454,13 @@ export default function AuthPage() {
             </p>
           </div>
 
-          <form onSubmit={handleVerify} className="space-y-4">
-            <div>
-              <Input
-                type="text"
-                placeholder="000000"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-                maxLength={6}
-                required
-                className="text-center text-xl sm:text-2xl tracking-widest touch-target"
-              />
-            </div>
+          <form onSubmit={handleVerify} className="space-y-4" noValidate>
+            {errorBlock}
+            <CodeInput
+              value={code}
+              onChange={setCode}
+              disabled={loading}
+            />
 
             <Button type="submit" className="w-full touch-target" disabled={loading}>
               {loading ? t("auth.verifying") : t("auth.verifyButton")}
@@ -344,7 +501,9 @@ export default function AuthPage() {
         <form
           onSubmit={mode === "login" ? handleLogin : handleRegister}
           className="space-y-4"
+          noValidate
         >
+          {errorBlock}
           {mode === "register" && (
             <div>
               <label className="mb-2 block text-sm font-medium text-text-main">

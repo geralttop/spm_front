@@ -43,6 +43,7 @@ const getUserData = () => {
 };
 
 export const authProvider: AuthProvider = {
+  // Вход только по email (логина в системе нет). react-admin передаёт первое поле как username — используем его как email.
   login: ({ username, password }) => {
     const request = new Request(`${apiUrl}/auth/login`, {
       method: 'POST',
@@ -71,7 +72,7 @@ export const authProvider: AuthProvider = {
         localStorage.setItem('auth-storage', JSON.stringify(authStorage));
       })
       .catch(() => {
-        throw new Error('Неверные учетные данные');
+        throw new Error('Неверный email или пароль');
       });
   },
 

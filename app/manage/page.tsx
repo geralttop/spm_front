@@ -16,7 +16,7 @@ export default function ManagePage() {
 
   useEffect(() => {
     if (!accessToken) {
-      router.push('/login');
+      router.push('/auth');
     }
   }, [accessToken, router]);
 
