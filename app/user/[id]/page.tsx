@@ -82,13 +82,13 @@ export default function UserProfilePage() {
   };
 
   const handleShowFollowers = async () => {
-    await followersModal.openModal(userId, "followers");
-    await initializeFollowingStates(followersModal.users);
+    const users = await followersModal.openModal(userId, "followers");
+    await initializeFollowingStates(users);
   };
 
   const handleShowFollowing = async () => {
-    await followingModal.openModal(userId, "following");
-    await initializeFollowingStates(followingModal.users);
+    const users = await followingModal.openModal(userId, "following");
+    await initializeFollowingStates(users);
   };
 
   const handleFollowToggleInModal = async (targetUserId: number, isCurrentlyFollowing: boolean) => {

@@ -57,14 +57,14 @@ export default function ProfilePage() {
 
   const handleShowFollowers = async () => {
     if (!profile) return;
-    await followersModal.openModal(Number(profile.userId), "followers");
-    await initializeFollowingStates(followersModal.users);
+    const users = await followersModal.openModal(Number(profile.userId), "followers");
+    await initializeFollowingStates(users);
   };
 
   const handleShowFollowing = async () => {
     if (!profile) return;
-    await followingModal.openModal(Number(profile.userId), "following");
-    initializeFollowingList(followingModal.users);
+    const users = await followingModal.openModal(Number(profile.userId), "following");
+    initializeFollowingList(users);
   };
 
   const handleFollowToggleInModal = async (userId: number, isCurrentlyFollowing: boolean) => {

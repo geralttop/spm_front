@@ -99,35 +99,45 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-200">
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Редактировать точку</h2>
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-point-title"
+    >
+      <div
+        className="bg-card rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-border"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 bg-card border-b border-border p-6 flex items-center justify-between z-10">
+          <h2 id="edit-point-title" className="text-xl font-semibold text-text-main">Редактировать точку</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-accent rounded-lg transition-colors text-text-muted hover:text-text-main"
             disabled={loading}
+            type="button"
           >
-            <X className="h-5 w-5 text-gray-500" />
+            <X className="h-5 w-5" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 bg-white">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 bg-card">
           {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-200">
+            <div className="bg-destructive/10 text-destructive p-3 rounded-lg text-sm border border-destructive/30">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Название <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-text-main mb-2">
+              Название <span className="text-destructive">*</span>
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               required
               maxLength={255}
               disabled={loading}
@@ -135,13 +145,13 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
+            <label className="block text-sm font-medium text-text-main mb-2">
               Описание
             </label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               rows={3}
               disabled={loading}
             />
@@ -149,15 +159,15 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
 
           <div>
             <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-900">
-                Координаты <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-text-main">
+                Координаты <span className="text-destructive">*</span>
               </label>
               <div className="flex items-center gap-2">
-                <MapIcon className="h-4 w-4 text-gray-500" />
+                <MapIcon className="h-4 w-4 text-text-muted" />
                 <select
                   value={mapStyle}
                   onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-                  className="text-sm rounded-md border border-gray-300 bg-white px-2 py-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
                   disabled={loading}
                 >
                   {availableMapStyles.map((key) => (
@@ -168,10 +178,10 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
                 </select>
               </div>
             </div>
-            <p className="text-sm text-gray-600 mb-3">
+            <p className="text-sm text-text-muted mb-3">
               Перетащите маркер на карте или введите координаты вручную
             </p>
-            <div className="h-[400px] w-full rounded-lg overflow-hidden border border-gray-300 mb-4">
+            <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border mb-4">
               <Map 
                 center={[markerPosition.lng, markerPosition.lat]} 
                 zoom={12}
@@ -196,8 +206,8 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
                   </MarkerContent>
                   <MarkerPopup>
                     <div className="space-y-1">
-                      <p className="font-medium text-foreground">Координаты точки</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="font-medium text-text-main">Координаты точки</p>
+                      <p className="text-xs text-text-muted">
                         {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
                       </p>
                     </div>
@@ -210,30 +220,30 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Долгота (lng) <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-text-main mb-2">
+                Долгота (lng) <span className="text-destructive">*</span>
               </label>
               <input
                 type="number"
                 step="any"
                 value={lng}
                 onChange={(e) => handleLngChange(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
                 disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Широта (lat) <span className="text-red-500">*</span>
+              <label className="block text-sm font-medium text-text-main mb-2">
+                Широта (lat) <span className="text-destructive">*</span>
               </label>
               <input
                 type="number"
                 step="any"
                 value={lat}
                 onChange={(e) => handleLatChange(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                 required
                 disabled={loading}
               />
@@ -241,13 +251,13 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Категория <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-text-main mb-2">
+              Категория <span className="text-destructive">*</span>
             </label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(parseInt(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               required
               disabled={loading}
             >
@@ -261,13 +271,13 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Контейнер <span className="text-red-500">*</span>
+            <label className="block text-sm font-medium text-text-main mb-2">
+              Контейнер <span className="text-destructive">*</span>
             </label>
             <select
               value={containerId}
               onChange={(e) => setContainerId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
               required
               disabled={loading}
             >
@@ -284,7 +294,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="flex-1 px-4 py-2 border border-border rounded-lg text-text-main hover:bg-accent transition-colors disabled:opacity-50"
               disabled={loading}
             >
               Отмена
@@ -292,7 +302,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Сохранение...' : 'Сохранить'}
             </button>

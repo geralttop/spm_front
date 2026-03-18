@@ -5,20 +5,20 @@
 
 export const themeConfig = {
   light: {
-    primary: "#6366F1", // Indigo/Violet
-    background: "#F8FAFC", // Slate 50
-    card: "#FFFFFF", // White
-    secondary: "#10B981", // Emerald
-    textMain: "#0F172A", // Slate 900
-    textMuted: "#64748B", // Slate 500
+    primary: "#0e639c", // Cursor/VS Code blue
+    background: "#ffffff",
+    card: "#ffffff",
+    secondary: "#3794ff",
+    textMain: "#3c3c3c",
+    textMuted: "#6e6e6e",
   },
   dark: {
-    primary: "#818CF8", // Indigo 400
-    background: "#020617", // Slate 950
-    card: "#0F172A", // Slate 900
-    secondary: "#34D399", // Emerald 400
-    textMain: "#F8FAFC", // Slate 50
-    textMuted: "#94A3B8", // Slate 400
+    primary: "#0e639c", // Cursor/VS Code blue
+    background: "#1e1e1e",
+    card: "#252526",
+    secondary: "#3794ff",
+    textMain: "#d4d4d4",
+    textMuted: "#858585",
   },
 } as const;
 

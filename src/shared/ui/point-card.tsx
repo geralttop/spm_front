@@ -1,4 +1,4 @@
-import { MapPin, Tag, Package, User, Calendar, MessageCircle } from 'lucide-react';
+import { MapPin, Tag, Package, User, Calendar, MessageCircle, Map as MapIcon } from 'lucide-react';
 import { useState, useEffect, type ComponentType } from 'react';
 import { useAuthStore } from '@/shared/lib/store';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
@@ -275,8 +275,25 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
           </span>
         </div>
       </div>
-      <div className="relative">
-        <div className="h-[400px] w-full">
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <p className="text-sm text-text-muted">{t('map.mapStyle')}</p>
+          <div className="flex items-center gap-2">
+            <MapIcon className="h-4 w-4 text-text-muted" />
+            <select
+              value={mapStyle}
+              onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
+              className="text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {availableMapStyles.map((key) => (
+                <option key={key} value={key}>
+                  {t(`mapStyles.${key}.name`)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border">
           <MapComponent 
             center={[point.coords.coordinates[0], point.coords.coordinates[1]]} 
             zoom={15}
@@ -313,19 +330,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
               showFullscreen
             />
           </MapComponent>
-        </div>
-        <div className="absolute top-2 right-2 z-10">
-          <select
-            value={mapStyle}
-            onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-            className="bg-surface text-text-main border border-border rounded-md px-2 py-1 text-sm shadow max-w-[200px]"
-          >
-            {availableMapStyles.map((key) => (
-              <option key={key} value={key}>
-                {t(`mapStyles.${key}.name`)}
-              </option>
-            ))}
-          </select>
         </div>
       </div>
       <div className="mt-4 pt-4 border-t border-border">
