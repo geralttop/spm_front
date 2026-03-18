@@ -46,7 +46,7 @@ function ActionButtons({
   reportTitle,
 }: ActionButtonsProps) {
   return (
-    <div className="flex items-center gap-1 sm:gap-2">
+    <div className="flex items-center gap-1 sm:gap-2 [&_button]:touch-target [&_button]:min-h-[44px] [&_button]:min-w-[44px] [&_button]:flex [&_button]:items-center [&_button]:justify-center">
       {isAuthor && (
         <EditIconButton onClick={onEdit} title="Редактировать точку" />
       )}
@@ -166,9 +166,9 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
   };
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-4 sm:p-6 hover:shadow-md transition-shadow">
+    <div className="bg-surface border border-border rounded-xl p-3 sm:p-6 hover:shadow-md transition-shadow">
       {showAuthor && (
-        <div className="flex items-start gap-3 mb-4">
+        <div className="flex items-start gap-2 sm:gap-3 mb-3 sm:mb-4">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full overflow-hidden bg-primary/10 flex-shrink-0 border-2 border-border">
             {point.author.avatar ? (
               <img 
@@ -188,9 +188,9 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
             </p>
             <p className="text-xs sm:text-sm text-text-muted truncate">@{point.author.username}</p>
           </div>
-          <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3 flex-shrink-0">
+          <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1.5 sm:gap-3 flex-shrink-0">
             <div className="flex items-center gap-1 text-xs sm:text-sm text-text-muted">
-              <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 shrink-0" />
               <span>{formatRelativeDate(point.createdAt)}</span>
             </div>
             <ActionButtons
@@ -208,8 +208,8 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
       )}
 
       {!showAuthor && (
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center gap-1 text-xs sm:text-sm text-text-muted">
+        <div className="flex justify-between items-start mb-3 sm:mb-4 gap-2">
+          <div className="flex items-center gap-1 text-xs sm:text-sm text-text-muted min-w-0">
             <Calendar className="h-3 w-3 sm:h-4 sm:w-4" />
             <span>{formatRelativeDate(point.createdAt)}</span>
           </div>
@@ -226,22 +226,22 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
         </div>
       )}
 
-      <div className="mb-4">
-        <h3 className="text-base sm:text-lg font-semibold text-text-main mb-2 break-words">{point.name}</h3>
+      <div className="mb-3 sm:mb-4">
+        <h3 className="text-sm sm:text-lg font-semibold text-text-main mb-1.5 sm:mb-2 break-words">{point.name}</h3>
         {point.description && (
-          <p className="text-sm sm:text-base text-text-main mb-3 break-words">{point.description}</p>
+          <p className="text-xs sm:text-base text-text-main mb-2 sm:mb-3 break-words line-clamp-3 sm:line-clamp-none">{point.description}</p>
         )}
         {point.address && (
-          <div className="flex items-start gap-2 text-xs sm:text-sm text-text-muted mb-3">
+          <div className="flex items-start gap-2 text-xs sm:text-sm text-text-muted mb-2 sm:mb-3">
             <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5" />
-            <span className="break-words">{point.address}</span>
+            <span className="break-words line-clamp-2 sm:line-clamp-none">{point.address}</span>
           </div>
         )}
       </div>
 
       <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
+        <div className="flex items-center gap-2 min-w-0">
             <Tag className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
           <span className="text-text-muted">
             {t('profile.category')}:
@@ -276,14 +276,14 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
         </div>
       </div>
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-sm text-text-muted">{t('map.mapStyle')}</p>
+        <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+          <p className="text-xs sm:text-sm text-text-muted">{t('map.mapStyle')}</p>
           <div className="flex items-center gap-2">
-            <MapIcon className="h-4 w-4 text-text-muted" />
+            <MapIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-text-muted shrink-0" />
             <select
               value={mapStyle}
               onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-              className="text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
+              className="text-xs sm:text-sm rounded-md border border-border bg-background px-2 py-1.5 text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target min-h-[44px]"
             >
               {availableMapStyles.map((key) => (
                 <option key={key} value={key}>
@@ -293,7 +293,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
             </select>
           </div>
         </div>
-        <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border">
+        <div className="h-[220px] sm:h-[320px] md:h-[400px] w-full rounded-lg overflow-hidden border border-border">
           <MapComponent 
             center={[point.coords.coordinates[0], point.coords.coordinates[1]]} 
             zoom={15}
@@ -332,12 +332,13 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
           </MapComponent>
         </div>
       </div>
-      <div className="mt-4 pt-4 border-t border-border">
+      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
         <button
+          type="button"
           onClick={() => setShowComments(!showComments)}
-          className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+          className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors font-medium touch-target min-h-[44px] -mx-1 px-1 rounded-lg active:bg-primary/10"
         >
-          <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+          <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
           <span>
             {showComments ? t('comments.hide') : t('comments.show')}
           </span>

@@ -189,7 +189,8 @@
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer ce commentaire ?",
     "edited": "modifié",
     "show": "Afficher les commentaires",
-    "hide": "Masquer les commentaires"
+    "hide": "Masquer les commentaires",
+    "actions": "Actions"
   },
   "myComments": {
     "title": "Mes commentaires",

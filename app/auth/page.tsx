@@ -81,7 +81,7 @@ function CodeInput({
       {label && (
         <label className="mb-2 block text-sm font-medium text-text-main">{label}</label>
       )}
-      <div className="flex justify-center gap-2 sm:gap-2.5">
+      <div className="flex justify-center gap-1.5 sm:gap-2.5">
         {Array.from({ length: CODE_LENGTH }, (_, i) => (
           <input
             key={i}
@@ -97,9 +97,9 @@ function CodeInput({
             onKeyDown={(e) => handleKeyDown(i, e)}
             onPaste={handlePaste}
             className={cn(
-              "h-12 w-10 sm:h-14 sm:w-12 rounded-xl border-2 border-border bg-card text-center text-xl sm:text-2xl font-semibold text-text-main",
+              "h-11 w-8 min-w-0 sm:h-12 sm:w-10 md:h-14 md:w-12 rounded-lg sm:rounded-xl border-2 border-border bg-card text-center text-lg sm:text-xl md:text-2xl font-semibold text-text-main",
               "transition-all duration-200 ease-out",
-              "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 focus:scale-110",
+              "focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 sm:focus:scale-110",
               "placeholder:text-text-muted/50",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "touch-target"
@@ -295,10 +295,10 @@ export default function AuthPage() {
 
   if (mode === "forgot-password") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
-        <div className="w-full max-w-sm sm:max-w-md space-y-6 rounded-lg border border-border bg-card p-6 sm:p-8 shadow-lg">
+      <div className="flex min-h-screen items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-8 safe-area-top safe-area-bottom overflow-y-auto">
+        <div className="w-full max-w-sm sm:max-w-md space-y-5 sm:space-y-6 rounded-xl sm:rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-lg">
           <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-text-main">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main">
               {t("auth.forgotPasswordTitle")}
             </h1>
             <p className="mt-2 text-sm text-text-muted">
@@ -318,7 +318,7 @@ export default function AuthPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="touch-target"
+                className="touch-target text-base"
               />
             </div>
 
@@ -342,10 +342,10 @@ export default function AuthPage() {
 
   if (mode === "reset-password") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
-        <div className="w-full max-w-sm sm:max-w-md space-y-6 rounded-lg border border-border bg-card p-6 sm:p-8 shadow-lg">
+      <div className="flex min-h-screen items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-8 safe-area-top safe-area-bottom overflow-y-auto">
+        <div className="w-full max-w-sm sm:max-w-md space-y-5 sm:space-y-6 rounded-xl sm:rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-lg">
           <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-text-main">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main">
               {t("auth.resetPasswordTitle")}
             </h1>
             <p className="mt-2 text-sm text-text-muted wrap-break-word">
@@ -373,7 +373,7 @@ export default function AuthPage() {
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   required
-                  className="pr-12 touch-target"
+                  className="pr-12 touch-target text-base"
                 />
                 <button
                   type="button"
@@ -401,7 +401,7 @@ export default function AuthPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="pr-12 touch-target"
+                  className="pr-12 touch-target text-base"
                 />
                 <button
                   type="button"
@@ -443,10 +443,10 @@ export default function AuthPage() {
 
   if (mode === "verify") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
-        <div className="w-full max-w-sm sm:max-w-md space-y-6 rounded-lg border border-border bg-card p-6 sm:p-8 shadow-lg">
+      <div className="flex min-h-screen items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-8 safe-area-top safe-area-bottom overflow-y-auto">
+        <div className="w-full max-w-sm sm:max-w-md space-y-5 sm:space-y-6 rounded-xl sm:rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-lg">
           <div className="text-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-text-main">
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main">
               {t("auth.verifyTitle")}
             </h1>
             <p className="mt-2 text-sm text-text-muted wrap-break-word">
@@ -485,10 +485,10 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4 py-8 safe-area-top safe-area-bottom">
-      <div className="w-full max-w-sm sm:max-w-md space-y-6 rounded-lg border border-border bg-card p-6 sm:p-8 shadow-lg">
+    <div className="flex min-h-screen items-center justify-center bg-background px-3 py-6 sm:px-4 sm:py-8 safe-area-top safe-area-bottom overflow-y-auto">
+      <div className="w-full max-w-sm sm:max-w-md space-y-5 sm:space-y-6 rounded-xl sm:rounded-2xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-lg">
         <div className="text-center">
-          <h1 className="text-xl sm:text-2xl font-bold text-text-main">
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-text-main">
             {mode === "login" ? t("auth.login") : t("auth.register")}
           </h1>
           <p className="mt-2 text-sm text-text-muted">
@@ -515,7 +515,7 @@ export default function AuthPage() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
-                className="touch-target"
+                className="touch-target text-base"
               />
             </div>
           )}
@@ -530,7 +530,7 @@ export default function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="touch-target"
+              className="touch-target text-base"
             />
           </div>
 
@@ -545,7 +545,7 @@ export default function AuthPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="pr-12 touch-target"
+                className="pr-12 touch-target text-base"
               />
               <button
                 type="button"

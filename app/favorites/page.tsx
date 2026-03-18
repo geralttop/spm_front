@@ -12,6 +12,19 @@ export default function FavoritesPage() {
   const { data: favorites = [], isLoading, error, refetch } = useFavoritesQuery();
   const [sortBy, setSortBy] = useState<'date' | 'name' | 'author'>('date');
 
+  const parseDate = (value: string | undefined): number =>
+    value ? new Date(value).getTime() : 0;
+  const formatAddedDate = (value: string | undefined): string => {
+    if (!value) return '—';
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('ru-RU');
+  };
+  const formatAddedDateShort = (value: string | undefined): string => {
+    if (!value) return '—';
+    const d = new Date(value);
+    return Number.isNaN(d.getTime()) ? '—' : d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+  };
+
   const sortedFavorites = [...favorites].sort((a, b) => {
     switch (sortBy) {
       case 'name':
@@ -22,7 +35,7 @@ export default function FavoritesPage() {
         );
       case 'date':
       default:
-        return new Date(b.addedAt).getTime() - new Date(a.addedAt).getTime();
+        return parseDate(b.addedAt) - parseDate(a.addedAt);
     }
   });
 
@@ -131,24 +144,21 @@ export default function FavoritesPage() {
             {/* Favorites List */}
             <div className="space-y-4 sm:space-y-6">
               {sortedFavorites.map((favorite) => (
-                <div key={favorite.id} className="relative">
+                <div key={favorite.id} className="space-y-1">
                   <PointCard 
                     point={favorite} 
                     showAuthor={true}
                     onFavoriteChange={() => refetch()}
                     onPointUpdate={() => refetch()}
                   />
-                  <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-red-50 text-red-600 px-2 py-1 rounded-full text-xs font-medium">
+                  <p className="text-xs sm:text-sm text-text-muted px-1">
                     <span className="hidden sm:inline">
-                      {t('favorites.addedAt')} {new Date(favorite.addedAt).toLocaleDateString('ru-RU')}
+                      {t('favorites.addedAt')} {formatAddedDate(favorite.addedAt)}
                     </span>
                     <span className="sm:hidden">
-                      {new Date(favorite.addedAt).toLocaleDateString('ru-RU', { 
-                        day: '2-digit', 
-                        month: '2-digit' 
-                      })}
+                      {t('favorites.addedAt')} {formatAddedDateShort(favorite.addedAt)}
                     </span>
-                  </div>
+                  </p>
                 </div>
               ))}
             </div>

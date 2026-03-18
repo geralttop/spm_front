@@ -74,23 +74,25 @@ export function AvatarCropModal({ imageSrc, onCropComplete, onClose }: AvatarCro
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
-      <div className="relative w-full max-w-2xl bg-card rounded-lg shadow-xl m-4">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/80 p-0 sm:p-4">
+      <div className="relative w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] bg-card rounded-t-2xl sm:rounded-xl shadow-xl flex flex-col overflow-hidden">
         {/* Заголовок */}
-        <div className="flex items-center justify-between p-4 border-b border-border">
+        <div className="flex items-center justify-between p-4 border-b border-border shrink-0">
           <h3 className="text-lg font-semibold text-text-main">
             {t('profile.avatar.crop')}
           </h3>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1 hover:bg-muted rounded transition-colors"
+            className="p-2 -mr-2 hover:bg-muted rounded-lg transition-colors touch-target"
+            aria-label={t('profile.profileForm.cancel')}
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Область кроппера */}
-        <div className="relative h-96 bg-black">
+        <div className="relative h-64 sm:h-96 bg-black min-h-[200px] flex-1">
           <Cropper
             image={imageSrc}
             crop={crop}
@@ -105,7 +107,7 @@ export function AvatarCropModal({ imageSrc, onCropComplete, onClose }: AvatarCro
         </div>
 
         {/* Зум слайдер */}
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border shrink-0">
           <label className="block text-sm font-medium text-text-muted mb-2">
             {t('profile.avatar.zoom')}
           </label>
@@ -116,15 +118,15 @@ export function AvatarCropModal({ imageSrc, onCropComplete, onClose }: AvatarCro
             step={0.1}
             value={zoom}
             onChange={(e) => setZoom(Number(e.target.value))}
-            className="w-full"
+            className="w-full h-10 py-2 touch-target"
           />
         </div>
 
         {/* Кнопки */}
-        <div className="flex gap-3 p-4 border-t border-border">
+        <div className="flex gap-3 p-4 border-t border-border shrink-0 safe-area-bottom">
           <Button
             onClick={handleSave}
-            className="flex-1 gap-2"
+            className="flex-1 gap-2 touch-target"
           >
             <Check className="h-4 w-4" />
             {t('profile.avatar.apply')}
@@ -132,7 +134,7 @@ export function AvatarCropModal({ imageSrc, onCropComplete, onClose }: AvatarCro
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 gap-2"
+            className="flex-1 gap-2 touch-target"
           >
             <X className="h-4 w-4" />
             {t('profile.profileForm.cancel')}

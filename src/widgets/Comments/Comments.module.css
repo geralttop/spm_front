@@ -92,11 +92,23 @@
   border-radius: 6px;
 }
 
+.commentMine {
+  border-left: 3px solid var(--primary);
+  background: color-mix(in srgb, var(--primary) 6%, var(--card));
+}
+
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
+  gap: 0.5rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .author {
@@ -107,6 +119,78 @@
 .date {
   font-size: 0.85rem;
   color: var(--muted-foreground);
+}
+
+.menuWrap {
+  position: relative;
+}
+
+.menuTrigger {
+  padding: 0.25rem;
+  border: none;
+  background: transparent;
+  color: var(--muted-foreground);
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, background 0.2s;
+}
+
+.menuTrigger:hover {
+  color: var(--foreground);
+  background: var(--muted);
+}
+
+.menuIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.menuDropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.25rem;
+  min-width: 10rem;
+  padding: 0.25rem;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--foreground);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.menuItem:hover {
+  background: var(--muted);
+}
+
+.menuItemDanger:hover {
+  background: var(--destructive);
+  color: var(--destructive-foreground);
+}
+
+.menuItemIcon {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
 }
 
 .edited {

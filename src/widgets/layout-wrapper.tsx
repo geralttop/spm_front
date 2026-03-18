@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { Sidebar } from './sidebar';
 import { Header } from './header';
-import { MobileNav, ErrorBoundary } from '@/shared/ui';
+import { ErrorBoundary } from '@/shared/ui';
 import { useState } from 'react';
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
@@ -30,20 +30,17 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
           onClose={() => setIsSidebarOpen(false)} 
         />
         
-        {/* Overlay для мобильных устройств */}
+        {/* Overlay для мобильных устройств (выше хэдера, ниже меню) */}
         {isSidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 z-30 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-[55] lg:hidden"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
         
         <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
-          <main className="flex-1 p-4 sm:p-6 pb-20 lg:pb-6">{children}</main>
-          
-          {/* Мобильная навигация */}
-          <MobileNav />
+          <main className="flex-1 p-3 sm:p-6">{children}</main>
         </div>
       </div>
     </ErrorBoundary>

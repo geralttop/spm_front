@@ -82,7 +82,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
-      <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-4xl px-2 sm:px-4 lg:px-6">
         <div className="space-y-4 sm:space-y-6">
           {stats && (
             <ProfileStats
@@ -108,7 +108,7 @@ export default function ProfilePage() {
             <Button 
               onClick={handleLogout} 
               variant="destructive" 
-              className="w-full"
+              className="w-full touch-target"
               disabled={logoutMutation.isPending}
             >
               {logoutMutation.isPending ? t("profile.loggingOut") : t("profile.logout")}

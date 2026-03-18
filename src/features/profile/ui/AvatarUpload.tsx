@@ -69,7 +69,7 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
     <>
       <div className="flex flex-col items-center gap-4">
         <div className="relative">
-          <div className="h-32 w-32 rounded-full overflow-hidden bg-muted border-4 border-border">
+          <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full overflow-hidden bg-muted border-2 sm:border-4 border-border">
             {avatarUrl ? (
               <img 
                 src={avatarUrl} 
@@ -78,20 +78,20 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
               />
             ) : (
               <div className="h-full w-full flex items-center justify-center bg-primary/10">
-                <User className="h-16 w-16 text-primary/50" />
+                <User className="h-12 w-12 sm:h-16 sm:w-16 text-primary/50" />
               </div>
             )}
           </div>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={() => fileInputRef.current?.click()}
             disabled={isUploading}
-            className="gap-2"
+            className="gap-2 touch-target w-full sm:w-auto"
           >
             <Camera className="h-4 w-4" />
             {currentAvatar ? t('profile.avatar.change') : t('profile.avatar.upload')}
@@ -104,7 +104,7 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
               size="sm"
               onClick={handleDelete}
               disabled={isUploading}
-              className="gap-2 text-red-600 hover:text-red-700"
+              className="gap-2 text-red-600 hover:text-red-700 touch-target w-full sm:w-auto"
             >
               <Trash2 className="h-4 w-4" />
               {t('profile.avatar.delete')}

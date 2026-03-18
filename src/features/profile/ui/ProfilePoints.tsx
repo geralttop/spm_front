@@ -15,8 +15,8 @@ export function ProfilePoints({ points, loading, onRefetch }: ProfilePointsProps
   const { t } = useTranslation();
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm">
-      <h2 className="mb-4 text-base sm:text-lg font-semibold text-text-main flex items-center gap-2">
+    <div className="rounded-xl border border-border bg-card p-3 sm:p-6 shadow-sm">
+      <h2 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-text-main flex items-center gap-2">
         <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
         {t('profile.myPoints')}
       </h2>

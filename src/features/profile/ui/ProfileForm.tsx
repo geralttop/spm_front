@@ -33,12 +33,12 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
     : null;
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4 sm:p-6 shadow-sm">
+    <div className="rounded-xl border border-border bg-card p-3 sm:p-6 shadow-sm">
       {/* Шапка с аватаркой и кнопкой редактирования */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-6 pb-6 border-b border-border">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-border">
         {/* Аватарка */}
         <div className="shrink-0">
-          <div className="h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-muted border-4 border-border">
+          <div className="h-16 w-16 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-muted border-2 sm:border-4 border-border">
             {avatarUrl ? (
               <img 
                 src={avatarUrl} 
@@ -47,23 +47,23 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
               />
             ) : (
               <div className="h-full w-full flex items-center justify-center bg-primary/10">
-                <User className="h-10 w-10 sm:h-12 sm:w-12 text-primary/50" />
+                <User className="h-8 w-8 sm:h-12 sm:w-12 text-primary/50" />
               </div>
             )}
           </div>
         </div>
         
         {/* Информация */}
-        <div className="flex-1 min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-text-main truncate">
+        <div className="flex-1 min-w-0 w-full sm:w-auto">
+          <h1 className="text-xl sm:text-3xl font-bold text-text-main truncate">
             {profile.username || t("profile.title")}
           </h1>
-          <p className="mt-1 text-sm text-text-muted truncate">{profile.email}</p>
+          <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-text-muted truncate break-all">{profile.email}</p>
         </div>
         
         {/* Кнопка редактирования */}
         {!isEditing && (
-          <Button onClick={onEdit} variant="outline" className="gap-2 w-full sm:w-auto">
+          <Button onClick={onEdit} variant="outline" className="gap-2 w-full sm:w-auto touch-target">
             <Edit2 className="h-4 w-4" />
             <span>{t('profile.profileHeader.edit')}</span>
           </Button>
@@ -97,6 +97,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
                 placeholder={t('profile.profileForm.usernamePlaceholder')}
                 maxLength={30}
                 minLength={3}
+                className="text-base touch-target"
               />
               {errors.username && (
                 <p className="mt-1 text-sm text-red-600">{errors.username}</p>
@@ -129,6 +130,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
                 placeholder={t('profile.profileForm.bioPlaceholder')}
                 maxLength={1000}
                 rows={4}
+                className="text-base touch-target min-h-[100px]"
               />
               {errors.bio && (
                 <p className="mt-1 text-sm text-red-600">{errors.bio}</p>
@@ -146,7 +148,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
             <Button 
               type="submit"
               disabled={isSubmitting}
-              className="flex-1 gap-2 w-full"
+              className="flex-1 gap-2 w-full touch-target"
             >
               <Check className="h-4 w-4" />
               {isSubmitting ? t('profile.profileForm.saving') : t('profile.profileForm.save')}
@@ -156,7 +158,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
               onClick={onCancel} 
               variant="outline"
               disabled={isSubmitting}
-              className="flex-1 gap-2 w-full"
+              className="flex-1 gap-2 w-full touch-target"
             >
               <X className="h-4 w-4" />
               {t('profile.profileForm.cancel')}
