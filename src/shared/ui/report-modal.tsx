@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { X, AlertTriangle, Flag } from 'lucide-react';
 import { reportsApi, CreateReportRequest } from '@/shared/api';
-import { useToast } from './toast';
 import { useTranslation } from 'react-i18next';
 
 interface ReportModalProps {
@@ -32,7 +31,6 @@ export function ReportModal({
   onSuccess 
 }: ReportModalProps) {
   const { t } = useTranslation();
-  const { showToast } = useToast();
   const [reason, setReason] = useState<CreateReportRequest['reason']>('spam');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,10 +58,6 @@ export function ReportModal({
       }
 
       await reportsApi.create(reportData);
-      
-      // Показываем уведомление об успехе
-      showToast(t('reports.successMessage'), 'success');
-      
       onSuccess?.();
       onClose();
       

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Input } from "@/shared/ui";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation, useToast } from "@/shared/lib/hooks";
+import { useTranslation } from "@/shared/lib/hooks";
 import { useRegisterMutation, useLoginMutation, useVerifyEmailMutation, useVerifyLoginMutation, useForgotPasswordMutation, useResetPasswordMutation } from "@/shared/lib/hooks/queries";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -13,7 +13,6 @@ type AuthMode = "login" | "register" | "verify" | "forgot-password" | "reset-pas
 export default function AuthPage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
 
   useEffect(() => {
@@ -57,10 +56,6 @@ export default function AuthPage() {
           setPendingEmail(email);
           setIsFromRegister(true);
           setMode("verify");
-          toast.success(t("auth.verificationSent"));
-        },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message || t("auth.errorRegister"));
         },
       }
     );
@@ -76,10 +71,6 @@ export default function AuthPage() {
           setPendingEmail(email);
           setIsFromRegister(false);
           setMode("verify");
-          toast.success(t("auth.verificationSent"));
-        },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message || t("auth.errorLogin"));
         },
       }
     );
@@ -94,11 +85,7 @@ export default function AuthPage() {
       { email: pendingEmail, code },
       {
         onSuccess: () => {
-          toast.success(t("auth.verificationSuccess"));
           router.push("/profile");
-        },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message || t("auth.errorCode"));
         },
       }
     );
@@ -112,10 +99,6 @@ export default function AuthPage() {
         onSuccess: () => {
           setPendingEmail(email);
           setMode("reset-password");
-          toast.success(t("auth.resetCodeSent"));
-        },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message || t("auth.errorForgotPassword"));
         },
       }
     );
@@ -124,23 +107,16 @@ export default function AuthPage() {
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (newPassword !== confirmPassword) {
-      toast.error(t("auth.passwordMismatch"));
-      return;
-    }
+    if (newPassword !== confirmPassword) return;
 
     resetPasswordMutation.mutate(
       { email: pendingEmail, code, newPassword },
       {
         onSuccess: () => {
-          toast.success(t("auth.passwordResetSuccess"));
           setMode("login");
           setCode("");
           setNewPassword("");
           setConfirmPassword("");
-        },
-        onError: (error: any) => {
-          toast.error(error.response?.data?.message || t("auth.errorResetPassword"));
         },
       }
     );

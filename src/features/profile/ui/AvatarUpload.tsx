@@ -5,7 +5,6 @@ import { Camera, Trash2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/shared/ui';
 import { authApi } from '@/shared/api';
-import { useToast } from '@/shared/lib/hooks';
 import { AvatarCropModal } from './AvatarCropModal';
 
 interface AvatarUploadProps {
@@ -15,7 +14,6 @@ interface AvatarUploadProps {
 
 export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProps) {
   const { t } = useTranslation();
-  const toast = useToast();
   const [isUploading, setIsUploading] = useState(false);
   const [imageToCrop, setImageToCrop] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -24,17 +22,8 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Проверка типа файла
-    if (!file.type.startsWith('image/')) {
-      toast.error(t('profile.avatar.invalidType'));
-      return;
-    }
-
-    // Проверка размера (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error(t('profile.avatar.tooLarge'));
-      return;
-    }
+    if (!file.type.startsWith('image/')) return;
+    if (file.size > 5 * 1024 * 1024) return;
 
     // Создаем URL для предпросмотра и открываем кроппер
     const reader = new FileReader();
@@ -49,13 +38,9 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
     setImageToCrop(null);
     
     try {
-      // Создаем File из Blob
       const croppedFile = new File([croppedBlob], 'avatar.jpg', { type: 'image/jpeg' });
       await authApi.uploadAvatar(croppedFile);
-      toast.success(t('profile.avatar.uploadSuccess'));
       onAvatarChange();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || t('profile.avatar.uploadError'));
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -70,10 +55,7 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
     setIsUploading(true);
     try {
       await authApi.deleteAvatar();
-      toast.success(t('profile.avatar.deleteSuccess'));
       onAvatarChange();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || t('profile.avatar.deleteError'));
     } finally {
       setIsUploading(false);
     }

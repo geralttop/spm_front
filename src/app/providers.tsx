@@ -7,8 +7,6 @@ import "@/shared/config/i18n";
 import { LanguageProvider } from "./language-provider";
 import { ThemeProvider } from "./theme-provider";
 import { AuthInitializer } from "./auth-initializer";
-import { ToastProvider } from "./toast-provider";
-
 /**
  * Провайдеры приложения (FSD App Layer)
  */
@@ -33,7 +31,6 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
         <LanguageProvider>
           <AuthInitializer>
             {children}
-            <ToastProvider />
           </AuthInitializer>
         </LanguageProvider>
       </ThemeProvider>

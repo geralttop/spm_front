@@ -8,7 +8,7 @@ import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/share
 import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
-import { useTranslation, useToast, useMapSettingsQuery } from "@/shared/lib/hooks";
+import { useTranslation, useMapSettingsQuery } from "@/shared/lib/hooks";
 import { 
   useCategoriesQuery, 
   useContainersQuery, 
@@ -23,7 +23,6 @@ export default function CreatePointPage() {
   const router = useRouter();
   const { t: tI18n } = useI18n();
   const { t } = useTranslation();
-  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
   const { data: mapSettings } = useMapSettingsQuery();
@@ -93,10 +92,7 @@ export default function CreatePointPage() {
   };
 
   const handleCreateContainer = () => {
-    if (!newContainerTitle.trim()) {
-      toast.error("Введите название контейнера");
-      return;
-    }
+    if (!newContainerTitle.trim()) return;
 
     createContainerMutation.mutate(
       {
@@ -109,20 +105,13 @@ export default function CreatePointPage() {
           setNewContainerTitle("");
           setNewContainerDescription("");
           setShowCreateContainer(false);
-          toast.success("Контейнер создан успешно");
-        },
-        onError: () => {
-          toast.error("Ошибка создания контейнера");
         },
       }
     );
   };
 
   const handleCreateCategory = () => {
-    if (!newCategoryName.trim()) {
-      toast.error("Введите название категории");
-      return;
-    }
+    if (!newCategoryName.trim()) return;
 
     createCategoryMutation.mutate(
       {
@@ -135,10 +124,6 @@ export default function CreatePointPage() {
           setNewCategoryName("");
           setNewCategoryColor("#3B82F6");
           setShowCreateCategory(false);
-          toast.success("Категория создана успешно");
-        },
-        onError: () => {
-          toast.error("Ошибка создания категории");
         },
       }
     );
@@ -146,29 +131,11 @@ export default function CreatePointPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!formData.name.trim()) {
-      toast.error("Введите название точки");
-      return;
-    }
-    
-    if (!formData.containerId) {
-      toast.error("Выберите контейнер");
-      return;
-    }
-    
-    if (!formData.categoryId) {
-      toast.error("Выберите категорию");
-      return;
-    }
+    if (!formData.name.trim() || !formData.containerId || !formData.categoryId) return;
 
     createPointMutation.mutate(formData, {
       onSuccess: () => {
-        toast.success("Точка создана успешно!");
         setTimeout(() => router.push("/profile"), 1500);
-      },
-      onError: (error: any) => {
-        toast.error(error.response?.data?.message || "Ошибка создания точки");
       },
     });
   };

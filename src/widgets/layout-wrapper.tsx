@@ -3,12 +3,11 @@
 import { usePathname } from 'next/navigation';
 import { Sidebar } from './sidebar';
 import { Header } from './header';
-import { useToast, MobileNav, ErrorBoundary } from '@/shared/ui';
+import { MobileNav, ErrorBoundary } from '@/shared/ui';
 import { useState } from 'react';
 
 export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { ToastContainer } = useToast();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
   // Не показываем сайдбар и хедер на страницах админки и авторизации
@@ -18,10 +17,7 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
   if (isAdminPage || isAuthPage) {
     return (
       <ErrorBoundary>
-        <>
-          {children}
-          <ToastContainer />
-        </>
+        {children}
       </ErrorBoundary>
     );
   }
@@ -49,7 +45,6 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
           {/* Мобильная навигация */}
           <MobileNav />
         </div>
-        <ToastContainer />
       </div>
     </ErrorBoundary>
   );

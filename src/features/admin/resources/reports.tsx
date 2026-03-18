@@ -13,7 +13,6 @@ import {
   useRecordContext,
   FunctionField,
   Button,
-  useNotify,
   useRefresh,
   ChipField,
   ReferenceField,
@@ -130,7 +129,6 @@ const ReportTargetField = () => {
 const ReportActions = () => {
   const record = useRecordContext();
   const dataProvider = useDataProvider();
-  const notify = useNotify();
   const refresh = useRefresh();
   const [loading, setLoading] = React.useState(false);
 
@@ -151,14 +149,9 @@ const ReportActions = () => {
         previousData: record,
       });
       
-      const actionText = action === 'block' ? 'заблокирован пользователь' : 'жалоба отклонена';
-      notify(`Действие выполнено: ${actionText}`, { type: 'success' });
-      
-      // Обновляем данные без редиректа
       refresh();
     } catch (error) {
       console.error('Error resolving report:', error);
-      notify('Ошибка при обработке жалобы', { type: 'error' });
     } finally {
       setLoading(false);
     }

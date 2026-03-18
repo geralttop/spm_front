@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, UserListModal, Loading, ErrorMessage } from "@/shared/ui";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation, useFollowManagement, useUserModal, useToast } from "@/shared/lib/hooks";
+import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
 import { 
   useProfileQuery, 
   useUpdateProfileMutation, 
@@ -17,7 +17,6 @@ import { ProfileStats, ProfileForm, ProfilePoints } from "@/features/profile";
 export default function ProfilePage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   
   const { data: profile, isLoading, error } = useProfileQuery();
@@ -48,7 +47,6 @@ export default function ProfilePage() {
   const handleSave = async (data: { username?: string; bio?: string }) => {
     await updateProfileMutation.mutateAsync(data);
     setIsEditing(false);
-    toast.success(t("profile.updateSuccess"));
   };
 
   const handleLogout = () => {
