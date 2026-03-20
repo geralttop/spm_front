@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, UserListModal, Loading, ErrorMessage } from "@/shared/ui";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation, useFollowManagement, useUserModal, useToast } from "@/shared/lib/hooks";
+import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
 import { 
   useProfileQuery, 
   useUpdateProfileMutation, 
@@ -17,7 +17,6 @@ import { ProfileStats, ProfileForm, ProfilePoints } from "@/features/profile";
 export default function ProfilePage() {
   const router = useRouter();
   const { t } = useTranslation();
-  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   
   const { data: profile, isLoading, error } = useProfileQuery();
@@ -48,7 +47,6 @@ export default function ProfilePage() {
   const handleSave = async (data: { username?: string; bio?: string }) => {
     await updateProfileMutation.mutateAsync(data);
     setIsEditing(false);
-    toast.success(t("profile.updateSuccess"));
   };
 
   const handleLogout = () => {
@@ -59,14 +57,14 @@ export default function ProfilePage() {
 
   const handleShowFollowers = async () => {
     if (!profile) return;
-    await followersModal.openModal(Number(profile.userId), "followers");
-    await initializeFollowingStates(followersModal.users);
+    const users = await followersModal.openModal(Number(profile.userId), "followers");
+    await initializeFollowingStates(users);
   };
 
   const handleShowFollowing = async () => {
     if (!profile) return;
-    await followingModal.openModal(Number(profile.userId), "following");
-    initializeFollowingList(followingModal.users);
+    const users = await followingModal.openModal(Number(profile.userId), "following");
+    initializeFollowingList(users);
   };
 
   const handleFollowToggleInModal = async (userId: number, isCurrentlyFollowing: boolean) => {
@@ -84,7 +82,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
-      <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div className="container mx-auto max-w-4xl px-0 sm:px-4 lg:px-6">
         <div className="space-y-4 sm:space-y-6">
           {stats && (
             <ProfileStats
@@ -110,7 +108,7 @@ export default function ProfilePage() {
             <Button 
               onClick={handleLogout} 
               variant="destructive" 
-              className="w-full"
+              className="w-full touch-target"
               disabled={logoutMutation.isPending}
             >
               {logoutMutation.isPending ? t("profile.loggingOut") : t("profile.logout")}

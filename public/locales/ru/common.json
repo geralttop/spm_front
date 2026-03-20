@@ -81,7 +81,9 @@
     "hasAccount": "Уже есть аккаунт?",
     "errorRegister": "Ошибка регистрации",
     "errorLogin": "Ошибка входа",
+    "errorWrongEmailOrPassword": "Неверный email или пароль",
     "errorCode": "Неверный код",
+    "invalidEmail": "Введите корректный email",
     "showPassword": "Показать пароль",
     "hidePassword": "Скрыть пароль",
     "forgotPassword": "Забыли пароль?",
@@ -201,7 +203,8 @@
     "confirmDelete": "Вы уверены, что хотите удалить этот комментарий?",
     "edited": "изменено",
     "show": "Показать комментарии",
-    "hide": "Скрыть комментарии"
+    "hide": "Скрыть комментарии",
+    "actions": "Действия"
   },
   "myComments": {
     "title": "Мои комментарии",
@@ -223,7 +226,8 @@
     "sortByName": "Названию",
     "sortByAuthor": "Автору",
     "addedAt": "Добавлено",
-    "refresh": "Обновить"
+    "refresh": "Обновить",
+    "loadError": "Не удалось загрузить избранное"
   },
   "feed": {
     "title": "Лента точек",
@@ -439,7 +443,10 @@
     "required": "*",
     "errorLoading": "Ошибка загрузки данных",
     "errorUpdating": "Ошибка при обновлении точки",
-    "editTitle": "Редактировать точку"
+    "editTitle": "Редактировать точку",
+    "coordinatesLabel": "Координаты",
+    "coordinatesHint": "Перетащите маркер на карте или введите координаты вручную",
+    "mapPopupTitle": "Координаты точки"
   },
   "errors": {
     "unexpected": {

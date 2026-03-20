@@ -18,9 +18,11 @@ export function useUserModal() {
           ? await subscriptionsApi.getFollowers(userId)
           : await subscriptionsApi.getFollowing(userId);
       setUsers(data);
+      return data;
     } catch (error) {
       console.error(`Error fetching ${type}:`, error);
       setUsers([]);
+      return [];
     } finally {
       setLoading(false);
     }

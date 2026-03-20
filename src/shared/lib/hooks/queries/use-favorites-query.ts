@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { favoritesApi } from "@/shared/api";
-import { useToast } from "../use-toast";
 
 export function useFavoritesQuery() {
   return useQuery({
@@ -19,16 +18,11 @@ export function useFavoriteCheck(pointId: string) {
 
 export function useFavoriteMutation() {
   const queryClient = useQueryClient();
-  const toast = useToast();
 
   const addMutation = useMutation({
     mutationFn: (pointId: string) => favoritesApi.add(pointId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
-      toast.success("Добавлено в избранное");
-    },
-    onError: () => {
-      toast.error("Ошибка при добавлении в избранное");
     },
   });
 
@@ -36,10 +30,6 @@ export function useFavoriteMutation() {
     mutationFn: (pointId: string) => favoritesApi.remove(pointId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["favorites"] });
-      toast.success("Удалено из избранного");
-    },
-    onError: () => {
-      toast.error("Ошибка при удалении из избранного");
     },
   });
 

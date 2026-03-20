@@ -196,8 +196,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
       </aside>
 
-      {/* Mobile Sidebar */}
-      <aside className={`lg:hidden fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-40 flex flex-col transform transition-transform duration-300 ease-in-out ${
+      {/* Mobile Sidebar (z-[60] выше хэдера z-50, чтобы меню не перекрывалось) */}
+      <aside className={`lg:hidden fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-[60] flex flex-col transform transition-transform duration-300 ease-in-out ${
         isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         {/* Mobile Header with Close Button */}

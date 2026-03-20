@@ -81,7 +81,9 @@
     "hasAccount": "Ужо ёсць акаўнт?",
     "errorRegister": "Памылка рэгістрацыі",
     "errorLogin": "Памылка ўваходу",
+    "errorWrongEmailOrPassword": "Няправільны email або пароль",
     "errorCode": "Няправільны код",
+    "invalidEmail": "Увядзіце карэктны email",
     "showPassword": "Паказаць пароль",
     "hidePassword": "Схаваць пароль",
     "forgotPassword": "Забылі пароль?",
@@ -187,7 +189,8 @@
     "confirmDelete": "Вы ўпэўнены, што хочаце выдаліць гэты каментар?",
     "edited": "зменена",
     "show": "Паказаць каментарыі",
-    "hide": "Схаваць каментарыі"
+    "hide": "Схаваць каментарыі",
+    "actions": "Дзеянні"
   },
   "myComments": {
     "title": "Мае каментарыі",
@@ -209,7 +212,8 @@
     "sortByName": "Назве",
     "sortByAuthor": "Аўтару",
     "addedAt": "Дададзена",
-    "refresh": "Абнавіць"
+    "refresh": "Абнавіць",
+    "loadError": "Не атрымалася загрузіць абранае"
   },
   "feed": {
     "title": "Стужка кропак",
@@ -425,7 +429,10 @@
     "required": "*",
     "errorLoading": "Памылка загрузкі даных",
     "errorUpdating": "Памылка пры абнаўленні кропкі",
-    "editTitle": "Рэдагаваць кропку"
+    "editTitle": "Рэдагаваць кропку",
+    "coordinatesLabel": "Каардынаты",
+    "coordinatesHint": "Перацягніце маркер на карце або ўвядзіце каардынаты ўручную",
+    "mapPopupTitle": "Каардынаты кропкі"
   },
   "errors": {
     "unexpected": {

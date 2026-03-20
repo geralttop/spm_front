@@ -4,7 +4,6 @@ export { useDataFetching } from './useDataFetching';
 export { useDebounce } from './useDebounce';
 export { useTheme } from './useTheme';
 export { useTranslation } from './useTranslation';
-export { useToast } from './use-toast';
 export { useFollowManagement } from './use-follow-management';
 export { useUserModal } from './use-user-modal';
 

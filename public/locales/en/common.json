@@ -80,7 +80,9 @@
     "hasAccount": "Already have an account?",
     "errorRegister": "Registration error",
     "errorLogin": "Login error",
+    "errorWrongEmailOrPassword": "Invalid email or password",
     "errorCode": "Invalid code",
+    "invalidEmail": "Please enter a valid email address",
     "showPassword": "Show password",
     "hidePassword": "Hide password",
     "forgotPassword": "Forgot password?",
@@ -186,7 +188,8 @@
     "confirmDelete": "Are you sure you want to delete this comment?",
     "edited": "edited",
     "show": "Show comments",
-    "hide": "Hide comments"
+    "hide": "Hide comments",
+    "actions": "Actions"
   },
   "myComments": {
     "title": "My Comments",
@@ -406,7 +409,29 @@
     "sortByName": "Name",
     "sortByAuthor": "Author",
     "addedAt": "Added",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "loadError": "Failed to load favorites"
+  },
+  "editPoint": {
+    "title": "Edit point",
+    "name": "Name",
+    "description": "Description",
+    "longitude": "Longitude (lng)",
+    "latitude": "Latitude (lat)",
+    "category": "Category",
+    "container": "Container",
+    "selectCategory": "Select category",
+    "selectContainer": "Select container",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "required": "*",
+    "errorLoading": "Failed to load data",
+    "errorUpdating": "Failed to update point",
+    "editTitle": "Edit point",
+    "coordinatesLabel": "Coordinates",
+    "coordinatesHint": "Drag the marker on the map or enter coordinates manually",
+    "mapPopupTitle": "Point coordinates"
   },
   "errors": {
     "unexpected": {

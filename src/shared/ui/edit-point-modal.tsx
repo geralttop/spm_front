@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { X, MapPin, Map as MapIcon } from 'lucide-react';
 import { pointsApi, categoriesApi, containersApi, type Point, type Category, type Container } from '@/shared/api';
-import { useTranslation } from 'react-i18next';
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from '@/shared/ui/map';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { MAP_STYLES, type MapStyleKey } from '@/shared/config/map-styles';
-import { useTranslation as useI18n } from '@/shared/lib/hooks';
+import { useTranslation } from '@/shared/lib/hooks';
 
 interface EditPointModalProps {
   isOpen: boolean;
@@ -16,9 +15,8 @@ interface EditPointModalProps {
 
 export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointModalProps) {
   const { t } = useTranslation();
-  const { t: tI18n } = useI18n();
   const { availableMapStyles, defaultMapStyle } = useSettingsStore();
-  
+
   const [name, setName] = useState(point.name);
   const [description, setDescription] = useState(point.description || '');
   const [lng, setLng] = useState(point.coords.coordinates[0]);
@@ -51,7 +49,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
       setContainers(containersData);
     } catch (err) {
       console.error('Error loading data:', err);
-      setError('Ошибка загрузки данных');
+      setError(t('editPoint.errorLoading'));
     }
   };
 
@@ -63,12 +61,12 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
 
   const handleLngChange = (value: number) => {
     setLng(value);
-    setMarkerPosition(prev => ({ ...prev, lng: value }));
+    setMarkerPosition((prev) => ({ ...prev, lng: value }));
   };
 
   const handleLatChange = (value: number) => {
     setLat(value);
-    setMarkerPosition(prev => ({ ...prev, lat: value }));
+    setMarkerPosition((prev) => ({ ...prev, lat: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -88,9 +86,13 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
 
       onSuccess?.();
       onClose();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error updating point:', err);
-      setError(err.response?.data?.message || 'Ошибка при обновлении точки');
+      const message =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+          : undefined;
+      setError(message || t('editPoint.errorUpdating'));
     } finally {
       setLoading(false);
     }
@@ -99,81 +101,95 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border-2 border-gray-200">
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">Редактировать точку</h2>
+    <div
+      className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/50 p-0 sm:items-center sm:p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-point-title"
+    >
+      <div
+        className="flex h-[100dvh] max-h-[100dvh] w-full max-w-full flex-col overflow-hidden border-0 bg-card shadow-2xl sm:h-auto sm:max-h-[90vh] sm:max-w-2xl sm:rounded-xl sm:border sm:border-border"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-border bg-card px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6 sm:py-4">
+          <h2 id="edit-point-title" className="pr-2 text-lg font-semibold text-text-main sm:text-xl">
+            {t('editPoint.title')}
+          </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="flex min-h-[44px] min-w-[44px] touch-target items-center justify-center rounded-lg p-2 text-text-muted transition-colors hover:bg-accent hover:text-text-main disabled:opacity-50"
             disabled={loading}
+            type="button"
+            aria-label={t('profile.close')}
           >
-            <X className="h-5 w-5 text-gray-500" />
+            <X className="h-5 w-5 shrink-0" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 bg-white">
+        <form
+          onSubmit={handleSubmit}
+          className="flex min-h-0 flex-1 flex-col space-y-3 overflow-y-auto overscroll-y-contain bg-card px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:space-y-4 sm:p-6"
+        >
           {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm border border-red-200">
+            <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
               {error}
             </div>
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Название <span className="text-red-500">*</span>
+            <label className="mb-2 block text-sm font-medium text-text-main">
+              {t('editPoint.name')} <span className="text-destructive">{t('editPoint.required')}</span>
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
               required
               maxLength={255}
               disabled={loading}
+              autoComplete="off"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Описание
-            </label>
+            <label className="mb-2 block text-sm font-medium text-text-main">{t('editPoint.description')}</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
               rows={3}
               disabled={loading}
             />
           </div>
 
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <label className="block text-sm font-medium text-gray-900">
-                Координаты <span className="text-red-500">*</span>
+            <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+              <label className="block text-sm font-medium text-text-main">
+                {t('editPoint.coordinatesLabel')} <span className="text-destructive">{t('editPoint.required')}</span>
               </label>
-              <div className="flex items-center gap-2">
-                <MapIcon className="h-4 w-4 text-gray-500" />
+              <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:max-w-[min(100%,18rem)]">
+                <MapIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden />
                 <select
                   value={mapStyle}
                   onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-                  className="text-sm rounded-md border border-gray-300 bg-white px-2 py-1 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="min-h-[44px] min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-2 text-sm text-text-main focus:outline-none focus:ring-2 focus:ring-ring sm:min-h-0 sm:flex-none sm:py-1"
                   disabled={loading}
+                  aria-label={t('map.mapStyle')}
                 >
                   {availableMapStyles.map((key) => (
                     <option key={key} value={key}>
-                      {tI18n(`mapStyles.${key}.name`)}
+                      {t(`mapStyles.${key}.name`)}
                     </option>
                   ))}
                 </select>
               </div>
             </div>
-            <p className="text-sm text-gray-600 mb-3">
-              Перетащите маркер на карте или введите координаты вручную
-            </p>
-            <div className="h-[400px] w-full rounded-lg overflow-hidden border border-gray-300 mb-4">
-              <Map 
-                center={[markerPosition.lng, markerPosition.lat]} 
+            <p className="mb-3 text-sm text-text-muted">{t('editPoint.coordinatesHint')}</p>
+            <div className="mb-3 h-[min(42vh,260px)] min-h-[200px] w-full overflow-hidden rounded-lg border border-border sm:mb-4 sm:h-[320px] md:h-[400px]">
+              <Map
+                center={[markerPosition.lng, markerPosition.lat]}
                 zoom={12}
                 styles={{
                   light: MAP_STYLES[mapStyle].light,
@@ -188,52 +204,54 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
                 >
                   <MarkerContent>
                     <div className="cursor-move">
-                      <MapPin
-                        className="fill-primary stroke-white"
-                        size={32}
-                      />
+                      <MapPin className="fill-primary stroke-white" size={32} />
                     </div>
                   </MarkerContent>
                   <MarkerPopup>
                     <div className="space-y-1">
-                      <p className="font-medium text-foreground">Координаты точки</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="font-medium text-text-main">{t('editPoint.mapPopupTitle')}</p>
+                      <p className="text-xs text-text-muted">
                         {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
                       </p>
                     </div>
                   </MarkerPopup>
                 </MapMarker>
-                <MapControls showZoom showLocate showFullscreen />
+                <MapControls
+                  showZoom
+                  showLocate
+                  showFullscreen
+                  className="[&_button]:size-7 [&_svg]:size-3.5 sm:[&_button]:size-8 sm:[&_svg]:size-4"
+                />
               </Map>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Долгота (lng) <span className="text-red-500">*</span>
+              <label className="mb-2 block text-sm font-medium text-text-main">
+                {t('editPoint.longitude')} <span className="text-destructive">{t('editPoint.required')}</span>
               </label>
               <input
                 type="number"
                 step="any"
                 value={lng}
                 onChange={(e) => handleLngChange(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
                 required
                 disabled={loading}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-900 mb-2">
-                Широта (lat) <span className="text-red-500">*</span>
+              <label className="mb-2 block text-sm font-medium text-text-main">
+                {t('editPoint.latitude')} <span className="text-destructive">{t('editPoint.required')}</span>
               </label>
               <input
                 type="number"
                 step="any"
                 value={lat}
                 onChange={(e) => handleLatChange(parseFloat(e.target.value) || 0)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
                 required
                 disabled={loading}
               />
@@ -241,17 +259,17 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Категория <span className="text-red-500">*</span>
+            <label className="mb-2 block text-sm font-medium text-text-main">
+              {t('editPoint.category')} <span className="text-destructive">{t('editPoint.required')}</span>
             </label>
             <select
               value={categoryId}
-              onChange={(e) => setCategoryId(parseInt(e.target.value))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              onChange={(e) => setCategoryId(parseInt(e.target.value, 10))}
+              className="min-h-[44px] w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:min-h-0 sm:py-2"
               required
               disabled={loading}
             >
-              <option value="">Выберите категорию</option>
+              <option value="">{t('editPoint.selectCategory')}</option>
               {categories.map((cat) => (
                 <option key={cat.id} value={cat.id}>
                   {cat.name}
@@ -261,17 +279,17 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-900 mb-2">
-              Контейнер <span className="text-red-500">*</span>
+            <label className="mb-2 block text-sm font-medium text-text-main">
+              {t('editPoint.container')} <span className="text-destructive">{t('editPoint.required')}</span>
             </label>
             <select
               value={containerId}
               onChange={(e) => setContainerId(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              className="min-h-[44px] w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:min-h-0 sm:py-2"
               required
               disabled={loading}
             >
-              <option value="">Выберите контейнер</option>
+              <option value="">{t('editPoint.selectContainer')}</option>
               {containers.map((cont) => (
                 <option key={cont.id} value={cont.id}>
                   {cont.title}
@@ -280,21 +298,21 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             </select>
           </div>
 
-          <div className="flex gap-3 pt-4">
+          <div className="mt-auto flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:gap-3">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+              className="min-h-[44px] flex-1 rounded-lg border border-border px-4 py-2.5 text-text-main transition-colors hover:bg-accent disabled:opacity-50 sm:min-h-0 sm:py-2"
               disabled={loading}
             >
-              Отмена
+              {t('editPoint.cancel')}
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="min-h-[44px] flex-1 rounded-lg bg-primary px-4 py-2.5 text-primary-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-0 sm:py-2"
             >
-              {loading ? 'Сохранение...' : 'Сохранить'}
+              {loading ? t('editPoint.saving') : t('editPoint.save')}
             </button>
           </div>
         </form>

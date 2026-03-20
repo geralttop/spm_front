@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { Button, UserListModal, Loading } from "@/shared/ui";
 import { authApi } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
-import { useTranslation, useFollowManagement, useUserModal, useToast } from "@/shared/lib/hooks";
+import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
 import { 
   useProfileQuery, 
   usePointsQuery, 
@@ -21,7 +21,6 @@ export default function UserProfilePage() {
   const params = useParams();
   const userId = Number(params.id);
   const { t } = useTranslation();
-  const toast = useToast();
   const checkAuth = useAuthStore((state) => state.checkAuth);
   
   const { data: currentProfile } = useProfileQuery();
@@ -78,24 +77,18 @@ export default function UserProfilePage() {
     mutation.mutate(userId, {
       onSuccess: () => {
         refetchStats();
-        toast.success(
-          isFollowing ? t("profile.unfollowSuccess") : t("profile.followSuccess")
-        );
-      },
-      onError: () => {
-        toast.error(t("profile.followError"));
       },
     });
   };
 
   const handleShowFollowers = async () => {
-    await followersModal.openModal(userId, "followers");
-    await initializeFollowingStates(followersModal.users);
+    const users = await followersModal.openModal(userId, "followers");
+    await initializeFollowingStates(users);
   };
 
   const handleShowFollowing = async () => {
-    await followingModal.openModal(userId, "following");
-    await initializeFollowingStates(followingModal.users);
+    const users = await followingModal.openModal(userId, "following");
+    await initializeFollowingStates(users);
   };
 
   const handleFollowToggleInModal = async (targetUserId: number, isCurrentlyFollowing: boolean) => {
@@ -223,7 +216,6 @@ export default function UserProfilePage() {
                   <PointCard 
                     key={point.id} 
                     point={point} 
-                    showAuthor={false}
                     onFavoriteChange={() => refetchPoints()}
                     onPointUpdate={() => refetchPoints()}
                   />

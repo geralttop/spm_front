@@ -54,8 +54,8 @@ export default function FeedPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="max-w-4xl mx-auto px-0 sm:px-6 lg:px-8 py-4 sm:py-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-4 sm:px-0">
           <h1 className="text-xl sm:text-2xl font-bold text-text-main">{t('feed.title')}</h1>
           <button
             onClick={() => refetch()}
@@ -76,7 +76,7 @@ export default function FeedPage() {
             </p>
           </div>
         ) : (
-          <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-4 sm:space-y-6 -mx-3 sm:mx-0">
             {points.map((point) => (
               <PointCard 
                 key={point.id} 

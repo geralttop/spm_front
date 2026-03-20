@@ -34,74 +34,74 @@
   --radius-2xl: calc(var(--radius) + 8px);
 }
 
-/* Светлая тема */
+/* Светлая тема — в стиле Cursor/VS Code */
 :root {
   --radius: 0.5rem;
 
   /* Основные цвета */
-  --background: #F8FAFC; /* Slate 50 */
-  --foreground: #0F172A; /* Slate 900 */
-  --text-main: #0F172A; /* Slate 900 */
-  --text-muted: #64748B; /* Slate 500 */
+  --background: #ffffff;
+  --foreground: #3c3c3c;
+  --text-main: #3c3c3c;
+  --text-muted: #6e6e6e;
 
-  /* Primary (Indigo/Violet) */
-  --primary: #6366F1;
-  --primary-foreground: #FFFFFF;
+  /* Primary (синий акцент как в Cursor) */
+  --primary: #0e639c;
+  --primary-foreground: #ffffff;
 
-  /* Secondary (Emerald) */
-  --secondary: #10B981;
-  --secondary-foreground: #FFFFFF;
+  /* Secondary */
+  --secondary: #3794ff;
+  --secondary-foreground: #ffffff;
 
   /* Card/Container */
-  --card: #FFFFFF;
-  --card-foreground: #0F172A;
+  --card: #ffffff;
+  --card-foreground: #3c3c3c;
 
   /* Дополнительные цвета */
-  --border: #E2E8F0; /* Slate 200 */
-  --input: #E2E8F0;
-  --ring: #6366F1;
-  --muted: #F1F5F9; /* Slate 100 */
-  --muted-foreground: #64748B;
-  --accent: #F1F5F9;
-  --accent-foreground: #0F172A;
-  --destructive: #EF4444;
-  --destructive-foreground: #FFFFFF;
-  --popover: #FFFFFF;
-  --popover-foreground: #0F172A;
+  --border: #e5e5e5;
+  --input: #e5e5e5;
+  --ring: #0e639c;
+  --muted: #f3f3f3;
+  --muted-foreground: #6e6e6e;
+  --accent: #f3f3f3;
+  --accent-foreground: #3c3c3c;
+  --destructive: #e51400;
+  --destructive-foreground: #ffffff;
+  --popover: #ffffff;
+  --popover-foreground: #3c3c3c;
 }
 
-/* Темная тема */
+/* Темная тема — в стиле Cursor/VS Code (тёмно-серый + синий акцент) */
 .dark {
   /* Основные цвета */
-  --background: #020617; /* Slate 950 */
-  --foreground: #F8FAFC; /* Slate 50 */
-  --text-main: #F8FAFC; /* Slate 50 */
-  --text-muted: #94A3B8; /* Slate 400 */
+  --background: #1e1e1e;
+  --foreground: #d4d4d4;
+  --text-main: #d4d4d4;
+  --text-muted: #858585;
 
-  /* Primary (Indigo 400) */
-  --primary: #818CF8;
-  --primary-foreground: #020617;
+  /* Primary (синий акцент как в Cursor) */
+  --primary: #0e639c;
+  --primary-foreground: #ffffff;
 
-  /* Secondary (Emerald 400) */
-  --secondary: #34D399;
-  --secondary-foreground: #020617;
+  /* Secondary (бирюзовый для второстепенных действий) */
+  --secondary: #3794ff;
+  --secondary-foreground: #1e1e1e;
 
   /* Card/Container */
-  --card: #0F172A; /* Slate 900 */
-  --card-foreground: #F8FAFC;
+  --card: #252526;
+  --card-foreground: #d4d4d4;
 
   /* Дополнительные цвета */
-  --border: #1E293B; /* Slate 800 */
-  --input: #1E293B;
-  --ring: #818CF8;
-  --muted: #1E293B;
-  --muted-foreground: #94A3B8;
-  --accent: #1E293B;
-  --accent-foreground: #F8FAFC;
-  --destructive: #F87171;
-  --destructive-foreground: #020617;
-  --popover: #0F172A;
-  --popover-foreground: #F8FAFC;
+  --border: #3c3c3c;
+  --input: #3c3c3c;
+  --ring: #0e639c;
+  --muted: #2d2d2d;
+  --muted-foreground: #858585;
+  --accent: #2d2d2d;
+  --accent-foreground: #d4d4d4;
+  --destructive: #f14c4c;
+  --destructive-foreground: #ffffff;
+  --popover: #252526;
+  --popover-foreground: #d4d4d4;
 }
 
 @layer base {
