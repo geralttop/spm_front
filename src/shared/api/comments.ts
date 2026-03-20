@@ -10,7 +10,9 @@ export interface Comment {
   author: {
     id: number;
     username: string;
-    email: string;
+    email?: string;
+    /** Путь к файлу аватара (если бэкенд отдаёт поле user) */
+    avatar?: string | null;
   };
   point?: {
     id: string;

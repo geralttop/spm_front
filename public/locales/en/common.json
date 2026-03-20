@@ -409,7 +409,29 @@
     "sortByName": "Name",
     "sortByAuthor": "Author",
     "addedAt": "Added",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "loadError": "Failed to load favorites"
+  },
+  "editPoint": {
+    "title": "Edit point",
+    "name": "Name",
+    "description": "Description",
+    "longitude": "Longitude (lng)",
+    "latitude": "Latitude (lat)",
+    "category": "Category",
+    "container": "Container",
+    "selectCategory": "Select category",
+    "selectContainer": "Select container",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "required": "*",
+    "errorLoading": "Failed to load data",
+    "errorUpdating": "Failed to update point",
+    "editTitle": "Edit point",
+    "coordinatesLabel": "Coordinates",
+    "coordinatesHint": "Drag the marker on the map or enter coordinates manually",
+    "mapPopupTitle": "Point coordinates"
   },
   "errors": {
     "unexpected": {

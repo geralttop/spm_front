@@ -212,7 +212,8 @@
     "sortByName": "Назве",
     "sortByAuthor": "Аўтару",
     "addedAt": "Дададзена",
-    "refresh": "Абнавіць"
+    "refresh": "Абнавіць",
+    "loadError": "Не атрымалася загрузіць абранае"
   },
   "feed": {
     "title": "Стужка кропак",
@@ -428,7 +429,10 @@
     "required": "*",
     "errorLoading": "Памылка загрузкі даных",
     "errorUpdating": "Памылка пры абнаўленні кропкі",
-    "editTitle": "Рэдагаваць кропку"
+    "editTitle": "Рэдагаваць кропку",
+    "coordinatesLabel": "Каардынаты",
+    "coordinatesHint": "Перацягніце маркер на карце або ўвядзіце каардынаты ўручную",
+    "mapPopupTitle": "Каардынаты кропкі"
   },
   "errors": {
     "unexpected": {

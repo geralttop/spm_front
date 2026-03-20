@@ -226,7 +226,8 @@
     "sortByName": "Названию",
     "sortByAuthor": "Автору",
     "addedAt": "Добавлено",
-    "refresh": "Обновить"
+    "refresh": "Обновить",
+    "loadError": "Не удалось загрузить избранное"
   },
   "feed": {
     "title": "Лента точек",
@@ -442,7 +443,10 @@
     "required": "*",
     "errorLoading": "Ошибка загрузки данных",
     "errorUpdating": "Ошибка при обновлении точки",
-    "editTitle": "Редактировать точку"
+    "editTitle": "Редактировать точку",
+    "coordinatesLabel": "Координаты",
+    "coordinatesHint": "Перетащите маркер на карте или введите координаты вручную",
+    "mapPopupTitle": "Координаты точки"
   },
   "errors": {
     "unexpected": {

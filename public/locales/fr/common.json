@@ -212,7 +212,8 @@
     "sortByName": "Nom",
     "sortByAuthor": "Auteur",
     "addedAt": "Ajouté",
-    "refresh": "Actualiser"
+    "refresh": "Actualiser",
+    "loadError": "Impossible de charger les favoris"
   },
   "feed": {
     "title": "Fil des points",
@@ -428,7 +429,10 @@
     "required": "*",
     "errorLoading": "Erreur de chargement des données",
     "errorUpdating": "Erreur de mise à jour du point",
-    "editTitle": "Modifier le point"
+    "editTitle": "Modifier le point",
+    "coordinatesLabel": "Coordonnées",
+    "coordinatesHint": "Faites glisser le marqueur sur la carte ou saisissez les coordonnées manuellement",
+    "mapPopupTitle": "Coordonnées du point"
   },
   "errors": {
     "unexpected": {

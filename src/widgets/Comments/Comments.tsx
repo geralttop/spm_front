@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MoreVertical, Pencil, Trash2, Flag } from 'lucide-react';
+import { MoreVertical, Pencil, Trash2, Flag, User } from 'lucide-react';
 import { commentsApi, Comment } from '@/shared/api';
 import { ReportModal } from '@/shared/ui';
 import { useProfileQuery } from '@/shared/lib/hooks';
+import { formatRelativeDate } from '@/shared/lib/utils';
 import styles from './Comments.module.css';
 
 interface CommentsProps {
@@ -115,11 +116,6 @@ export function Comments({ pointId }: CommentsProps) {
     return comments.find(c => c.id === reportingCommentId);
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
-
   if (loading) {
     return <div className={styles.loading}>{t('comments.loading')}</div>;
   }
@@ -158,102 +154,124 @@ export function Comments({ pointId }: CommentsProps) {
               key={comment.id}
               className={`${styles.comment} ${currentUserId === comment.authorId ? styles.commentMine : ''}`}
             >
-              <div className={styles.header}>
-                <span className={styles.author}>{comment.author.username}</span>
-                <div className={styles.headerRight}>
-                  <span className={styles.date}>
-                    {formatDate(comment.createdAt)}
+              <div className={styles.avatar}>
+                {comment.author.avatar ? (
+                  <img
+                    src={`${process.env.NEXT_PUBLIC_API_URL}${comment.author.avatar}`}
+                    alt=""
+                    className={styles.avatarImg}
+                  />
+                ) : (
+                  <div className={styles.avatarPlaceholder}>
+                    <User className={styles.avatarIcon} aria-hidden />
+                  </div>
+                )}
+              </div>
+              <div className={styles.commentBody}>
+                <div className={styles.metaRow}>
+                  <div className={styles.metaLeft}>
+                    <span className={styles.username}>@{comment.author.username}</span>
+                    <span className={styles.metaSep} aria-hidden>
+                      ·
+                    </span>
+                    <time
+                      className={styles.date}
+                      dateTime={comment.createdAt}
+                      title={new Date(comment.createdAt).toLocaleString()}
+                    >
+                      {formatRelativeDate(comment.createdAt)}
+                    </time>
                     {comment.createdAt !== comment.updatedAt && (
                       <span className={styles.edited}> ({t('comments.edited')})</span>
                     )}
-                  </span>
-                  <div className={styles.menuWrap} ref={openMenuId === comment.id ? menuRef : null}>
-                    <button
-                      type="button"
-                      onClick={() => setOpenMenuId(openMenuId === comment.id ? null : comment.id)}
-                      className={styles.menuTrigger}
-                      aria-label={t('comments.actions')}
-                      aria-expanded={openMenuId === comment.id}
-                    >
-                      <MoreVertical className={styles.menuIcon} />
-                    </button>
-                    {openMenuId === comment.id && (
-                      <div className={styles.menuDropdown}>
-                        {currentUserId === comment.authorId ? (
-                          <>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                handleEdit(comment);
-                                setOpenMenuId(null);
-                              }}
-                              className={styles.menuItem}
-                            >
-                              <Pencil className={styles.menuItemIcon} />
-                              {t('comments.edit')}
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                handleDelete(comment.id);
-                                setOpenMenuId(null);
-                              }}
-                              className={`${styles.menuItem} ${styles.menuItemDanger}`}
-                            >
-                              <Trash2 className={styles.menuItemIcon} />
-                              {t('comments.delete')}
-                            </button>
-                          </>
-                        ) : (
+                  </div>
+                </div>
+                <div className={styles.menuWrap} ref={openMenuId === comment.id ? menuRef : null}>
+                  <button
+                    type="button"
+                    onClick={() => setOpenMenuId(openMenuId === comment.id ? null : comment.id)}
+                    className={styles.menuTrigger}
+                    aria-label={t('comments.actions')}
+                    aria-expanded={openMenuId === comment.id}
+                  >
+                    <MoreVertical className={styles.menuIcon} />
+                  </button>
+                  {openMenuId === comment.id && (
+                    <div className={styles.menuDropdown}>
+                      {currentUserId === comment.authorId ? (
+                        <>
                           <button
                             type="button"
                             onClick={() => {
-                              handleReport(comment.id);
+                              handleEdit(comment);
                               setOpenMenuId(null);
                             }}
                             className={styles.menuItem}
                           >
-                            <Flag className={styles.menuItemIcon} />
-                            {t('reports.button')}
+                            <Pencil className={styles.menuItemIcon} />
+                            {t('comments.edit')}
                           </button>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleDelete(comment.id);
+                              setOpenMenuId(null);
+                            }}
+                            className={`${styles.menuItem} ${styles.menuItemDanger}`}
+                          >
+                            <Trash2 className={styles.menuItemIcon} />
+                            {t('comments.delete')}
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleReport(comment.id);
+                            setOpenMenuId(null);
+                          }}
+                          className={styles.menuItem}
+                        >
+                          <Flag className={styles.menuItemIcon} />
+                          {t('reports.button')}
+                        </button>
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
 
-              {editingId === comment.id ? (
-                <div className={styles.editForm}>
-                  <textarea
-                    value={editContent}
-                    onChange={(e) => setEditContent(e.target.value)}
-                    className={styles.textarea}
-                    rows={3}
-                  />
-                  <div className={styles.editActions}>
-                    <button 
-                      type="button"
-                      onClick={() => handleUpdate(comment.id)}
-                      className={styles.saveButton}
-                    >
-                      {t('comments.save')}
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => {
-                        setEditingId(null);
-                        setEditContent('');
-                      }}
-                      className={styles.cancelButton}
-                    >
-                      {t('comments.cancel')}
-                    </button>
+                {editingId === comment.id ? (
+                  <div className={styles.editForm}>
+                    <textarea
+                      value={editContent}
+                      onChange={(e) => setEditContent(e.target.value)}
+                      className={styles.textarea}
+                      rows={3}
+                    />
+                    <div className={styles.editActions}>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdate(comment.id)}
+                        className={styles.saveButton}
+                      >
+                        {t('comments.save')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditingId(null);
+                          setEditContent('');
+                        }}
+                        className={styles.cancelButton}
+                      >
+                        {t('comments.cancel')}
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ) : (
-                <p className={styles.content}>{comment.content}</p>
-              )}
+                ) : (
+                  <p className={styles.content}>{comment.content}</p>
+                )}
+              </div>
             </div>
           ))
         )}

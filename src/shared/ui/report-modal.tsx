@@ -91,15 +91,15 @@ export function ReportModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-card text-card-foreground rounded-lg shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto border border-border">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 max-sm:items-stretch max-sm:justify-start max-sm:p-0">
+      <div className="w-full max-w-xl overflow-y-auto rounded-lg border border-border bg-card text-card-foreground shadow-2xl max-h-[90vh] max-sm:flex max-sm:h-[100dvh] max-sm:max-h-[100dvh] max-sm:max-w-none max-sm:flex-col max-sm:overflow-hidden max-sm:rounded-none">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-border bg-card">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-destructive/15 rounded-lg">
+        <div className="flex items-center justify-between border-b border-border bg-card p-6 max-sm:shrink-0 max-sm:p-4 max-sm:pt-[max(1rem,env(safe-area-inset-top))]">
+          <div className="flex items-center gap-3 max-sm:min-w-0 max-sm:flex-1">
+            <div className="shrink-0 rounded-lg bg-destructive/15 p-2">
               <Flag className="h-5 w-5 text-destructive" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="text-lg font-semibold text-foreground">
                 {t('reports.title')}
               </h2>
@@ -109,16 +109,21 @@ export function ReportModal({
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-2 hover:bg-muted rounded-lg transition-colors text-muted-foreground hover:text-foreground"
+            className="ml-2 rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:opacity-50 max-sm:flex max-sm:min-h-[44px] max-sm:min-w-[44px] max-sm:touch-target max-sm:items-center max-sm:justify-center"
             disabled={isSubmitting}
+            aria-label={t('profile.close')}
           >
-            <X className="h-5 w-5" />
+            <X className="h-5 w-5 shrink-0" />
           </button>
         </div>
 
         {/* Content */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6 bg-card">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-6 bg-card p-6 max-sm:flex max-sm:min-h-0 max-sm:flex-1 max-sm:flex-col max-sm:space-y-4 max-sm:overflow-y-auto max-sm:overscroll-y-contain max-sm:p-4 max-sm:pb-[max(1rem,env(safe-area-inset-bottom))]"
+        >
           {/* Target info */}
           {targetName && (
             <div className="p-3 bg-muted rounded-lg border border-border">
@@ -138,7 +143,7 @@ export function ReportModal({
               {REPORT_REASONS.map((reasonOption) => (
                 <label
                   key={reasonOption.value}
-                  className="flex items-center gap-3 p-3 border border-border rounded-lg hover:bg-muted cursor-pointer transition-colors"
+                  className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-3 transition-colors hover:bg-muted max-sm:min-h-[48px]"
                 >
                   <input
                     type="radio"
@@ -167,7 +172,7 @@ export function ReportModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder={t('reports.descriptionPlaceholder')}
               rows={4}
-              className="w-full px-3 py-2 border border-border rounded-lg focus:ring-2 focus:ring-ring focus:border-transparent resize-none bg-background text-foreground placeholder:text-muted-foreground"
+              className="w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-foreground placeholder:text-muted-foreground focus:border-transparent focus:ring-2 focus:ring-ring max-sm:min-h-[120px] max-sm:py-2.5 max-sm:text-base"
               disabled={isSubmitting}
               maxLength={500}
             />
@@ -185,18 +190,18 @@ export function ReportModal({
           )}
 
           {/* Actions */}
-          <div className="flex gap-3 pt-4 border-t border-border">
+          <div className="flex gap-3 border-t border-border pt-4 max-sm:flex-col-reverse max-sm:gap-2">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 border border-border rounded-lg text-foreground hover:bg-muted transition-colors bg-background"
+              className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-foreground transition-colors hover:bg-muted max-sm:min-h-[48px] max-sm:py-3"
               disabled={isSubmitting}
             >
               {t('reports.cancel')}
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-destructive text-destructive-foreground rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 rounded-lg bg-destructive px-4 py-2 text-destructive-foreground transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 max-sm:min-h-[48px] max-sm:py-3"
               disabled={isSubmitting}
             >
               {isSubmitting ? t('reports.submitting') : t('reports.submit')}

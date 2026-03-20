@@ -216,7 +216,6 @@ export default function UserProfilePage() {
                   <PointCard 
                     key={point.id} 
                     point={point} 
-                    showAuthor={false}
                     onFavoriteChange={() => refetchPoints()}
                     onPointUpdate={() => refetchPoints()}
                   />
