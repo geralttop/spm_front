@@ -29,38 +29,38 @@ export function UserCard({ user, onClick, actionButton, showReportButton = true 
   return (
     <div
       onClick={onClick}
-      className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card hover:bg-accent transition-colors cursor-pointer"
+      className="flex cursor-pointer flex-col gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent sm:flex-row sm:items-center sm:gap-4 sm:p-4"
     >
-      <div className="shrink-0">
-        <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-          <UserIcon className="h-6 w-6 text-primary" />
+      <div className="flex min-w-0 flex-1 items-start gap-3">
+        <div className="shrink-0">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <UserIcon className="h-6 w-6 text-primary" />
+          </div>
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate font-semibold text-text-main">{user.username}</h3>
+          <p className="truncate text-sm text-text-muted">{user.email}</p>
+          {user.bio && (
+            <p className="mt-1 line-clamp-2 text-xs text-text-muted">{user.bio}</p>
+          )}
         </div>
       </div>
-      
-      <div className="flex-1 min-w-0">
-        <h3 className="font-semibold text-text-main truncate">
-          {user.username}
-        </h3>
-        <p className="text-sm text-text-muted truncate">
-          {user.email}
-        </p>
-        {user.bio && (
-          <p className="text-xs text-text-muted mt-1 line-clamp-2">
-            {user.bio}
-          </p>
-        )}
-      </div>
-      
+
       {(actionButton || canReport) && (
-        <div className="shrink-0 flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="flex shrink-0 items-center justify-end gap-2 border-t border-border pt-3 sm:w-auto sm:border-t-0 sm:pt-0"
+          onClick={(e) => e.stopPropagation()}
+        >
           {actionButton}
           {canReport && (
             <Button
               variant="ghost"
               size="sm"
+              type="button"
               onClick={() => setShowReportModal(true)}
-              className="text-gray-500 hover:text-red-600 hover:bg-red-50"
-              title={t('reports.button')}
+              className="min-h-[44px] min-w-[44px] text-text-muted hover:bg-destructive/10 hover:text-destructive dark:hover:bg-destructive/20"
+              title={t("reports.button")}
             >
               <Flag className="h-4 w-4" />
             </Button>

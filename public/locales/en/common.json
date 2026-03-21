@@ -38,7 +38,9 @@
     "viewProfile": "View Profile",
     "startSearching": "Start searching for users",
     "enterUsername": "Enter a username or email to find users",
-    "tryDifferent": "Try a different search term"
+    "tryDifferent": "Try a different search term",
+    "view": "View",
+    "clear": "Clear search"
   },
   "sidebar": {
     "home": "Home",
@@ -299,6 +301,7 @@
     "categories": "Categories",
     "containers": "Containers",
     "yourLocation": "Your location",
+    "closeFilters": "Close filters",
     "mapLoading": "Loading map…"
   },
   "mapStyles": {

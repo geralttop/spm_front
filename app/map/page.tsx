@@ -18,7 +18,7 @@ import {
   MarkerTooltip,
 } from "@/shared/ui/map";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
-import { MapPin, User, Calendar, Loader2 } from "lucide-react";
+import { MapPin, User, Calendar, Loader2, ChevronDown } from "lucide-react";
 import { formatRelativeDate } from "@/shared/lib/utils";
 import { MapFiltersComponent, type MapFilters } from "@/widgets/map-filters";
 import { getInitialGeolocation } from "@/shared/lib/user-location";
@@ -186,7 +186,7 @@ export default function MapPage() {
   }
 
   return (
-    <div className="fixed inset-0 lg:left-64 top-14 sm:top-16 w-full lg:w-[calc(100%-16rem)] h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)]">
+    <div className="fixed inset-0 top-14 z-0 h-[calc(100vh-3.5rem)] w-full pb-[env(safe-area-inset-bottom)] sm:top-16 sm:h-[calc(100vh-4rem)] lg:left-64 lg:w-[calc(100%-16rem)]">
       {loading ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-background">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -194,11 +194,46 @@ export default function MapPage() {
         </div>
       ) : (
         <>
-          <MapFiltersComponent
-            filters={filters}
-            onFiltersChange={setFilters}
-            allPoints={allPoints}
-          />
+          {/* Стиль карты — компактно справа сверху */}
+          <div className="pointer-events-none absolute right-2 top-2 z-10 sm:right-4 sm:top-4">
+            <div className="pointer-events-auto relative max-w-[min(13rem,calc(100vw-4.5rem))] rounded-lg border border-border bg-card/95 shadow-md backdrop-blur-sm sm:max-w-[15rem]">
+              <label
+                htmlFor="map-style-select"
+                className="sr-only"
+              >
+                {t("map.mapStyle")}
+              </label>
+              <select
+                id="map-style-select"
+                value={mapStyle}
+                onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
+                className="w-full min-w-0 cursor-pointer appearance-none rounded-lg border-0 bg-transparent py-2 pl-2.5 pr-9 text-xs text-text-main focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary sm:py-2.5 sm:pl-3 sm:pr-10 sm:text-sm touch-manipulation"
+                title={t("map.mapStyle")}
+              >
+                {availableMapStyles.map((key) => (
+                  <option key={key} value={key}>
+                    {t(`mapStyles.${key}.name`)}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                className="pointer-events-none absolute right-2 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted sm:right-2.5"
+                aria-hidden
+              />
+            </div>
+          </div>
+
+          {/* Счётчик точек — слева сверху, симметрично стилю */}
+          {!error && (
+            <div className="pointer-events-none absolute left-2 top-2 z-10 sm:left-4 sm:top-4">
+              <div className="pointer-events-auto max-w-[min(14rem,calc(100vw-5rem))] rounded-lg border border-border bg-card/95 px-2.5 py-1.5 shadow-md backdrop-blur-sm sm:px-3 sm:py-2">
+                <p className="truncate text-xs text-text-main sm:text-sm">
+                  {t("map.pointsOnMap")}{" "}
+                  <span className="font-semibold">{points.length}</span>
+                </p>
+              </div>
+            </div>
+          )}
 
           <MapComponent
             center={center}
@@ -221,7 +256,7 @@ export default function MapPage() {
                   />
                 </MarkerContent>
                 <MarkerPopup closeButton>
-                  <div className="min-w-[250px] max-w-[350px] space-y-3">
+                  <div className="min-w-0 max-w-[min(100vw-2rem,350px)] space-y-3 sm:min-w-[250px]">
                     <div>
                       <h3 className="font-semibold text-base text-text-main mb-1">
                         {point.name}
@@ -321,35 +356,16 @@ export default function MapPage() {
             />
           </MapComponent>
 
-          <div className="absolute top-4 right-4 z-10 bg-card border border-border rounded-lg shadow-xl p-3">
-            <div className="flex flex-col gap-2">
-              <label className="text-xs font-medium text-text-muted uppercase tracking-wide">
-                {t("map.mapStyle")}
-              </label>
-              <select
-                value={mapStyle}
-                onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-                className="bg-background text-text-main border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary cursor-pointer"
-              >
-                {availableMapStyles.map((key) => (
-                  <option key={key} value={key}>
-                    {t(`mapStyles.${key}.name`)}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
+          <MapFiltersComponent
+            filters={filters}
+            onFiltersChange={setFilters}
+            allPoints={allPoints}
+          />
 
           {error && (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 shadow-lg">
-              <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-            </div>
-          )}
-
-          {!error && (
-            <div className="absolute bottom-4 left-4 z-10 bg-card border border-border rounded-lg px-4 py-2 shadow-lg">
-              <p className="text-sm text-text-main">
-                {t("map.pointsOnMap")} <span className="font-semibold">{points.length}</span>
+            <div className="absolute left-1/2 top-16 z-20 max-w-[calc(100%-1rem)] -translate-x-1/2 rounded-lg border border-red-200 bg-red-50 p-3 shadow-lg dark:border-red-800 dark:bg-red-900/20 sm:top-20 sm:max-w-lg sm:p-4">
+              <p className="text-center text-xs text-red-600 dark:text-red-400 sm:text-left sm:text-sm">
+                {error}
               </p>
             </div>
           )}

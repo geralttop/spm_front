@@ -1,4 +1,6 @@
 .container {
+  box-sizing: border-box;
+  width: 100%;
   max-width: 900px;
   margin: 0 auto;
   padding: 2rem;
@@ -80,6 +82,9 @@
   text-align: left;
   text-decoration: none;
   transition: opacity 0.2s;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .pointLink:hover {
@@ -192,19 +197,90 @@
 
 @media (max-width: 768px) {
   .container {
-    padding: 1rem;
+    padding: 1rem 0.75rem;
+  }
+
+  .header {
+    margin-bottom: 1.25rem;
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 4.5vw, 1.5rem);
+    line-height: 1.25;
+  }
+
+  .subtitle {
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+
+  .loading,
+  .empty {
+    padding: 2rem 1rem;
+    font-size: 1rem;
+  }
+
+  .comment {
+    padding: 1rem;
+    border-radius: 10px;
   }
 
   .commentHeader {
     flex-direction: column;
+    align-items: stretch;
     gap: 0.5rem;
+  }
+
+  .pointInfo {
+    min-width: 0;
   }
 
   .date {
     align-self: flex-start;
+    white-space: normal;
+    line-height: 1.35;
+  }
+
+  .content {
+    font-size: 0.9375rem;
+  }
+
+  .actions,
+  .editActions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .editButton,
+  .deleteButton,
+  .saveButton,
+  .cancelButton {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.625rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    touch-action: manipulation;
+  }
+
+  .textarea {
+    font-size: 16px; /* предотвращает авто-зум iOS при фокусе */
+    min-height: 96px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 0.75rem max(0.5rem, env(safe-area-inset-left)) max(0.75rem, env(safe-area-inset-bottom))
+      max(0.5rem, env(safe-area-inset-right));
+  }
+
+  .list {
+    gap: 0.75rem;
+  }
+
+  .comment {
+    padding: 0.875rem;
   }
 }

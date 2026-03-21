@@ -39,7 +39,9 @@
     "viewProfile": "Voir le profil",
     "startSearching": "Commencer à rechercher des utilisateurs",
     "enterUsername": "Entrez un nom d'utilisateur ou un email pour trouver des utilisateurs",
-    "tryDifferent": "Essayez un autre terme de recherche"
+    "tryDifferent": "Essayez un autre terme de recherche",
+    "view": "Voir",
+    "clear": "Effacer la recherche"
   },
   "sidebar": {
     "home": "Accueil",
@@ -317,6 +319,7 @@
     "categories": "Catégories",
     "containers": "Conteneurs",
     "yourLocation": "Votre position",
+    "closeFilters": "Fermer les filtres",
     "mapLoading": "Chargement de la carte…"
   },
   "mapStyles": {

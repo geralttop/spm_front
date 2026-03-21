@@ -267,30 +267,51 @@ export function MapFiltersComponent({ filters, onFiltersChange, allPoints }: Map
     (filters.dateTo ? 1 : 0);
 
   return (
-    <div className="absolute top-4 left-4 z-10">
-      {/* Кнопка открытия фильтров */}
+    <div className="absolute bottom-[max(0.75rem,env(safe-area-inset-bottom))] left-2 z-10 w-auto max-w-[min(20rem,calc(100vw-6rem))] min-w-0 sm:bottom-4 sm:left-4">
+      {/* Кнопка фильтров — FAB внизу слева (как в типичных карт-приложениях) */}
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 bg-card border border-border rounded-lg shadow-xl px-4 py-2.5 hover:bg-accent transition-colors"
+        className="flex min-h-12 w-full min-w-0 items-center justify-center gap-2 rounded-full border border-border bg-card px-4 py-2.5 shadow-lg transition-colors hover:bg-accent touch-manipulation sm:inline-flex sm:w-auto sm:min-w-0 sm:justify-start"
+        aria-expanded={isOpen}
+        aria-controls="map-filters-panel"
       >
-        <Filter className="h-4 w-4" />
-        <span className="text-sm font-medium">{t('map.filters')}</span>
+        <Filter className="h-5 w-5 shrink-0 sm:h-4 sm:w-4" aria-hidden />
+        <span className="min-w-0 truncate text-sm font-medium">{t("map.filters")}</span>
         {activeFiltersCount > 0 && (
-          <span className="bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+          <span className="flex h-5 min-w-[1.25rem] shrink-0 items-center justify-center rounded-full bg-primary px-1 text-xs font-bold text-primary-foreground">
             {activeFiltersCount}
           </span>
         )}
-        <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown
+          className={`hidden h-4 w-4 shrink-0 transition-transform sm:inline ${isOpen ? "rotate-180" : ""}`}
+          aria-hidden
+        />
       </button>
 
-      {/* Панель фильтров */}
+      {/* Затемнение под панелью на мобильных */}
       {isOpen && (
-        <div className="mt-2 bg-card border border-border rounded-lg shadow-xl p-4 w-80 max-h-[calc(100vh-200px)] overflow-y-auto">
+        <button
+          type="button"
+          aria-label={t("map.closeFilters")}
+          className="fixed bottom-0 left-0 right-0 top-14 z-[45] bg-black/50 sm:top-16 sm:hidden"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Панель: мобильные — шторка снизу; sm+ — над кнопкой */}
+      {isOpen && (
+        <div
+          id="map-filters-panel"
+          className="fixed inset-x-0 bottom-0 z-[48] flex max-h-[85dvh] flex-col overflow-hidden rounded-t-2xl border border-border bg-card shadow-xl sm:absolute sm:inset-x-auto sm:bottom-full sm:left-0 sm:mb-2 sm:max-h-[min(70vh,calc(100vh-12rem))] sm:w-80 sm:rounded-lg sm:pb-0"
+        >
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:pb-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-text-main">{t('map.filters')}</h3>
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
-              className="p-1 hover:bg-accent rounded transition-colors"
+              className="rounded p-1 transition-colors hover:bg-accent touch-manipulation"
             >
               <X className="h-4 w-4" />
             </button>
@@ -433,12 +454,14 @@ export function MapFiltersComponent({ filters, onFiltersChange, allPoints }: Map
             {/* Кнопка сброса */}
             {activeFiltersCount > 0 && (
               <button
+                type="button"
                 onClick={clearFilters}
-                className="w-full px-3 py-2 text-sm font-medium text-text-muted hover:text-text-main border border-border hover:bg-accent rounded-md transition-colors"
+                className="w-full rounded-md border border-border px-3 py-2 text-sm font-medium text-text-muted transition-colors hover:bg-accent hover:text-text-main"
               >
-                {t('map.clearFilters')}
+                {t("map.clearFilters")}
               </button>
             )}
+          </div>
           </div>
         </div>
       )}
