@@ -1,13 +1,26 @@
 import { MapPin, Tag, Package, User, Calendar, MessageCircle, Map as MapIcon } from 'lucide-react';
-import { useState, useEffect, type ComponentType } from 'react';
+import { useState, useEffect, type ComponentType } from "react";
 import { useAuthStore } from '@/shared/lib/store';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { favoritesApi, type Point } from '@/shared/api';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import { Comments } from '@/entities/comment';
 import { ReportModal, EditPointModal, FavoriteButton, ReportButton, EditButton } from '@/shared/ui';
-import { useTranslation, useProfileQuery, useMapSettingsQuery } from '@/shared/lib/hooks';
-import { Map as MapComponent, MapControls, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from "@/shared/ui/map";
+import {
+  useTranslation,
+  useProfileQuery,
+  useMapSettingsQuery,
+  useInView,
+} from "@/shared/lib/hooks";
+import {
+  Map as MapComponent,
+  MapControls,
+  MapMarker,
+  MarkerContent,
+  MarkerPopup,
+  MarkerTooltip,
+} from "@/shared/ui/map";
+import { updateSharedUserCoords, useSharedUserLocation } from "@/shared/lib/user-location";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
@@ -74,6 +87,15 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
   const [showReportModal, setShowReportModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
+
+  const { ref: mapViewportRef, inView: mapViewportVisible } = useInView({
+    rootMargin: "100px",
+    threshold: 0,
+    once: true,
+  });
+  const userLocation = useSharedUserLocation(
+    mapViewportVisible && Boolean(accessToken)
+  );
 
   const currentUserId = profile ? Number(profile.userId) : null;
 
@@ -300,45 +322,88 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
             </select>
           </div>
         </div>
-        <div className="-mx-3 sm:mx-0">
-          <div className="h-[220px] sm:h-[320px] md:h-[400px] w-full rounded-none sm:rounded-lg overflow-hidden border border-border">
-            <MapComponent 
-              center={[point.coords.coordinates[0], point.coords.coordinates[1]]} 
-              zoom={15}
-              styles={{
-                light: MAP_STYLES[mapStyle].light,
-                dark: MAP_STYLES[mapStyle].dark,
-              }}
-            >
-              <MapMarker
-                longitude={point.coords.coordinates[0]}
-                latitude={point.coords.coordinates[1]}
+        <div className="-mx-3 sm:mx-0" ref={mapViewportRef}>
+          <div className="h-[220px] sm:h-[320px] md:h-[400px] w-full rounded-none sm:rounded-lg overflow-hidden border border-border bg-muted/30">
+            {mapViewportVisible ? (
+              <MapComponent
+                center={[point.coords.coordinates[0], point.coords.coordinates[1]]}
+                zoom={15}
+                styles={{
+                  light: MAP_STYLES[mapStyle].light,
+                  dark: MAP_STYLES[mapStyle].dark,
+                }}
               >
-                <MarkerContent>
-                  <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg" />
-                </MarkerContent>
-                <MarkerTooltip>{point.name}</MarkerTooltip>
-                <MarkerPopup>
-                  <div className="space-y-1">
-                    <p className="font-medium text-text-main">{point.name}</p>
-                    {point.description && (
-                      <p className="text-sm text-text-muted">{point.description}</p>
-                    )}
-                    <p className="text-xs text-text-muted">
-                      {point.coords.coordinates[1].toFixed(4)}, {point.coords.coordinates[0].toFixed(4)}
-                    </p>
-                  </div>
-                </MarkerPopup>
-              </MapMarker>
-              <MapControls
-                position="bottom-right"
-                showZoom
-                showCompass
-                showLocate
-                showFullscreen
-                className="[&_button]:size-7 [&_svg]:size-3.5 sm:[&_button]:size-8 sm:[&_svg]:size-4"
-              />
-            </MapComponent>
+                <MapMarker
+                  longitude={point.coords.coordinates[0]}
+                  latitude={point.coords.coordinates[1]}
+                >
+                  <MarkerContent>
+                    <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg" />
+                  </MarkerContent>
+                  <MarkerTooltip>{point.name}</MarkerTooltip>
+                  <MarkerPopup>
+                    <div className="space-y-1">
+                      <p className="font-medium text-text-main">{point.name}</p>
+                      {point.description && (
+                        <p className="text-sm text-text-muted">{point.description}</p>
+                      )}
+                      <p className="text-xs text-text-muted">
+                        {point.coords.coordinates[1].toFixed(4)}, {point.coords.coordinates[0].toFixed(4)}
+                      </p>
+                    </div>
+                  </MarkerPopup>
+                </MapMarker>
+
+                {userLocation && (
+                  <MapMarker
+                    longitude={userLocation.longitude}
+                    latitude={userLocation.latitude}
+                    anchor="center"
+                  >
+                    <MarkerContent className="cursor-default">
+                      <div
+                        className="relative flex size-6 items-center justify-center"
+                        role="img"
+                        aria-label={t("map.yourLocation")}
+                      >
+                        <span
+                          className="absolute inset-0 rounded-full bg-primary/20 motion-safe:animate-pulse"
+                          aria-hidden
+                        />
+                        <span
+                          className="relative size-3 rounded-full border-2 border-background bg-primary shadow-md ring-2 ring-primary/50"
+                          aria-hidden
+                        />
+                      </div>
+                    </MarkerContent>
+                    <MarkerTooltip>{t("map.yourLocation")}</MarkerTooltip>
+                  </MapMarker>
+                )}
+
+                <MapControls
+                  position="bottom-right"
+                  showZoom
+                  showCompass
+                  showLocate
+                  showFullscreen
+                  onLocate={(c) =>
+                    updateSharedUserCoords({
+                      longitude: c.longitude,
+                      latitude: c.latitude,
+                    })
+                  }
+                  className="[&_button]:size-7 [&_svg]:size-3.5 sm:[&_button]:size-8 sm:[&_svg]:size-4"
+                />
+              </MapComponent>
+            ) : (
+              <div
+                className="flex h-full w-full flex-col items-center justify-center gap-2 text-text-muted"
+                aria-hidden
+              >
+                <MapIcon className="h-8 w-8 opacity-40" />
+                <span className="text-xs">{t("map.mapLoading")}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

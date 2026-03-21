@@ -301,7 +301,8 @@
   "map": {
     "category": "Catégorie :",
     "viewDetails": "Voir les détails",
-    "loadingPoints": "Chargement des points...",
+    "loadingPoints": "Chargement des points et de la position...",
+    "pointsLoadFailed": "Impossible de charger les points",
     "pointsOnMap": "Points sur la carte :",
     "mapStyle": "Style de carte",
     "filters": "Filtres",
@@ -314,7 +315,9 @@
     "noFollowing": "Vous ne suivez personne",
     "noAuthors": "Pas d'auteurs",
     "categories": "Catégories",
-    "containers": "Conteneurs"
+    "containers": "Conteneurs",
+    "yourLocation": "Votre position",
+    "mapLoading": "Chargement de la carte…"
   },
   "mapStyles": {
     "openstreet": {
@@ -390,7 +393,8 @@
     "selectContainer": "Sélectionner un conteneur *",
     "selectContainerOption": "Sélectionner un conteneur",
     "createNewContainer": "Créer un nouveau conteneur",
-    "newContainer": "Nouveau conteneur"
+    "newContainer": "Nouveau conteneur",
+    "mapGeoLoading": "Détection de votre position…"
   },
   "settings": {
     "title": "Paramètres",

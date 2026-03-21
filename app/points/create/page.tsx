@@ -4,7 +4,18 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation as useI18n } from "react-i18next";
 import { Button, Input, Textarea } from "@/shared/ui";
-import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from "@/shared/ui/map";
+import {
+  Map,
+  MapMarker,
+  MarkerContent,
+  MarkerPopup,
+  MapControls,
+} from "@/shared/ui/map";
+import {
+  getInitialGeolocation,
+  useSharedUserLocation,
+  updateSharedUserCoords,
+} from "@/shared/lib/user-location";
 import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
@@ -16,7 +27,7 @@ import {
   useCreateCategoryMutation,
   useCreateContainerMutation 
 } from "@/shared/lib/hooks/queries";
-import { MapPin, Tag, Package, Plus, ArrowLeft, Map as MapIcon, Info, HelpCircle } from "lucide-react";
+import { MapPin, Tag, Package, Plus, ArrowLeft, Map as MapIcon, Info, HelpCircle, Loader2 } from "lucide-react";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 export default function CreatePointPage() {
@@ -56,6 +67,30 @@ export default function CreatePointPage() {
     lng: 27.561831,
     lat: 53.902496,
   });
+  const [geoInitDone, setGeoInitDone] = useState(false);
+
+  const userLocation = useSharedUserLocation(geoInitDone);
+
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      const geo = await getInitialGeolocation();
+      if (cancelled) return;
+      if (geo) {
+        updateSharedUserCoords(geo);
+        setMarkerPosition({ lng: geo.longitude, lat: geo.latitude });
+        setFormData((prev) => ({
+          ...prev,
+          lng: geo.longitude,
+          lat: geo.latitude,
+        }));
+      }
+      setGeoInitDone(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const initPage = async () => {
@@ -237,40 +272,87 @@ export default function CreatePointPage() {
                     </select>
                   </div>
                 </div>
-                <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border">
-                  <Map 
-                    center={[markerPosition.lng, markerPosition.lat]} 
-                    zoom={12}
-                    styles={{
-                      light: MAP_STYLES[mapStyle].light,
-                      dark: MAP_STYLES[mapStyle].dark,
-                    }}
-                  >
-                    <MapMarker
-                      draggable
-                      longitude={markerPosition.lng}
-                      latitude={markerPosition.lat}
-                      onDragEnd={handleMarkerDragEnd}
+                <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border bg-muted/20">
+                  {!geoInitDone ? (
+                    <div className="flex h-full flex-col items-center justify-center gap-3 px-4 text-text-muted">
+                      <Loader2 className="h-8 w-8 shrink-0 animate-spin text-primary" aria-hidden />
+                      <p className="text-center text-sm">{tI18n("createPoint.mapGeoLoading")}</p>
+                    </div>
+                  ) : (
+                    <Map
+                      center={[markerPosition.lng, markerPosition.lat]}
+                      zoom={12}
+                      styles={{
+                        light: MAP_STYLES[mapStyle].light,
+                        dark: MAP_STYLES[mapStyle].dark,
+                      }}
                     >
-                      <MarkerContent>
-                        <div className="cursor-move">
-                          <MapPin
-                            className="fill-primary stroke-white dark:fill-primary"
-                            size={32}
-                          />
-                        </div>
-                      </MarkerContent>
-                      <MarkerPopup>
-                        <div className="space-y-1">
-                          <p className="font-medium text-foreground">{tI18n('createPoint.pointCoordinates')}</p>
-                          <p className="text-xs text-muted-foreground">
-                            {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
-                          </p>
-                        </div>
-                      </MarkerPopup>
-                    </MapMarker>
-                    <MapControls showZoom showLocate showFullscreen />
-                  </Map>
+                      {userLocation && (
+                        <MapMarker
+                          longitude={userLocation.longitude}
+                          latitude={userLocation.latitude}
+                          anchor="center"
+                          className="pointer-events-none !z-[1]"
+                        >
+                          <MarkerContent className="pointer-events-none">
+                            <div
+                              className="relative flex size-7 items-center justify-center"
+                              role="img"
+                              aria-label={t("map.yourLocation")}
+                            >
+                              <span
+                                className="absolute inset-0 rounded-full bg-primary/20 motion-safe:animate-pulse"
+                                aria-hidden
+                              />
+                              <span
+                                className="relative size-3.5 rounded-full border-2 border-background bg-primary shadow-md ring-2 ring-primary/50"
+                                aria-hidden
+                              />
+                            </div>
+                          </MarkerContent>
+                        </MapMarker>
+                      )}
+
+                      <MapMarker
+                        draggable
+                        longitude={markerPosition.lng}
+                        latitude={markerPosition.lat}
+                        onDragEnd={handleMarkerDragEnd}
+                        className="relative !z-[30] pointer-events-auto"
+                      >
+                        <MarkerContent className="cursor-grab active:cursor-grabbing">
+                          <div className="pointer-events-auto drop-shadow-md">
+                            <MapPin
+                              className="fill-primary stroke-white dark:fill-primary"
+                              size={32}
+                            />
+                          </div>
+                        </MarkerContent>
+                        <MarkerPopup>
+                          <div className="space-y-1">
+                            <p className="font-medium text-foreground">
+                              {tI18n("createPoint.pointCoordinates")}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
+                            </p>
+                          </div>
+                        </MarkerPopup>
+                      </MapMarker>
+
+                      <MapControls
+                        showZoom
+                        showLocate
+                        showFullscreen
+                        onLocate={(c) =>
+                          updateSharedUserCoords({
+                            longitude: c.longitude,
+                            latitude: c.latitude,
+                          })
+                        }
+                      />
+                    </Map>
+                  )}
                 </div>
               </div>
               
