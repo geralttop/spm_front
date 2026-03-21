@@ -4,16 +4,16 @@
  * Без переменной в браузере используется текущий хост:3000 (удобно для локальной сети).
  */
 export function getApiUrl(): string {
-  const fromEnv = process.env.NEXT_PUBLIC_API_URL?.trim();
-  if (fromEnv) {
-    return fromEnv.replace(/\/$/, '');
-  }
-
+  // В браузере определяем автоматически на основе текущего хоста
   if (typeof window !== 'undefined') {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    return `${protocol}//${hostname}`;
+    // Используем порт 3000 для API (фронт на 3001)
+    const apiUrl = `${protocol}//${hostname}:3000`;
+    return apiUrl;
   }
 
-  return 'http://localhost:3000';
+  // Для SSR используем переменную окружения или localhost
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+  return apiUrl;
 }
