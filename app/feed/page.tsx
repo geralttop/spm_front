@@ -43,7 +43,7 @@ export default function FeedPage() {
   if (error) {
     return (
       <ErrorMessage
-        message="Ошибка загрузки ленты"
+        message={t('feed.loadError')}
         onRetry={() => refetch()}
         fullScreen
       />

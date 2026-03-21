@@ -13,7 +13,11 @@
     "loading": "Loading...",
     "error": "Error",
     "errorLoading": "Error loading data",
-    "errorUpdating": "Error updating"
+    "errorUpdating": "Error updating",
+    "close": "Close",
+    "closeMenu": "Close menu",
+    "openMenu": "Open menu",
+    "retry": "Try again"
   },
   "navigation": {
     "home": "Home",
@@ -25,7 +29,8 @@
   "language": {
     "ru": "Русский",
     "be": "Беларуская",
-    "en": "English"
+    "en": "English",
+    "fr": "Français"
   },
   "search": {
     "placeholder": "Search users...",
@@ -165,6 +170,20 @@
       "save": "Save",
       "cancel": "Cancel"
     },
+    "avatar": {
+      "upload": "Upload avatar",
+      "change": "Change",
+      "delete": "Delete",
+      "uploadSuccess": "Avatar uploaded successfully",
+      "deleteSuccess": "Avatar deleted successfully",
+      "uploadError": "Error uploading avatar",
+      "deleteError": "Error deleting avatar",
+      "invalidType": "Only images can be uploaded",
+      "tooLarge": "File size must not exceed 5MB",
+      "crop": "Crop image",
+      "zoom": "Zoom",
+      "apply": "Apply"
+    },
     "profileHeader": {
       "edit": "Edit"
     },
@@ -205,7 +224,8 @@
     "emptyDescription": "Follow other users or create your own points to see them here",
     "loading": "Loading...",
     "allLoaded": "All points loaded",
-    "refresh": "Refresh"
+    "refresh": "Refresh",
+    "loadError": "Error loading feed"
   },
   "manage": {
     "title": "Data Management",
@@ -274,12 +294,126 @@
   },
   "admin": {
     "loading": "Loading...",
+    "noAccess": "You don't have access to the admin panel",
+    "dashboard": {
+      "title": "Dashboard",
+      "loadingStats": "Loading statistics...",
+      "loadFailed": "Failed to load statistics",
+      "users": "Users",
+      "points": "Points",
+      "categories": "Categories",
+      "containers": "Containers",
+      "reports": "Reports",
+      "pendingReview": "Pending review",
+      "resolved": "Resolved",
+      "dismissed": "Dismissed",
+      "roleDistribution": "Role distribution",
+      "admins": "Administrators",
+      "regularUsers": "Users",
+      "emailVerification": "Email verification",
+      "verified": "Verified",
+      "unverified": "Not verified",
+      "pointsByCategory": "Points by category",
+      "pointCount": "Point count",
+      "topAuthors": "Top 10 point authors",
+      "pointsCreated": "Points created",
+      "pointsTimeline": "Points created in the last 30 days",
+      "reportsStatus": "Reports status",
+      "reportsByType": "Reports by type",
+      "reportsCount": "Report count",
+      "pending": "Pending",
+      "pointsType": "Points",
+      "commentsType": "Comments",
+      "usersType": "Users"
+    },
+    "nav": {
+      "users": "Users",
+      "points": "Points",
+      "categories": "Categories",
+      "containers": "Containers",
+      "reports": "Reports"
+    },
+    "users": {
+      "id": "ID",
+      "username": "Username",
+      "email": "Email",
+      "role": "Role",
+      "emailVerified": "Email verified",
+      "createdAt": "Created at",
+      "roleUser": "User",
+      "roleAdmin": "Administrator",
+      "bio": "Biography",
+      "updatedAt": "Updated at"
+    },
+    "points": {
+      "id": "ID",
+      "name": "Name",
+      "address": "Address",
+      "author": "Author",
+      "category": "Category",
+      "container": "Container",
+      "createdAt": "Created at",
+      "description": "Description",
+      "longitude": "Longitude",
+      "latitude": "Latitude"
+    },
     "categories": {
       "id": "ID",
       "name": "Name",
       "color": "Color",
       "author": "Author",
       "system": "System"
+    },
+    "containers": {
+      "id": "ID",
+      "title": "Title",
+      "description": "Description",
+      "author": "Author",
+      "createdAt": "Created at"
+    },
+    "reports": {
+      "id": "ID",
+      "type": "Type",
+      "reason": "Reason",
+      "status": "Status",
+      "reporter": "Reporter",
+      "target": "Report target",
+      "createdAt": "Created at",
+      "actions": "Actions",
+      "statusPending": "Pending review",
+      "statusReviewed": "Reviewed",
+      "statusResolved": "Resolved",
+      "statusDismissed": "Dismissed",
+      "reasonSpam": "Spam",
+      "reasonInappropriate": "Inappropriate content",
+      "reasonHarassment": "Harassment",
+      "reasonFake": "Fake information",
+      "reasonOther": "Other",
+      "typePoint": "Point",
+      "typeComment": "Comment",
+      "typeUser": "User",
+      "unknownPoint": "Unknown point",
+      "authorLabel": "Author",
+      "unknown": "Unknown",
+      "commentDeleted": "Comment deleted",
+      "unknownUser": "Unknown user",
+      "emailNotProvided": "Not provided",
+      "blocked": "Blocked",
+      "block": "Block",
+      "dismiss": "Dismiss",
+      "reportId": "Report ID",
+      "reportType": "Report type",
+      "description": "Description",
+      "updatedAt": "Updated at",
+      "reporterInfo": "Reporter information",
+      "username": "Username",
+      "email": "Email",
+      "reportTarget": "Report target",
+      "details": "Details",
+      "processing": "Processing",
+      "processedBy": "Processed by",
+      "notProcessed": "Not processed",
+      "adminNotes": "Admin notes"
     }
   },
   "map": {
@@ -302,7 +436,17 @@
     "containers": "Containers",
     "yourLocation": "Your location",
     "closeFilters": "Close filters",
-    "mapLoading": "Loading map…"
+    "mapLoading": "Loading map…",
+    "controls": {
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "findLocation": "Find my location",
+      "fullscreen": "Toggle fullscreen",
+      "resetNorth": "Reset bearing to north"
+    },
+    "popup": {
+      "close": "Close"
+    }
   },
   "mapStyles": {
     "openstreet": {
@@ -379,7 +523,20 @@
     "selectContainerOption": "Select container",
     "createNewContainer": "Create new container",
     "newContainer": "New Container",
-    "mapGeoLoading": "Finding your location…"
+    "mapGeoLoading": "Finding your location…",
+    "creating": "Creating...",
+    "create": "Create",
+    "createPointButton": "Create Point",
+    "pointName": "Point Name *",
+    "pointNamePlaceholder": "Enter point name",
+    "descriptionPlaceholder": "Describe this point...",
+    "categoryNamePlaceholder": "Category name",
+    "containerTitlePlaceholder": "Container name",
+    "containerDescriptionPlaceholder": "Container description (optional)",
+    "containerHelpTitle": "What is a container?",
+    "containerHelpText": "A container is a collection or group of points. For example: \"My Favorite Places\", \"Minsk Restaurants\", \"Attractions\".",
+    "containerVsCategoryTitle": "Difference from categories:",
+    "containerVsCategoryText": "A category is a type of point (restaurant, park, museum). A container is your personal collection of points of any type."
   },
   "settings": {
     "title": "Settings",
@@ -400,7 +557,11 @@
     "setAsDefault": "Set as default",
     "mapStylesTip": "Selected map styles will be available when creating points and viewing point cards. The default style will be used when opening the map for the first time. It is recommended to keep basic styles enabled for the best experience.",
     "otherSettings": "Other Settings",
-    "otherSettingsDescription": "Additional settings will be added in future updates"
+    "otherSettingsDescription": "Additional settings will be added in future updates",
+    "updateError": "Error updating settings",
+    "resetConfirm": "Are you sure you want to reset settings to defaults?",
+    "resetError": "Error resetting settings",
+    "resetSidebarError": "Error resetting menu order"
   },
   "favorites": {
     "addToFavorites": "Add to favorites",

@@ -13,7 +13,11 @@
     "loading": "Загрузка...",
     "error": "Ошибка",
     "errorLoading": "Ошибка загрузки данных",
-    "errorUpdating": "Ошибка при обновлении"
+    "errorUpdating": "Ошибка при обновлении",
+    "close": "Закрыть",
+    "closeMenu": "Закрыть меню",
+    "openMenu": "Открыть меню",
+    "retry": "Попробовать снова"
   },
   "navigation": {
     "home": "Главная",
@@ -237,7 +241,8 @@
     "emptyDescription": "Подпишитесь на других пользователей или создайте свои точки, чтобы увидеть их здесь",
     "loading": "Загрузка...",
     "allLoaded": "Все точки загружены",
-    "refresh": "Обновить"
+    "refresh": "Обновить",
+    "loadError": "Ошибка загрузки ленты"
   },
   "manage": {
     "title": "Управление данными",
@@ -306,12 +311,126 @@
   },
   "admin": {
     "loading": "Загрузка...",
+    "noAccess": "У вас нет прав доступа к админке",
+    "dashboard": {
+      "title": "Панель управления",
+      "loadingStats": "Загрузка статистики...",
+      "loadFailed": "Не удалось загрузить статистику",
+      "users": "Пользователи",
+      "points": "Точки",
+      "categories": "Категории",
+      "containers": "Контейнеры",
+      "reports": "Жалобы",
+      "pendingReview": "Ожидают рассмотрения",
+      "resolved": "Решены",
+      "dismissed": "Отклонены",
+      "roleDistribution": "Распределение по ролям",
+      "admins": "Администраторы",
+      "regularUsers": "Пользователи",
+      "emailVerification": "Подтверждение Email",
+      "verified": "Подтверждены",
+      "unverified": "Не подтверждены",
+      "pointsByCategory": "Точки по категориям",
+      "pointCount": "Количество точек",
+      "topAuthors": "Топ-10 авторов точек",
+      "pointsCreated": "Точек создано",
+      "pointsTimeline": "Создание точек за последние 30 дней",
+      "reportsStatus": "Статус жалоб",
+      "reportsByType": "Жалобы по типам",
+      "reportsCount": "Количество жалоб",
+      "pending": "Ожидают",
+      "pointsType": "Точки",
+      "commentsType": "Комментарии",
+      "usersType": "Пользователи"
+    },
+    "nav": {
+      "users": "Пользователи",
+      "points": "Точки",
+      "categories": "Категории",
+      "containers": "Контейнеры",
+      "reports": "Жалобы"
+    },
+    "users": {
+      "id": "ID",
+      "username": "Имя пользователя",
+      "email": "Email",
+      "role": "Роль",
+      "emailVerified": "Email подтвержден",
+      "createdAt": "Дата создания",
+      "roleUser": "Пользователь",
+      "roleAdmin": "Администратор",
+      "bio": "Биография",
+      "updatedAt": "Дата обновления"
+    },
+    "points": {
+      "id": "ID",
+      "name": "Название",
+      "address": "Адрес",
+      "author": "Автор",
+      "category": "Категория",
+      "container": "Контейнер",
+      "createdAt": "Дата создания",
+      "description": "Описание",
+      "longitude": "Долгота",
+      "latitude": "Широта"
+    },
     "categories": {
       "id": "ID",
       "name": "Название",
       "color": "Цвет",
       "author": "Автор",
       "system": "Системная"
+    },
+    "containers": {
+      "id": "ID",
+      "title": "Название",
+      "description": "Описание",
+      "author": "Автор",
+      "createdAt": "Дата создания"
+    },
+    "reports": {
+      "id": "ID",
+      "type": "Тип",
+      "reason": "Причина",
+      "status": "Статус",
+      "reporter": "Жалобщик",
+      "target": "Объект жалобы",
+      "createdAt": "Дата создания",
+      "actions": "Действия",
+      "statusPending": "Ожидает рассмотрения",
+      "statusReviewed": "Рассмотрена",
+      "statusResolved": "Решена",
+      "statusDismissed": "Отклонена",
+      "reasonSpam": "Спам",
+      "reasonInappropriate": "Неподходящий контент",
+      "reasonHarassment": "Домогательства",
+      "reasonFake": "Фейковая информация",
+      "reasonOther": "Другое",
+      "typePoint": "Точка",
+      "typeComment": "Комментарий",
+      "typeUser": "Пользователь",
+      "unknownPoint": "Неизвестная точка",
+      "authorLabel": "Автор",
+      "unknown": "Неизвестен",
+      "commentDeleted": "Комментарий удален",
+      "unknownUser": "Неизвестный пользователь",
+      "emailNotProvided": "Не указан",
+      "blocked": "Заблокирован",
+      "block": "Заблокировать",
+      "dismiss": "Отклонить",
+      "reportId": "ID жалобы",
+      "reportType": "Тип жалобы",
+      "description": "Описание",
+      "updatedAt": "Дата обновления",
+      "reporterInfo": "Информация о жалобщике",
+      "username": "Имя пользователя",
+      "email": "Email",
+      "reportTarget": "Объект жалобы",
+      "details": "Детали",
+      "processing": "Обработка",
+      "processedBy": "Обработал",
+      "notProcessed": "Не обработано",
+      "adminNotes": "Заметки администратора"
     }
   },
   "map": {
@@ -334,7 +453,17 @@
     "containers": "Контейнеры",
     "yourLocation": "Ваше местоположение",
     "closeFilters": "Закрыть фильтры",
-    "mapLoading": "Карта загружается…"
+    "mapLoading": "Карта загружается…",
+    "controls": {
+      "zoomIn": "Приблизить",
+      "zoomOut": "Отдалить",
+      "findLocation": "Найти мое местоположение",
+      "fullscreen": "Полноэкранный режим",
+      "resetNorth": "Сбросить направление на север"
+    },
+    "popup": {
+      "close": "Закрыть"
+    }
   },
   "mapStyles": {
     "openstreet": {
@@ -411,7 +540,20 @@
     "selectContainerOption": "Выберите контейнер",
     "createNewContainer": "Создать новый контейнер",
     "newContainer": "Новый контейнер",
-    "mapGeoLoading": "Определяем ваше местоположение…"
+    "mapGeoLoading": "Определяем ваше местоположение…",
+    "creating": "Создание...",
+    "create": "Создать",
+    "createPointButton": "Создать точку",
+    "pointName": "Название точки *",
+    "pointNamePlaceholder": "Введите название точки",
+    "descriptionPlaceholder": "Опишите эту точку...",
+    "categoryNamePlaceholder": "Название категории",
+    "containerTitlePlaceholder": "Название контейнера",
+    "containerDescriptionPlaceholder": "Описание контейнера (необязательно)",
+    "containerHelpTitle": "Что такое контейнер?",
+    "containerHelpText": "Контейнер — это коллекция или группа точек. Например: «Мои любимые места», «Рестораны Минска», «Достопримечательности».",
+    "containerVsCategoryTitle": "Отличие от категорий:",
+    "containerVsCategoryText": "Категория — это тип точки (ресторан, парк, музей). Контейнер — это ваша личная коллекция точек любых типов."
   },
   "settings": {
     "title": "Настройки",
@@ -432,7 +574,11 @@
     "setAsDefault": "Сделать основным",
     "mapStylesTip": "Выбранные стили карт будут доступны при создании точек и просмотре карточек точек. Стиль по умолчанию будет использоваться при первом открытии карты. Рекомендуется оставить включенными базовые стили для лучшего опыта.",
     "otherSettings": "Другие настройки",
-    "otherSettingsDescription": "Дополнительные настройки будут добавлены в будущих обновлениях"
+    "otherSettingsDescription": "Дополнительные настройки будут добавлены в будущих обновлениях",
+    "updateError": "Ошибка при обновлении настроек",
+    "resetConfirm": "Вы уверены, что хотите сбросить настройки к значениям по умолчанию?",
+    "resetError": "Ошибка при сбросе настроек",
+    "resetSidebarError": "Ошибка при сбросе порядка меню"
   },
   "editPoint": {
     "title": "Редактировать точку",

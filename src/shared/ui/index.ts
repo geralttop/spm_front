@@ -20,6 +20,8 @@ export { BaseModal } from "./modal";
 export { PointCard } from "./point-card";
 export { FavoriteButton, ReportButton, EditButton } from "./action-buttons";
 export { ErrorBoundary } from "./error-boundary";
+export { CodeInput } from "./code-input";
+export { PasswordInput } from "./password-input";
 export type { ButtonProps } from "./button";
 export type { InputProps } from "./input";
 export type { TextareaProps } from "./textarea";

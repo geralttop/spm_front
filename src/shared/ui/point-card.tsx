@@ -1,30 +1,26 @@
-import { MapPin, Tag, Package, User, Calendar, MessageCircle, Map as MapIcon } from 'lucide-react';
-import { useState, useEffect, type ComponentType } from "react";
-import { useAuthStore } from '@/shared/lib/store';
-import { useSettingsStore } from '@/shared/lib/store/settings-store';
-import { favoritesApi, type Point } from '@/shared/api';
-import { formatRelativeDate } from '@/shared/lib/utils';
-import { Comments } from '@/entities/comment';
-import { ReportModal, EditPointModal, FavoriteButton, ReportButton, EditButton } from '@/shared/ui';
 import {
-  useTranslation,
-  useProfileQuery,
-  useMapSettingsQuery,
-  useInView,
-} from "@/shared/lib/hooks";
+  MapPin,
+  Tag,
+  Package,
+  User,
+  Calendar,
+  MessageCircle,
+} from "lucide-react";
+import React, { useState, type ComponentType } from "react";
+import { useAuthStore } from "@/shared/lib/store";
+import type { Point } from "@/shared/api";
+import { formatRelativeDate } from "@/shared/lib/utils";
+import { Comments } from "@/entities/comment";
 import {
-  Map as MapComponent,
-  MapControls,
-  MapMarker,
-  MarkerContent,
-  MarkerPopup,
-  MarkerTooltip,
-} from "@/shared/ui/map";
-import { updateSharedUserCoords, useSharedUserLocation } from "@/shared/lib/user-location";
-import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
-
-const favoriteCache = new Map<string, { isFavorite: boolean; count: number; timestamp: number }>();
-const CACHE_DURATION = 30000;
+  ReportModal,
+  EditPointModal,
+  FavoriteButton,
+  ReportButton,
+  EditButton,
+} from "@/shared/ui";
+import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
+import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
+import { PointCardMap } from "@/shared/ui/point-card-map";
 
 const FavoriteIconButton = FavoriteButton as ComponentType<any>;
 const ReportIconButton = ReportButton as ComponentType<any>;
@@ -75,113 +71,31 @@ function ActionButtons({
   );
 }
 
-export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointUpdate }: PointCardProps) {
+export const PointCard = React.memo(function PointCard({
+  point,
+  showAuthor = true,
+  onFavoriteChange,
+  onPointUpdate,
+}: PointCardProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
-  const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
   const { data: profile } = useProfileQuery();
-  const { data: mapSettings } = useMapSettingsQuery();
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
 
-  const { ref: mapViewportRef, inView: mapViewportVisible } = useInView({
-    rootMargin: "100px",
-    threshold: 0,
-    once: true,
-  });
-  const userLocation = useSharedUserLocation(
-    mapViewportVisible && Boolean(accessToken)
+  const { isFavorite, isLoading, toggleFavorite } = useFavoriteStatus(
+    point.id,
+    onFavoriteChange
   );
 
   const currentUserId = profile ? Number(profile.userId) : null;
-
-  // Загружаем настройки при монтировании
-  useEffect(() => {
-    if (accessToken && mapSettings) {
-      loadSettings(mapSettings);
-    }
-  }, [accessToken, mapSettings, loadSettings]);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    
-    const checkFavoriteStatus = async () => {
-      if (!accessToken) return;
-      
-      const cached = favoriteCache.get(point.id);
-      if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-        setIsFavorite(cached.isFavorite);
-        return;
-      }
-      
-      try {
-        const data = await favoritesApi.check(point.id);
-        const isFav = data.isFavorite;
-        
-        setIsFavorite(isFav);
-        
-        favoriteCache.set(point.id, {
-          isFavorite: isFav,
-          count: 0,
-          timestamp: Date.now()
-        });
-      } catch (error) {
-        console.error('Ошибка при проверке статуса избранного:', error);
-      }
-    };
-
-    timeoutId = setTimeout(checkFavoriteStatus, 100);
-    
-    return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [point.id, accessToken]);
-
-  const toggleFavorite = async () => {
-    if (!accessToken || loading) return;
-    
-    setLoading(true);
-    try {
-      if (isFavorite) {
-        await favoritesApi.remove(point.id);
-      } else {
-        await favoritesApi.add(point.id);
-      }
-
-      const newIsFavorite = !isFavorite;
-      
-      setIsFavorite(newIsFavorite);
-      
-      favoriteCache.set(point.id, {
-        isFavorite: newIsFavorite,
-        count: 0,
-        timestamp: Date.now()
-      });
-      
-      onFavoriteChange?.();
-    } catch (error) {
-      console.error('Ошибка при изменении избранного:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const canReport =
+    accessToken && currentUserId && currentUserId !== point.author.id;
+  const isAuthor = currentUserId && currentUserId === point.author.id;
 
   const handleReportSuccess = () => {
-    // Можно показать уведомление об успешной отправке жалобы
-    console.log('Жалоба успешно отправлена');
   };
-
-  // Проверяем, может ли пользователь пожаловаться на эту точку
-  const canReport = accessToken && currentUserId && currentUserId !== point.author.id;
-  
-  // Проверяем, является ли текущий пользователь автором точки
-  const isAuthor = currentUserId && currentUserId === point.author.id;
 
   const handleEditSuccess = () => {
     onPointUpdate?.();
@@ -209,13 +123,23 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
               {point.author.firstName} {point.author.lastName}
             </p>
             <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-text-muted sm:text-sm">
-              <span className="min-w-0 truncate">@{point.author.username}</span>
-              <span className="text-text-muted/40 select-none" aria-hidden>
+              <span className="min-w-0 truncate">
+                @{point.author.username}
+              </span>
+              <span
+                className="text-text-muted/40 select-none"
+                aria-hidden
+              >
                 ·
               </span>
               <span className="inline-flex shrink-0 items-center gap-1">
-                <Calendar className="h-3 w-3 shrink-0 sm:h-4 sm:w-4" aria-hidden />
-                <time dateTime={point.createdAt}>{formatRelativeDate(point.createdAt)}</time>
+                <Calendar
+                  className="h-3 w-3 shrink-0 sm:h-4 sm:w-4"
+                  aria-hidden
+                />
+                <time dateTime={point.createdAt}>
+                  {formatRelativeDate(point.createdAt)}
+                </time>
               </span>
             </div>
           </div>
@@ -223,12 +147,12 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
             <ActionButtons
               isAuthor={!!isAuthor}
               isFavorite={isFavorite}
-              loading={loading}
+              loading={isLoading}
               canReport={!!canReport}
               onEdit={() => setShowEditModal(true)}
               onToggleFavorite={toggleFavorite}
               onReport={() => setShowReportModal(true)}
-              reportTitle={t('reports.button')}
+              reportTitle={t("reports.button")}
             />
           </div>
         </div>
@@ -237,176 +161,84 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
       {!showAuthor && (
         <div className="mb-3 sm:mb-4 flex flex-wrap items-center justify-between gap-x-2 gap-y-2">
           <div className="flex min-w-0 items-center gap-1.5 text-xs text-text-muted sm:text-sm">
-            <Calendar className="h-3 w-3 shrink-0 sm:h-4 sm:w-4" aria-hidden />
-            <time dateTime={point.createdAt}>{formatRelativeDate(point.createdAt)}</time>
+            <Calendar
+              className="h-3 w-3 shrink-0 sm:h-4 sm:w-4"
+              aria-hidden
+            />
+            <time dateTime={point.createdAt}>
+              {formatRelativeDate(point.createdAt)}
+            </time>
           </div>
           <div className="ml-auto flex-shrink-0">
             <ActionButtons
               isAuthor={!!isAuthor}
               isFavorite={isFavorite}
-              loading={loading}
+              loading={isLoading}
               canReport={!!canReport}
               onEdit={() => setShowEditModal(true)}
               onToggleFavorite={toggleFavorite}
               onReport={() => setShowReportModal(true)}
-              reportTitle={t('reports.button')}
+              reportTitle={t("reports.button")}
             />
           </div>
         </div>
       )}
 
       <div className="mb-3 sm:mb-4">
-        <h3 className="text-sm sm:text-lg font-semibold text-text-main mb-1.5 sm:mb-2 break-words">{point.name}</h3>
+        <h3 className="text-sm sm:text-lg font-semibold text-text-main mb-1.5 sm:mb-2 break-words">
+          {point.name}
+        </h3>
         {point.description && (
-          <p className="text-xs sm:text-base text-text-main mb-2 sm:mb-3 break-words line-clamp-3 sm:line-clamp-none">{point.description}</p>
+          <p className="text-xs sm:text-base text-text-main mb-2 sm:mb-3 break-words line-clamp-3 sm:line-clamp-none">
+            {point.description}
+          </p>
         )}
         {point.address && (
           <div className="flex items-start gap-2 text-xs sm:text-sm text-text-muted mb-2 sm:mb-3">
             <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5" />
-            <span className="break-words line-clamp-2 sm:line-clamp-none">{point.address}</span>
+            <span className="break-words line-clamp-2 sm:line-clamp-none">
+              {point.address}
+            </span>
           </div>
         )}
       </div>
 
       <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
         <div className="flex flex-col sm:flex-row sm:items-center gap-1.5 sm:gap-4">
-        <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center gap-2 min-w-0">
             <Tag className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
-          <span className="text-text-muted">
-            {t('profile.category')}:
-          </span>
-            <span 
+            <span className="text-text-muted">{t("profile.category")}:</span>
+            <span
               className="font-medium px-2 py-1 rounded text-white text-xs flex-shrink-0"
-              style={{ backgroundColor: point.category?.color || '#6B7280' }}
+              style={{
+                backgroundColor: point.category?.color || "#6B7280",
+              }}
             >
-              {point.category?.name || t('profile.noCategory')}
+              {point.category?.name || t("profile.noCategory")}
             </span>
           </div>
 
-        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2">
             <Package className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
-          <span className="text-text-muted">
-            {t('profile.container')}:
-          </span>
+            <span className="text-text-muted">{t("profile.container")}:</span>
             <span className="text-text-main font-medium truncate">
-              {point.container?.title || t('profile.noContainer')}
+              {point.container?.title || t("profile.noContainer")}
             </span>
           </div>
         </div>
 
         <div className="flex items-start gap-2">
           <MapPin className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0 mt-0.5" />
-          <span className="text-text-muted">
-            {t('profile.coordinates')}:
-          </span>
+          <span className="text-text-muted">{t("profile.coordinates")}:</span>
           <span className="text-text-main font-mono text-xs break-all">
-            {point.coords.coordinates[1].toFixed(6)}, {point.coords.coordinates[0].toFixed(6)}
+            {point.coords.coordinates[1].toFixed(6)},{" "}
+            {point.coords.coordinates[0].toFixed(6)}
           </span>
         </div>
       </div>
-      <div>
-        <div className="flex items-center justify-between mb-1.5 sm:mb-2">
-          <p className="text-xs sm:text-sm text-text-muted">{t('map.mapStyle')}</p>
-          <div className="flex items-center gap-2">
-            <MapIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-text-muted shrink-0" />
-            <select
-              value={mapStyle}
-              onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-              className="text-xs sm:text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target min-h-9 sm:min-h-[44px]"
-            >
-              {availableMapStyles.map((key) => (
-                <option key={key} value={key}>
-                  {t(`mapStyles.${key}.name`)}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-        <div className="-mx-3 sm:mx-0" ref={mapViewportRef}>
-          <div className="h-[220px] sm:h-[320px] md:h-[400px] w-full rounded-none sm:rounded-lg overflow-hidden border border-border bg-muted/30">
-            {mapViewportVisible ? (
-              <MapComponent
-                center={[point.coords.coordinates[0], point.coords.coordinates[1]]}
-                zoom={15}
-                styles={{
-                  light: MAP_STYLES[mapStyle].light,
-                  dark: MAP_STYLES[mapStyle].dark,
-                }}
-              >
-                <MapMarker
-                  longitude={point.coords.coordinates[0]}
-                  latitude={point.coords.coordinates[1]}
-                >
-                  <MarkerContent>
-                    <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg" />
-                  </MarkerContent>
-                  <MarkerTooltip>{point.name}</MarkerTooltip>
-                  <MarkerPopup>
-                    <div className="space-y-1">
-                      <p className="font-medium text-text-main">{point.name}</p>
-                      {point.description && (
-                        <p className="text-sm text-text-muted">{point.description}</p>
-                      )}
-                      <p className="text-xs text-text-muted">
-                        {point.coords.coordinates[1].toFixed(4)}, {point.coords.coordinates[0].toFixed(4)}
-                      </p>
-                    </div>
-                  </MarkerPopup>
-                </MapMarker>
 
-                {userLocation && (
-                  <MapMarker
-                    longitude={userLocation.longitude}
-                    latitude={userLocation.latitude}
-                    anchor="center"
-                  >
-                    <MarkerContent className="cursor-default">
-                      <div
-                        className="relative flex size-6 items-center justify-center"
-                        role="img"
-                        aria-label={t("map.yourLocation")}
-                      >
-                        <span
-                          className="absolute inset-0 rounded-full bg-primary/20 motion-safe:animate-pulse"
-                          aria-hidden
-                        />
-                        <span
-                          className="relative size-3 rounded-full border-2 border-background bg-primary shadow-md ring-2 ring-primary/50"
-                          aria-hidden
-                        />
-                      </div>
-                    </MarkerContent>
-                    <MarkerTooltip>{t("map.yourLocation")}</MarkerTooltip>
-                  </MapMarker>
-                )}
+      <PointCardMap point={point} />
 
-                <MapControls
-                  position="bottom-right"
-                  showZoom
-                  showCompass
-                  showLocate
-                  showFullscreen
-                  onLocate={(c) =>
-                    updateSharedUserCoords({
-                      longitude: c.longitude,
-                      latitude: c.latitude,
-                    })
-                  }
-                  className="[&_button]:size-7 [&_svg]:size-3.5 sm:[&_button]:size-8 sm:[&_svg]:size-4"
-                />
-              </MapComponent>
-            ) : (
-              <div
-                className="flex h-full w-full flex-col items-center justify-center gap-2 text-text-muted"
-                aria-hidden
-              >
-                <MapIcon className="h-8 w-8 opacity-40" />
-                <span className="text-xs">{t("map.mapLoading")}</span>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
       <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
         <button
           type="button"
@@ -415,7 +247,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
         >
           <MessageCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
           <span>
-            {showComments ? t('comments.hide') : t('comments.show')}
+            {showComments ? t("comments.hide") : t("comments.show")}
           </span>
           {point.commentsCount !== undefined && point.commentsCount > 0 && (
             <span className="px-2 py-0.5 bg-primary/10 text-primary rounded-full text-xs font-semibold">
@@ -423,7 +255,7 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
             </span>
           )}
         </button>
-        
+
         {showComments && (
           <div className="mt-4">
             <Comments pointId={point.id} />
@@ -431,7 +263,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
         )}
       </div>
 
-      {/* Report Modal */}
       <ReportModal
         isOpen={showReportModal}
         onClose={() => setShowReportModal(false)}
@@ -441,7 +272,6 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
         onSuccess={handleReportSuccess}
       />
 
-      {/* Edit Point Modal */}
       <EditPointModal
         isOpen={showEditModal}
         onClose={() => setShowEditModal(false)}
@@ -450,4 +280,4 @@ export function PointCard({ point, showAuthor = true, onFavoriteChange, onPointU
       />
     </div>
   );
-}
+});

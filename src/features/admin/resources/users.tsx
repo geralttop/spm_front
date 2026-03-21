@@ -16,53 +16,63 @@ import {
   ShowButton,
   DeleteButton,
 } from 'react-admin';
+import { useTranslation } from 'react-i18next';
 
-export const UserList = () => (
-  <List>
-    <Datagrid>
-      <TextField source="id" label="ID" />
-      <TextField source="username" label="Имя пользователя" />
-      <EmailField source="email" label="Email" />
-      <TextField source="role" label="Роль" />
-      <BooleanField source="isEmailVerified" label="Email подтвержден" />
-      <DateField source="createdAt" label="Дата создания" showTime />
-      <EditButton />
-      <ShowButton />
-      <DeleteButton />
-    </Datagrid>
-  </List>
-);
+export const UserList = () => {
+  const { t } = useTranslation('common');
+  return (
+    <List>
+      <Datagrid>
+        <TextField source="id" label={t('admin.users.id')} />
+        <TextField source="username" label={t('admin.users.username')} />
+        <EmailField source="email" label={t('admin.users.email')} />
+        <TextField source="role" label={t('admin.users.role')} />
+        <BooleanField source="isEmailVerified" label={t('admin.users.emailVerified')} />
+        <DateField source="createdAt" label={t('admin.users.createdAt')} showTime />
+        <EditButton />
+        <ShowButton />
+        <DeleteButton />
+      </Datagrid>
+    </List>
+  );
+};
 
-export const UserEdit = () => (
-  <Edit>
-    <SimpleForm>
-      <TextInput source="username" label="Имя пользователя" />
-      <TextInput source="email" label="Email" type="email" />
-      <SelectInput 
-        source="role" 
-        label="Роль"
-        choices={[
-          { id: 'user', name: 'Пользователь' },
-          { id: 'admin', name: 'Администратор' },
-        ]}
-      />
-      <BooleanInput source="isEmailVerified" label="Email подтвержден" />
-      <TextInput source="bio" label="Биография" multiline />
-    </SimpleForm>
-  </Edit>
-);
+export const UserEdit = () => {
+  const { t } = useTranslation('common');
+  return (
+    <Edit>
+      <SimpleForm>
+        <TextInput source="username" label={t('admin.users.username')} />
+        <TextInput source="email" label={t('admin.users.email')} type="email" />
+        <SelectInput 
+          source="role" 
+          label={t('admin.users.role')}
+          choices={[
+            { id: 'user', name: t('admin.users.roleUser') },
+            { id: 'admin', name: t('admin.users.roleAdmin') },
+          ]}
+        />
+        <BooleanInput source="isEmailVerified" label={t('admin.users.emailVerified')} />
+        <TextInput source="bio" label={t('admin.users.bio')} multiline />
+      </SimpleForm>
+    </Edit>
+  );
+};
 
-export const UserShow = () => (
-  <Show>
-    <SimpleShowLayout>
-      <TextField source="id" label="ID" />
-      <TextField source="username" label="Имя пользователя" />
-      <EmailField source="email" label="Email" />
-      <TextField source="role" label="Роль" />
-      <BooleanField source="isEmailVerified" label="Email подтвержден" />
-      <TextField source="bio" label="Биография" />
-      <DateField source="createdAt" label="Дата создания" showTime />
-      <DateField source="updatedAt" label="Дата обновления" showTime />
-    </SimpleShowLayout>
-  </Show>
-);
+export const UserShow = () => {
+  const { t } = useTranslation('common');
+  return (
+    <Show>
+      <SimpleShowLayout>
+        <TextField source="id" label={t('admin.users.id')} />
+        <TextField source="username" label={t('admin.users.username')} />
+        <EmailField source="email" label={t('admin.users.email')} />
+        <TextField source="role" label={t('admin.users.role')} />
+        <BooleanField source="isEmailVerified" label={t('admin.users.emailVerified')} />
+        <TextField source="bio" label={t('admin.users.bio')} />
+        <DateField source="createdAt" label={t('admin.users.createdAt')} showTime />
+        <DateField source="updatedAt" label={t('admin.users.updatedAt')} showTime />
+      </SimpleShowLayout>
+    </Show>
+  );
+};

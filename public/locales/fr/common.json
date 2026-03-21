@@ -13,7 +13,11 @@
     "loading": "Chargement...",
     "error": "Erreur",
     "errorLoading": "Erreur de chargement des données",
-    "errorUpdating": "Erreur de mise à jour"
+    "errorUpdating": "Erreur de mise à jour",
+    "close": "Fermer",
+    "closeMenu": "Fermer le menu",
+    "openMenu": "Ouvrir le menu",
+    "retry": "Réessayer"
   },
   "navigation": {
     "home": "Accueil",
@@ -166,6 +170,20 @@
       "save": "Enregistrer",
       "cancel": "Annuler"
     },
+    "avatar": {
+      "upload": "Télécharger l'avatar",
+      "change": "Changer",
+      "delete": "Supprimer",
+      "uploadSuccess": "Avatar téléchargé avec succès",
+      "deleteSuccess": "Avatar supprimé avec succès",
+      "uploadError": "Erreur de téléchargement de l'avatar",
+      "deleteError": "Erreur de suppression de l'avatar",
+      "invalidType": "Seules les images peuvent être téléchargées",
+      "tooLarge": "La taille du fichier ne doit pas dépasser 5 Mo",
+      "crop": "Recadrer l'image",
+      "zoom": "Zoom",
+      "apply": "Appliquer"
+    },
     "profileHeader": {
       "edit": "Modifier"
     },
@@ -223,7 +241,8 @@
     "emptyDescription": "Suivez d'autres utilisateurs ou créez vos propres points pour les voir ici",
     "loading": "Chargement...",
     "allLoaded": "Tous les points sont chargés",
-    "refresh": "Actualiser"
+    "refresh": "Actualiser",
+    "loadError": "Erreur de chargement du fil"
   },
   "manage": {
     "title": "Gestion des données",
@@ -292,12 +311,126 @@
   },
   "admin": {
     "loading": "Chargement...",
+    "noAccess": "Vous n'avez pas accès au panneau d'administration",
+    "dashboard": {
+      "title": "Tableau de bord",
+      "loadingStats": "Chargement des statistiques...",
+      "loadFailed": "Impossible de charger les statistiques",
+      "users": "Utilisateurs",
+      "points": "Points",
+      "categories": "Catégories",
+      "containers": "Conteneurs",
+      "reports": "Signalements",
+      "pendingReview": "En attente d'examen",
+      "resolved": "Résolus",
+      "dismissed": "Rejetés",
+      "roleDistribution": "Distribution par rôles",
+      "admins": "Administrateurs",
+      "regularUsers": "Utilisateurs",
+      "emailVerification": "Vérification Email",
+      "verified": "Vérifiés",
+      "unverified": "Non vérifiés",
+      "pointsByCategory": "Points par catégorie",
+      "pointCount": "Nombre de points",
+      "topAuthors": "Top 10 auteurs de points",
+      "pointsCreated": "Points créés",
+      "pointsTimeline": "Points créés au cours des 30 derniers jours",
+      "reportsStatus": "Statut des signalements",
+      "reportsByType": "Signalements par type",
+      "reportsCount": "Nombre de signalements",
+      "pending": "En attente",
+      "pointsType": "Points",
+      "commentsType": "Commentaires",
+      "usersType": "Utilisateurs"
+    },
+    "nav": {
+      "users": "Utilisateurs",
+      "points": "Points",
+      "categories": "Catégories",
+      "containers": "Conteneurs",
+      "reports": "Signalements"
+    },
+    "users": {
+      "id": "ID",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "role": "Rôle",
+      "emailVerified": "Email vérifié",
+      "createdAt": "Date de création",
+      "roleUser": "Utilisateur",
+      "roleAdmin": "Administrateur",
+      "bio": "Biographie",
+      "updatedAt": "Date de mise à jour"
+    },
+    "points": {
+      "id": "ID",
+      "name": "Nom",
+      "address": "Adresse",
+      "author": "Auteur",
+      "category": "Catégorie",
+      "container": "Conteneur",
+      "createdAt": "Date de création",
+      "description": "Description",
+      "longitude": "Longitude",
+      "latitude": "Latitude"
+    },
     "categories": {
       "id": "ID",
       "name": "Nom",
       "color": "Couleur",
       "author": "Auteur",
       "system": "Système"
+    },
+    "containers": {
+      "id": "ID",
+      "title": "Titre",
+      "description": "Description",
+      "author": "Auteur",
+      "createdAt": "Date de création"
+    },
+    "reports": {
+      "id": "ID",
+      "type": "Type",
+      "reason": "Raison",
+      "status": "Statut",
+      "reporter": "Signaleur",
+      "target": "Cible du signalement",
+      "createdAt": "Date de création",
+      "actions": "Actions",
+      "statusPending": "En attente d'examen",
+      "statusReviewed": "Examiné",
+      "statusResolved": "Résolu",
+      "statusDismissed": "Rejeté",
+      "reasonSpam": "Spam",
+      "reasonInappropriate": "Contenu inapproprié",
+      "reasonHarassment": "Harcèlement",
+      "reasonFake": "Fausse information",
+      "reasonOther": "Autre",
+      "typePoint": "Point",
+      "typeComment": "Commentaire",
+      "typeUser": "Utilisateur",
+      "unknownPoint": "Point inconnu",
+      "authorLabel": "Auteur",
+      "unknown": "Inconnu",
+      "commentDeleted": "Commentaire supprimé",
+      "unknownUser": "Utilisateur inconnu",
+      "emailNotProvided": "Non fourni",
+      "blocked": "Bloqué",
+      "block": "Bloquer",
+      "dismiss": "Rejeter",
+      "reportId": "ID du signalement",
+      "reportType": "Type de signalement",
+      "description": "Description",
+      "updatedAt": "Date de mise à jour",
+      "reporterInfo": "Informations sur le signaleur",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "reportTarget": "Cible du signalement",
+      "details": "Détails",
+      "processing": "Traitement",
+      "processedBy": "Traité par",
+      "notProcessed": "Non traité",
+      "adminNotes": "Notes d'administrateur"
     }
   },
   "map": {
@@ -320,7 +453,17 @@
     "containers": "Conteneurs",
     "yourLocation": "Votre position",
     "closeFilters": "Fermer les filtres",
-    "mapLoading": "Chargement de la carte…"
+    "mapLoading": "Chargement de la carte…",
+    "controls": {
+      "zoomIn": "Zoomer",
+      "zoomOut": "Dézoomer",
+      "findLocation": "Trouver ma position",
+      "fullscreen": "Plein écran",
+      "resetNorth": "Réinitialiser vers le nord"
+    },
+    "popup": {
+      "close": "Fermer"
+    }
   },
   "mapStyles": {
     "openstreet": {
@@ -397,7 +540,20 @@
     "selectContainerOption": "Sélectionner un conteneur",
     "createNewContainer": "Créer un nouveau conteneur",
     "newContainer": "Nouveau conteneur",
-    "mapGeoLoading": "Détection de votre position…"
+    "mapGeoLoading": "Détection de votre position…",
+    "creating": "Création...",
+    "create": "Créer",
+    "createPointButton": "Créer un point",
+    "pointName": "Nom du point *",
+    "pointNamePlaceholder": "Entrez le nom du point",
+    "descriptionPlaceholder": "Décrivez ce point...",
+    "categoryNamePlaceholder": "Nom de la catégorie",
+    "containerTitlePlaceholder": "Nom du conteneur",
+    "containerDescriptionPlaceholder": "Description du conteneur (facultatif)",
+    "containerHelpTitle": "Qu'est-ce qu'un conteneur ?",
+    "containerHelpText": "Un conteneur est une collection ou un groupe de points. Par exemple : « Mes lieux préférés », « Restaurants de Minsk », « Attractions ».",
+    "containerVsCategoryTitle": "Différence avec les catégories :",
+    "containerVsCategoryText": "Une catégorie est un type de point (restaurant, parc, musée). Un conteneur est votre collection personnelle de points de tous types."
   },
   "settings": {
     "title": "Paramètres",
@@ -418,7 +574,11 @@
     "setAsDefault": "Définir par défaut",
     "mapStylesTip": "Les styles de carte sélectionnés seront disponibles lors de la création de points et de la visualisation des cartes de points. Le style par défaut sera utilisé lors de l'ouverture de la carte pour la première fois. Il est recommandé de garder les styles de base activés pour une meilleure expérience.",
     "otherSettings": "Autres paramètres",
-    "otherSettingsDescription": "Des paramètres supplémentaires seront ajoutés dans les futures mises à jour"
+    "otherSettingsDescription": "Des paramètres supplémentaires seront ajoutés dans les futures mises à jour",
+    "updateError": "Erreur de mise à jour des paramètres",
+    "resetConfirm": "Êtes-vous sûr de vouloir réinitialiser les paramètres par défaut ?",
+    "resetError": "Erreur de réinitialisation des paramètres",
+    "resetSidebarError": "Erreur de réinitialisation de l'ordre du menu"
   },
   "editPoint": {
     "title": "Modifier le point",
