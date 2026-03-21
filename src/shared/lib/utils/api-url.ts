@@ -1,11 +1,19 @@
+/**
+ * URL бэкенда.
+ * В проде на Vercel задайте NEXT_PUBLIC_API_URL=https://back.a2015.ru (без слэша в конце).
+ * Без переменной в браузере используется текущий хост:3000 (удобно для локальной сети).
+ */
 export function getApiUrl(): string {
+  const fromEnv = process.env.NEXT_PUBLIC_API_URL?.trim();
+  if (fromEnv) {
+    return fromEnv.replace(/\/$/, '');
+  }
+
   if (typeof window !== 'undefined') {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    const apiUrl = `${protocol}//${hostname}:3000`;
-    return apiUrl;
+    return `${protocol}//${hostname}:3000`;
   }
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  return apiUrl;
+  return 'http://localhost:3000';
 }
