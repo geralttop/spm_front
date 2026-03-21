@@ -301,7 +301,8 @@
   "map": {
     "category": "Катэгорыя:",
     "viewDetails": "Падрабязней",
-    "loadingPoints": "Загрузка кропак...",
+    "loadingPoints": "Загрузка кропак і геалакацыі...",
+    "pointsLoadFailed": "Не атрымалася загрузіць кропкі",
     "pointsOnMap": "Кропак на мапе:",
     "mapStyle": "Стыль карты",
     "filters": "Фільтры",
@@ -314,7 +315,9 @@
     "noFollowing": "Вы ні на каго не падпісаны",
     "noAuthors": "Няма аўтараў",
     "categories": "Катэгорыі",
-    "containers": "Кантэйнеры"
+    "containers": "Кантэйнеры",
+    "yourLocation": "Ваша месца",
+    "mapLoading": "Загрузка карты…"
   },
   "mapStyles": {
     "openstreet": {
@@ -390,7 +393,8 @@
     "selectContainer": "Выберыце кантэйнер *",
     "selectContainerOption": "Выберыце кантэйнер",
     "createNewContainer": "Стварыць новы кантэйнер",
-    "newContainer": "Новы кантэйнер"
+    "newContainer": "Новы кантэйнер",
+    "mapGeoLoading": "Вызначаем пазіцыю…"
   },
   "settings": {
     "title": "Налады",

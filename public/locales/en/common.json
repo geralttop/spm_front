@@ -283,7 +283,8 @@
   "map": {
     "category": "Category:",
     "viewDetails": "View details",
-    "loadingPoints": "Loading points...",
+    "loadingPoints": "Loading points and location...",
+    "pointsLoadFailed": "Failed to load points",
     "pointsOnMap": "Points on map:",
     "mapStyle": "Map style",
     "filters": "Filters",
@@ -296,7 +297,9 @@
     "noFollowing": "You are not following anyone",
     "noAuthors": "No authors",
     "categories": "Categories",
-    "containers": "Containers"
+    "containers": "Containers",
+    "yourLocation": "Your location",
+    "mapLoading": "Loading map…"
   },
   "mapStyles": {
     "openstreet": {
@@ -372,7 +375,8 @@
     "selectContainer": "Select container *",
     "selectContainerOption": "Select container",
     "createNewContainer": "Create new container",
-    "newContainer": "New Container"
+    "newContainer": "New Container",
+    "mapGeoLoading": "Finding your location…"
   },
   "settings": {
     "title": "Settings",

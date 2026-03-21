@@ -315,7 +315,8 @@
   "map": {
     "category": "Категория:",
     "viewDetails": "Подробнее",
-    "loadingPoints": "Загрузка точек...",
+    "loadingPoints": "Загрузка точек и геолокации...",
+    "pointsLoadFailed": "Не удалось загрузить точки",
     "pointsOnMap": "Точек на карте:",
     "mapStyle": "Стиль карты",
     "filters": "Фильтры",
@@ -328,7 +329,9 @@
     "noFollowing": "Вы ни на кого не подписаны",
     "noAuthors": "Нет авторов",
     "categories": "Категории",
-    "containers": "Контейнеры"
+    "containers": "Контейнеры",
+    "yourLocation": "Ваше местоположение",
+    "mapLoading": "Карта загружается…"
   },
   "mapStyles": {
     "openstreet": {
@@ -404,7 +407,8 @@
     "selectContainer": "Выберите контейнер *",
     "selectContainerOption": "Выберите контейнер",
     "createNewContainer": "Создать новый контейнер",
-    "newContainer": "Новый контейнер"
+    "newContainer": "Новый контейнер",
+    "mapGeoLoading": "Определяем ваше местоположение…"
   },
   "settings": {
     "title": "Настройки",

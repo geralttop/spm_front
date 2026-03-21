@@ -6,6 +6,12 @@ export { useTheme } from './useTheme';
 export { useTranslation } from './useTranslation';
 export { useFollowManagement } from './use-follow-management';
 export { useUserModal } from './use-user-modal';
+export { useInView } from './use-in-view';
+export {
+  useSharedUserLocation,
+  updateSharedUserCoords,
+  getInitialGeolocation,
+} from '../user-location';
 
 // Re-export query hooks
 export * from './queries';
