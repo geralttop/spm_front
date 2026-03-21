@@ -170,35 +170,35 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="container mx-auto max-w-4xl">
-        <div className="space-y-6">
+    <div className="min-h-screen bg-background py-4 sm:py-8 pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="container mx-auto max-w-4xl px-1 sm:px-4 lg:px-6">
+        <div className="space-y-4 sm:space-y-6">
           {/* Header */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
             <Button
               variant="outline"
               size="sm"
               onClick={() => router.back()}
-              className="gap-2"
+              className="gap-2 w-full shrink-0 sm:w-auto touch-target"
             >
               <ArrowLeft className="h-4 w-4" />
               {t('settings.back')}
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-text-main">{t('settings.title')}</h1>
-              <p className="text-text-muted mt-1">{t('settings.subtitle')}</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-text-main">{t('settings.title')}</h1>
+              <p className="text-sm sm:text-base text-text-muted mt-1">{t('settings.subtitle')}</p>
             </div>
           </div>
 
           {/* Sidebar Order Settings */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-text-main flex items-center gap-2">
-                  <GripVertical className="h-5 w-5" />
+          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
+            <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between mb-4 sm:mb-6">
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
+                  <GripVertical className="h-5 w-5 shrink-0" />
                   {t('settings.sidebarOrder')}
                 </h2>
-                <p className="text-sm text-text-muted mt-1">
+                <p className="text-xs sm:text-sm text-text-muted mt-1">
                   {t('settings.dragToReorder')}
                 </p>
               </div>
@@ -206,14 +206,14 @@ export default function SettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={handleResetSidebarOrder}
-                className="gap-2"
+                className="gap-2 self-start xs:self-auto shrink-0"
               >
                 <RotateCcw className="h-4 w-4" />
                 {t('settings.reset')}
               </Button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5 sm:space-y-2">
               {sidebarOrder.map((itemId, index) => {
                 const Icon = MENU_ICONS[itemId as keyof typeof MENU_ICONS];
                 const label = getMenuLabel(itemId, t);
@@ -229,20 +229,20 @@ export default function SettingsPage() {
                     onDragLeave={handleDragLeave}
                     onDrop={(e) => handleDrop(e, index)}
                     onDragEnd={handleDragEnd}
-                    className={`flex items-center gap-3 p-3 rounded-lg border bg-card cursor-move transition-all ${
+                    className={`flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg border bg-card cursor-move transition-all ${
                       isDragging ? 'opacity-50 scale-95' : ''
                     } ${isDragOver ? 'border-primary scale-105' : 'border-border'} hover:border-primary/50`}
                   >
-                    <GripVertical className="h-5 w-5 text-text-muted shrink-0" />
-                    {Icon && <Icon className="h-5 w-5 text-text-main shrink-0" />}
-                    <span className="font-medium text-text-main flex-1">{label}</span>
-                    <span className="text-xs text-text-muted">#{index + 1}</span>
+                    <GripVertical className="h-4 w-4 sm:h-5 sm:w-5 text-text-muted shrink-0" />
+                    {Icon && <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-text-main shrink-0" />}
+                    <span className="font-medium text-sm sm:text-base text-text-main flex-1 truncate">{label}</span>
+                    <span className="text-xs text-text-muted shrink-0">#{index + 1}</span>
                   </div>
                 );
               })}
             </div>
 
-            <div className="mt-4 p-3 rounded-lg bg-muted/50 border border-border">
+            <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 rounded-lg bg-muted/50 border border-border">
               <p className="text-xs text-text-muted">
                 <strong className="text-text-main">{t('settings.tip')}</strong> {t('settings.dragTip')}
               </p>
@@ -250,18 +250,18 @@ export default function SettingsPage() {
           </div>
 
           {/* Language Settings */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold text-text-main flex items-center gap-2">
-                <Languages className="h-5 w-5" />
+          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
+            <div className="mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
+                <Languages className="h-5 w-5 shrink-0" />
                 {t('settings.language')}
               </h2>
-              <p className="text-sm text-text-muted mt-1">
+              <p className="text-xs sm:text-sm text-text-muted mt-1">
                 {t('settings.languageDescription')}
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
+            <div className="grid grid-cols-2 gap-2 xs:flex xs:flex-wrap">
               {supportedLocales.map((locale) => {
                 const isSelected = currentLanguage === locale;
                 const languageNames: Record<SupportedLocale, string> = {
@@ -275,7 +275,7 @@ export default function SettingsPage() {
                   <button
                     key={locale}
                     onClick={() => changeLanguage(locale)}
-                    className={`px-4 py-2 rounded-lg border font-medium transition-all ${
+                    className={`px-3 sm:px-4 py-2 rounded-lg border text-sm sm:text-base font-medium transition-all ${
                       isSelected
                         ? 'border-primary bg-primary text-primary-foreground'
                         : 'border-border bg-card text-text-main hover:bg-accent'
@@ -289,14 +289,14 @@ export default function SettingsPage() {
           </div>
 
           {/* Map Styles Settings */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-xl font-semibold text-text-main flex items-center gap-2">
-                  <Map className="h-5 w-5" />
+          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
+            <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between mb-4 sm:mb-6">
+              <div className="min-w-0">
+                <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
+                  <Map className="h-5 w-5 shrink-0" />
                   {t('settings.mapStyles')}
                 </h2>
-                <p className="text-sm text-text-muted mt-1">
+                <p className="text-xs sm:text-sm text-text-muted mt-1">
                   {t('settings.mapStylesDescription')}
                 </p>
               </div>
@@ -304,14 +304,14 @@ export default function SettingsPage() {
                 variant="outline"
                 size="sm"
                 onClick={handleReset}
-                className="gap-2"
+                className="gap-2 self-start xs:self-auto shrink-0"
               >
                 <RotateCcw className="h-4 w-4" />
                 {t('settings.reset')}
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
               {Object.entries(MAP_STYLES).map(([key, style]) => {
                 const styleKey = key as MapStyleKey;
                 const isEnabled = availableMapStyles.includes(styleKey);
@@ -319,21 +319,20 @@ export default function SettingsPage() {
                 const canDisable = availableMapStyles.length > 1 || !isEnabled;
                 const isDefaultStyle = ['openstreet', 'openstreet3d', 'satellite', 'carto'].includes(styleKey);
                 
-                // Получаем локализованные название и описание
                 const styleName = t(`mapStyles.${styleKey}.name`);
                 const styleDescription = t(`mapStyles.${styleKey}.description`);
 
                 return (
                   <div
                     key={key}
-                    className={`relative p-3 rounded-lg border transition-all cursor-pointer ${
+                    className={`relative p-2.5 sm:p-3 rounded-lg border transition-all cursor-pointer ${
                       isEnabled
                         ? 'border-primary bg-primary/5 hover:bg-primary/10'
                         : 'border-border bg-muted/30 hover:bg-muted/50'
                     }`}
                     onClick={() => canDisable && !settingsLoading && handleToggleStyle(styleKey)}
                   >
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-start gap-2.5 sm:gap-3">
                       <div
                         className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
                           isEnabled
@@ -345,7 +344,7 @@ export default function SettingsPage() {
                       </div>
                       
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 pr-16 sm:pr-0">
                           <h3 className="font-medium text-sm text-text-main truncate">{styleName}</h3>
                           {isDefault && (
                             <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium whitespace-nowrap">
@@ -371,7 +370,7 @@ export default function SettingsPage() {
                           handleSetDefault(styleKey);
                         }}
                         disabled={settingsLoading}
-                        className="absolute top-2 right-2 text-[10px] px-2 py-1 rounded bg-background border border-border hover:bg-accent transition-colors disabled:opacity-50"
+                        className="absolute top-2 right-2 text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-background border border-border hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {t('settings.setAsDefault')}
                       </button>
@@ -381,19 +380,19 @@ export default function SettingsPage() {
               })}
             </div>
 
-            <div className="mt-6 p-4 rounded-lg bg-muted/50 border border-border">
-              <p className="text-sm text-text-muted">
+            <div className="mt-4 sm:mt-6 p-2.5 sm:p-4 rounded-lg bg-muted/50 border border-border">
+              <p className="text-xs sm:text-sm text-text-muted">
                 <strong className="text-text-main">{t('settings.tip')}</strong> {t('settings.mapStylesTip')}
               </p>
             </div>
           </div>
 
           {/* Future Settings Sections */}
-          <div className="rounded-lg border border-border bg-card p-6 shadow-sm opacity-50">
-            <h2 className="text-xl font-semibold text-text-main mb-4">
+          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm opacity-50">
+            <h2 className="text-lg sm:text-xl font-semibold text-text-main mb-3 sm:mb-4">
               {t('settings.otherSettings')}
             </h2>
-            <p className="text-sm text-text-muted">
+            <p className="text-xs sm:text-sm text-text-muted">
               {t('settings.otherSettingsDescription')}
             </p>
           </div>
