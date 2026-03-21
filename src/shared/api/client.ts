@@ -48,7 +48,6 @@ const getAccessToken = () => {
     if (authStorage) {
       const auth = JSON.parse(authStorage);
       const token = auth?.state?.accessToken || null;
-      console.log('🔑 Getting access token:', token ? 'EXISTS' : 'MISSING');
       return token;
     }
   } catch (error) {

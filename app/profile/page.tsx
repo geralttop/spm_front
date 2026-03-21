@@ -80,6 +80,28 @@ export default function ProfilePage() {
   if (error) return <ErrorMessage message={t("profile.loadError")} />;
   if (!profile) return null;
 
+  const options = {
+    enableHighAccuracy: true,
+    timeout: 5000,
+    maximumAge: 0,
+  };
+  
+  function success(pos:any) {
+    const crd = pos.coords;
+  
+    console.log("Your current position is:");
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
+  }
+  
+  function errors(err:any) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
+  
+  navigator.geolocation.getCurrentPosition(success, errors, options);
+  
+  console.log("husein");
   return (
     <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
       <div className="container mx-auto max-w-4xl px-0 sm:px-4 lg:px-6">

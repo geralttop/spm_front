@@ -9,12 +9,10 @@ export function getApiUrl(): string {
     const hostname = window.location.hostname;
     // Используем порт 3000 для API (фронт на 3001)
     const apiUrl = `${protocol}//${hostname}:3000`;
-    console.log('🌐 Auto-detected API URL:', apiUrl, 'from', window.location.href);
     return apiUrl;
   }
 
   // Для SSR используем переменную окружения или localhost
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-  console.log('⚙️ Using SSR API URL:', apiUrl);
   return apiUrl;
 }
