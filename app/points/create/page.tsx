@@ -179,38 +179,44 @@ export default function CreatePointPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background">
-        <div className="text-text-muted">{tI18n('createPoint.loading')}</div>
+      <div className="flex min-h-[100dvh] items-center justify-center bg-background px-1">
+        <div className="text-text-muted">{tI18n("createPoint.loading")}</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4">
-      <div className="container mx-auto max-w-2xl">
+    <div className="min-h-[100dvh] bg-background pb-[max(1rem,env(safe-area-inset-bottom))]">
+      <div className="mx-auto max-w-4xl px-0 py-4 sm:px-6 sm:py-6 lg:px-8">
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col gap-4 px-1 sm:flex-row sm:items-start sm:gap-6 sm:px-0">
             <Button
               variant="outline"
               size="sm"
+              type="button"
               onClick={() => router.back()}
-              className="gap-2"
+              className="gap-2 touch-target w-full shrink-0 sm:w-auto"
             >
               <ArrowLeft className="h-4 w-4" />
-              Назад
+              {tI18n("settings.back")}
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-text-main">{tI18n('createPoint.title')}</h1>
-              <p className="text-text-muted mt-1">{tI18n('createPoint.subtitle')}</p>
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl font-bold text-text-main sm:text-3xl">
+                {tI18n("createPoint.title")}
+              </h1>
+              <p className="mt-1 text-sm text-text-muted sm:text-base">
+                {tI18n("createPoint.subtitle")}
+              </p>
             </div>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Info Card */}
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-text-main mb-4">
+            <div className="px-1 sm:px-0">
+              <div className="rounded-lg border border-border bg-card p-2 shadow-sm sm:p-6">
+              <h2 className="mb-4 text-base font-semibold text-text-main sm:text-lg">
                 {tI18n('createPoint.basicInfo')}
               </h2>
               
@@ -226,6 +232,7 @@ export default function CreatePointPage() {
                     placeholder="Введите название точки"
                     maxLength={100}
                     required
+                    className="text-base sm:text-sm"
                   />
                 </div>
 
@@ -239,30 +246,31 @@ export default function CreatePointPage() {
                     placeholder="Опишите эту точку..."
                     maxLength={1000}
                     rows={3}
+                    className="text-base sm:text-sm"
                   />
                 </div>
               </div>
+              </div>
             </div>
 
-            {/* Coordinates Card */}
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-text-main mb-4 flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
-                {tI18n('createPoint.coordinates')}
-              </h2>
-              
-              {/* Интерактивная карта */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm text-text-muted">
-                    {tI18n('createPoint.dragMarker')}
+            {/* Координаты: подсказка + стиль — с отступами; карта — на всю ширину экрана на мобиле (как в постах) */}
+            <div className="space-y-4">
+              <div className="px-1 sm:px-0">
+                <h2 className="mb-3 flex items-center gap-2 text-base font-semibold text-text-main sm:mb-4 sm:text-lg">
+                  <MapPin className="h-5 w-5 shrink-0" aria-hidden />
+                  {tI18n("createPoint.coordinates")}
+                </h2>
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+                  <p className="text-sm text-text-muted sm:max-w-[60%]">
+                    {tI18n("createPoint.dragMarker")}
                   </p>
-                  <div className="flex items-center gap-2">
-                    <MapIcon className="h-4 w-4 text-text-muted" />
+                  <div className="flex min-w-0 items-center gap-2 sm:max-w-xs sm:shrink-0">
+                    <MapIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden />
                     <select
                       value={mapStyle}
                       onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-                      className="text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
+                      className="min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-2 text-sm text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target sm:min-h-0 sm:py-1"
+                      aria-label={t("map.mapStyle")}
                     >
                       {availableMapStyles.map((key) => (
                         <option key={key} value={key}>
@@ -272,9 +280,12 @@ export default function CreatePointPage() {
                     </select>
                   </div>
                 </div>
-                <div className="h-[400px] w-full rounded-lg overflow-hidden border border-border bg-muted/20">
+              </div>
+
+              <div className="-mx-3 sm:mx-0">
+                <div className="h-[min(52vh,320px)] w-full overflow-hidden border-y border-border bg-muted/20 sm:h-[320px] md:h-[400px] sm:rounded-lg sm:border-x">
                   {!geoInitDone ? (
-                    <div className="flex h-full flex-col items-center justify-center gap-3 px-4 text-text-muted">
+                    <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 px-1 text-text-muted">
                       <Loader2 className="h-8 w-8 shrink-0 animate-spin text-primary" aria-hidden />
                       <p className="text-center text-sm">{tI18n("createPoint.mapGeoLoading")}</p>
                     </div>
@@ -355,8 +366,10 @@ export default function CreatePointPage() {
                   )}
                 </div>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+              <div className="px-1 sm:px-0">
+                <div className="rounded-lg border border-border bg-card p-2 shadow-sm sm:p-6">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-2">
                     {tI18n('createPoint.longitude')}
@@ -368,6 +381,7 @@ export default function CreatePointPage() {
                     onChange={(e) => handleInputChange("lng", parseFloat(e.target.value) || 0)}
                     placeholder="27.561831"
                     required
+                    className="text-base sm:text-sm"
                   />
                   <p className="text-xs text-text-muted mt-1">
                     {tI18n('createPoint.longitudeExample')}
@@ -385,18 +399,22 @@ export default function CreatePointPage() {
                     onChange={(e) => handleInputChange("lat", parseFloat(e.target.value) || 0)}
                     placeholder="53.902496"
                     required
+                    className="text-base sm:text-sm"
                   />
                   <p className="text-xs text-text-muted mt-1">
                     {tI18n('createPoint.latitudeExample')}
                   </p>
                 </div>
               </div>
+                </div>
+              </div>
             </div>
 
             {/* Category Card */}
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <h2 className="text-lg font-semibold text-text-main mb-4 flex items-center gap-2">
-                <Tag className="h-5 w-5" />
+            <div className="px-1 sm:px-0">
+            <div className="rounded-lg border border-border bg-card p-2 shadow-sm sm:p-6">
+              <h2 className="text-base font-semibold text-text-main mb-4 flex items-center gap-2 sm:text-lg">
+                <Tag className="h-5 w-5 shrink-0" aria-hidden />
                 {tI18n('createPoint.category')}
               </h2>
               
@@ -408,7 +426,7 @@ export default function CreatePointPage() {
                   <select
                     value={formData.categoryId}
                     onChange={(e) => handleInputChange("categoryId", parseInt(e.target.value))}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:outline-none focus:ring-2 focus:ring-ring sm:py-2 sm:text-sm touch-target sm:min-h-0"
                     required
                   >
                     <option value={0}>{tI18n('createPoint.selectCategoryOption')}</option>
@@ -425,7 +443,7 @@ export default function CreatePointPage() {
                     type="button"
                     variant="outline"
                     onClick={() => setShowCreateCategory(!showCreateCategory)}
-                    className="gap-2"
+                    className="gap-2 w-full touch-target sm:w-auto"
                   >
                     <Plus className="h-4 w-4" />
                     {tI18n('createPoint.createNewCategory')}
@@ -433,7 +451,7 @@ export default function CreatePointPage() {
                 </div>
 
                 {showCreateCategory && (
-                  <div className="border border-border rounded-lg p-4 bg-muted/50">
+                  <div className="border border-border rounded-lg p-2 bg-muted/50 sm:p-4">
                     <h3 className="font-medium text-text-main mb-3">{tI18n('createPoint.newCategory')}</h3>
                     <div className="space-y-3">
                       <Input
@@ -442,6 +460,7 @@ export default function CreatePointPage() {
                         onChange={(e) => setNewCategoryName(e.target.value)}
                         placeholder="Название категории"
                         maxLength={50}
+                        className="text-base sm:text-sm"
                       />
                       <div className="flex items-center gap-3">
                         <label className="text-sm font-medium text-text-muted">
@@ -455,12 +474,13 @@ export default function CreatePointPage() {
                         />
                         <span className="text-sm text-text-muted">{newCategoryColor}</span>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex flex-col gap-2 sm:flex-row">
                         <Button
                           type="button"
                           onClick={handleCreateCategory}
                           disabled={createCategoryMutation.isPending || !newCategoryName.trim()}
                           size="sm"
+                          className="w-full touch-target sm:w-auto sm:min-h-0"
                         >
                           {createCategoryMutation.isPending ? "Создание..." : "Создать"}
                         </Button>
@@ -469,6 +489,7 @@ export default function CreatePointPage() {
                           variant="outline"
                           onClick={() => setShowCreateCategory(false)}
                           size="sm"
+                          className="w-full touch-target sm:w-auto sm:min-h-0"
                         >
                           {tI18n('createPoint.cancel')}
                         </Button>
@@ -478,17 +499,19 @@ export default function CreatePointPage() {
                 )}
               </div>
             </div>
+            </div>
 
             {/* Container Card */}
-            <div className="rounded-lg border border-border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-2 mb-4">
-                <h2 className="text-lg font-semibold text-text-main flex items-center gap-2">
-                  <Package className="h-5 w-5" />
+            <div className="px-1 sm:px-0">
+            <div className="rounded-lg border border-border bg-card p-2 shadow-sm sm:p-6">
+              <div className="flex flex-col gap-3 mb-4 sm:flex-row sm:items-center sm:gap-2">
+                <h2 className="text-base font-semibold text-text-main flex items-center gap-2 sm:text-lg">
+                  <Package className="h-5 w-5 shrink-0" aria-hidden />
                   {tI18n('createPoint.container')}
                 </h2>
-                <div className="group relative">
-                  <HelpCircle className="h-4 w-4 text-text-muted cursor-help" />
-                  <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute left-0 top-6 z-10 w-80 p-4 bg-popover border border-border rounded-lg shadow-lg">
+                <div className="group relative sm:ml-1">
+                  <HelpCircle className="h-4 w-4 text-text-muted cursor-help" aria-hidden />
+                  <div className="invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-opacity absolute left-0 top-6 z-10 w-[min(100vw-2rem,20rem)] max-sm:right-0 max-sm:left-auto sm:w-80 p-4 bg-popover border border-border rounded-lg shadow-lg">
                     <p className="font-medium text-sm text-text-main mb-2">Что такое контейнер?</p>
                     <p className="text-sm text-text-muted mb-3">
                       Контейнер — это коллекция или группа точек. Например: "Мои любимые места", "Рестораны Минска", "Достопримечательности".
@@ -512,7 +535,7 @@ export default function CreatePointPage() {
                   <select
                     value={formData.containerId}
                     onChange={(e) => handleInputChange("containerId", e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-text-main focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:outline-none focus:ring-2 focus:ring-ring sm:py-2 sm:text-sm touch-target sm:min-h-0"
                     required
                   >
                     <option value="">{tI18n('createPoint.selectContainerOption')}</option>
@@ -529,7 +552,7 @@ export default function CreatePointPage() {
                     type="button"
                     variant="outline"
                     onClick={() => setShowCreateContainer(!showCreateContainer)}
-                    className="gap-2"
+                    className="gap-2 w-full touch-target sm:w-auto"
                   >
                     <Plus className="h-4 w-4" />
                     {tI18n('createPoint.createNewContainer')}
@@ -537,7 +560,7 @@ export default function CreatePointPage() {
                 </div>
 
                 {showCreateContainer && (
-                  <div className="border border-border rounded-lg p-4 bg-muted/50">
+                  <div className="border border-border rounded-lg p-2 bg-muted/50 sm:p-4">
                     <h3 className="font-medium text-text-main mb-3">{tI18n('createPoint.newContainer')}</h3>
                     <div className="space-y-3">
                       <Input
@@ -546,6 +569,7 @@ export default function CreatePointPage() {
                         onChange={(e) => setNewContainerTitle(e.target.value)}
                         placeholder="Название контейнера"
                         maxLength={100}
+                        className="text-base sm:text-sm"
                       />
                       <Textarea
                         value={newContainerDescription}
@@ -553,13 +577,15 @@ export default function CreatePointPage() {
                         placeholder="Описание контейнера (необязательно)"
                         maxLength={500}
                         rows={2}
+                        className="text-base sm:text-sm"
                       />
-                      <div className="flex gap-2">
+                      <div className="flex flex-col gap-2 sm:flex-row">
                         <Button
                           type="button"
                           onClick={handleCreateContainer}
                           disabled={createContainerMutation.isPending || !newContainerTitle.trim()}
                           size="sm"
+                          className="w-full touch-target sm:w-auto sm:min-h-0"
                         >
                           {createContainerMutation.isPending ? "Создание..." : "Создать"}
                         </Button>
@@ -568,6 +594,7 @@ export default function CreatePointPage() {
                           variant="outline"
                           onClick={() => setShowCreateContainer(false)}
                           size="sm"
+                          className="w-full touch-target sm:w-auto sm:min-h-0"
                         >
                           {tI18n('createPoint.cancel')}
                         </Button>
@@ -577,13 +604,14 @@ export default function CreatePointPage() {
                 )}
               </div>
             </div>
+            </div>
 
             {/* Submit Button */}
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-3 px-1 sm:flex-row sm:px-0">
               <Button
                 type="submit"
                 disabled={createPointMutation.isPending}
-                className="flex-1"
+                className="flex-1 touch-target w-full sm:w-auto"
               >
                 {createPointMutation.isPending ? "Создание..." : "Создать точку"}
               </Button>
@@ -592,6 +620,7 @@ export default function CreatePointPage() {
                 variant="outline"
                 onClick={() => router.back()}
                 disabled={createPointMutation.isPending}
+                className="touch-target w-full sm:w-auto sm:min-w-[8rem]"
               >
                 {tI18n('createPoint.cancel')}
               </Button>

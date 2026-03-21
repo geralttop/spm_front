@@ -39,7 +39,9 @@
     "viewProfile": "Паглядзець профіль",
     "startSearching": "Пачніце пошук карыстальнікаў",
     "enterUsername": "Увядзіце імя карыстальніка або email для пошуку",
-    "tryDifferent": "Паспрабуйце іншы пошукавы запыт"
+    "tryDifferent": "Паспрабуйце іншы пошукавы запыт",
+    "view": "Профіль",
+    "clear": "Ачысціць поле"
   },
   "sidebar": {
     "home": "Галоўная",
@@ -317,6 +319,7 @@
     "categories": "Катэгорыі",
     "containers": "Кантэйнеры",
     "yourLocation": "Ваша месца",
+    "closeFilters": "Зачыніць фільтры",
     "mapLoading": "Загрузка карты…"
   },
   "mapStyles": {

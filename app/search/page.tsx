@@ -45,8 +45,9 @@ export default function SearchPage() {
     setHasSearched(true);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleSearch();
     }
   };
@@ -62,45 +63,52 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
-      <div className="container mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+    <div className="min-h-[100dvh] bg-background py-3 pb-[max(1rem,env(safe-area-inset-bottom))] pt-[max(0.75rem,env(safe-area-inset-top))] sm:py-6 lg:py-8">
+      <div className="container mx-auto max-w-2xl px-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] sm:px-6 lg:px-8">
         <div className="space-y-4 sm:space-y-6">
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-2xl sm:text-3xl font-bold text-text-main mb-2">
+            <h1 className="mb-2 text-xl font-bold text-text-main sm:text-2xl md:text-3xl">
               {t("search.title")}
             </h1>
-            <p className="text-sm sm:text-base text-text-muted">
+            <p className="text-sm leading-snug text-text-muted sm:text-base sm:leading-normal">
               {t("search.description")}
             </p>
           </div>
 
           {/* Search Bar */}
           <div className="relative">
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-text-muted" />
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch sm:gap-2">
+              <div className="relative min-w-0 flex-1">
+                <Search
+                  className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted sm:h-5 sm:w-5"
+                  aria-hidden
+                />
                 <Input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   placeholder={t("search.placeholder")}
-                  className="pl-10 pr-10 touch-target"
+                  autoComplete="off"
+                  className="touch-target pl-10 pr-10 text-base sm:text-sm"
                 />
                 {searchQuery && (
                   <button
+                    type="button"
                     onClick={handleClearSearch}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-main p-1 touch-target"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-2 text-text-muted transition-colors hover:bg-accent hover:text-text-main touch-target"
+                    aria-label={t("search.clear")}
                   >
                     <X className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
                 )}
               </div>
-              <Button 
+              <Button
+                type="button"
                 onClick={handleSearch}
                 disabled={!searchQuery.trim() || isSearching}
-                className="w-full sm:w-auto touch-target"
+                className="w-full shrink-0 touch-target sm:w-auto sm:min-w-[7rem]"
               >
                 {isSearching ? "..." : t("search.button")}
               </Button>
@@ -110,27 +118,27 @@ export default function SearchPage() {
           {/* Search Results */}
           <div className="space-y-4">
             {isSearching && (
-              <div className="text-center py-8 text-text-muted">
-                <div className="animate-pulse">
-                  {t("search.searching")}
-                </div>
+              <div className="py-6 text-center text-text-muted sm:py-8">
+                <div className="animate-pulse text-sm sm:text-base">{t("search.searching")}</div>
               </div>
             )}
 
             {!isSearching && hasSearched && filteredResults.length === 0 && (
-              <div className="text-center py-8 sm:py-12 text-text-muted">
-                <User className="h-10 w-10 sm:h-12 sm:w-12 mx-auto mb-4 opacity-50" />
+              <div className="py-8 text-center text-text-muted sm:py-12">
+                <User className="mx-auto mb-4 h-10 w-10 opacity-50 sm:h-12 sm:w-12" aria-hidden />
                 <p className="text-base sm:text-lg">{t("search.noResults")}</p>
-                <p className="text-sm mt-2">{t("search.tryDifferent")}</p>
+                <p className="mx-auto mt-2 max-w-md px-1 text-sm leading-relaxed">
+                  {t("search.tryDifferent")}
+                </p>
               </div>
             )}
 
             {!isSearching && filteredResults.length > 0 && (
               <div className="space-y-3 sm:space-y-4">
-                <h2 className="text-base sm:text-lg font-semibold text-text-main">
+                <h2 className="text-base font-semibold text-text-main sm:text-lg">
                   {t("search.results")} ({filteredResults.length})
                 </h2>
-                
+
                 <div className="space-y-3">
                   {filteredResults.map((user) => (
                     <UserCard
@@ -138,7 +146,12 @@ export default function SearchPage() {
                       user={user}
                       onClick={() => handleUserClick(user.id)}
                       actionButton={
-                        <Button variant="outline" size="sm" className="touch-target">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          className="w-full min-h-[44px] touch-target sm:w-auto sm:min-h-9"
+                        >
                           <span className="hidden sm:inline">{t("search.viewProfile")}</span>
                           <span className="sm:hidden">{t("search.view")}</span>
                         </Button>
@@ -150,10 +163,10 @@ export default function SearchPage() {
             )}
 
             {!hasSearched && (
-              <div className="text-center py-12 sm:py-16 text-text-muted">
-                <Search className="h-12 w-12 sm:h-16 sm:w-16 mx-auto mb-4 opacity-30" />
-                <p className="text-base sm:text-lg mb-2">{t("search.startSearching")}</p>
-                <p className="text-sm">{t("search.enterUsername")}</p>
+              <div className="py-10 text-center text-text-muted sm:py-16">
+                <Search className="mx-auto mb-4 h-11 w-11 opacity-30 sm:h-16 sm:w-16" aria-hidden />
+                <p className="mb-2 text-base sm:text-lg">{t("search.startSearching")}</p>
+                <p className="max-w-md mx-auto text-sm leading-relaxed px-1">{t("search.enterUsername")}</p>
               </div>
             )}
           </div>

@@ -49,6 +49,8 @@ export interface Category {
   id: number;
   name: string;
   color: string;
+  /** null — системная категория (сидер), иначе владелец */
+  authorId?: number | null;
 }
 
 export interface Container {
@@ -56,6 +58,8 @@ export interface Container {
   title: string;
   description?: string;
   createdAt: string;
+  /** null — системный контейнер (сидер), иначе владелец */
+  authorId?: number | null;
 }
 
 export interface CreateCategoryRequest {

@@ -56,31 +56,31 @@ export function ManagePoints() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {points.map((point) => (
-        <div key={point.id} className="flex items-center justify-between p-4 bg-surface rounded-lg border border-border">
-          <div className="flex-1">
-            <h3 className="font-medium text-text-main">{point.name}</h3>
+        <div key={point.id} className="flex items-start sm:items-center justify-between gap-2 p-3 sm:p-4 bg-surface rounded-lg border border-border">
+          <div className="flex-1 min-w-0">
+            <h3 className="font-medium text-text-main text-sm sm:text-base truncate">{point.name}</h3>
             {point.description && (
-              <p className="text-sm text-text-muted mt-1">{point.description}</p>
+              <p className="text-xs sm:text-sm text-text-muted mt-1 line-clamp-2">{point.description}</p>
             )}
-            <div className="flex gap-4 mt-2 text-sm text-text-muted">
+            <div className="flex flex-wrap gap-x-3 gap-y-1 sm:gap-4 mt-2 text-xs sm:text-sm text-text-muted">
               <span className="flex items-center gap-1">
-                <Tag className="h-4 w-4" />
-                {point.category?.name || t('manage.managePoints.noCategory')}
+                <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                <span className="truncate max-w-[120px] sm:max-w-none">{point.category?.name || t('manage.managePoints.noCategory')}</span>
               </span>
               <span className="flex items-center gap-1">
-                <Package className="h-4 w-4" />
-                {point.container?.title || t('manage.managePoints.noContainer')}
+                <Package className="h-3.5 w-3.5 sm:h-4 sm:w-4 shrink-0" />
+                <span className="truncate max-w-[120px] sm:max-w-none">{point.container?.title || t('manage.managePoints.noContainer')}</span>
               </span>
             </div>
           </div>
           <button
             onClick={() => handleDeletePoint(point.id)}
-            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors shrink-0"
             title={t('manage.managePoints.delete')}
           >
-            <Trash2 className="h-5 w-5" />
+            <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
           </button>
         </div>
       ))}
