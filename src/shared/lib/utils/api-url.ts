@@ -12,7 +12,7 @@ export function getApiUrl(): string {
   if (typeof window !== 'undefined') {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    return `${protocol}//${hostname}:3000`;
+    return `${protocol}//${hostname}`;
   }
 
   return 'http://localhost:3000';
