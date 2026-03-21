@@ -43,7 +43,7 @@ export default function AdminPage() {
         
         // Проверяем роль admin
         if (userData.role !== 'admin') {
-          alert('У вас нет прав доступа к админке');
+          alert(t('admin.noAccess'));
           router.push('/');
           return;
         }

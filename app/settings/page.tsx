@@ -87,7 +87,7 @@ export default function SettingsPage() {
     try {
       await toggleMapStyle(styleKey);
     } catch (error) {
-      alert('Ошибка при обновлении настроек');
+      alert(t('settings.updateError'));
     }
   };
 
@@ -96,17 +96,17 @@ export default function SettingsPage() {
       try {
         await setDefaultMapStyle(styleKey);
       } catch (error) {
-        alert('Ошибка при обновлении настроек');
+        alert(t('settings.updateError'));
       }
     }
   };
 
   const handleReset = async () => {
-    if (confirm("Вы уверены, что хотите сбросить настройки к значениям по умолчанию?")) {
+    if (confirm(t('settings.resetConfirm'))) {
       try {
         await resetToDefaults();
       } catch (error) {
-        alert('Ошибка при сбросе настроек');
+        alert(t('settings.resetError'));
       }
     }
   };
@@ -157,7 +157,7 @@ export default function SettingsPage() {
     try {
       await resetSidebarOrder();
     } catch (error) {
-      alert('Ошибка при сбросе порядка меню');
+      alert(t('settings.resetSidebarError'));
     }
   };
 

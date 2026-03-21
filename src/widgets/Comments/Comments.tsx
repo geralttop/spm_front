@@ -108,7 +108,6 @@ export function Comments({ pointId }: CommentsProps) {
   };
 
   const handleReportSuccess = () => {
-    console.log('Жалоба на комментарий успешно отправлена');
     setReportingCommentId(null);
   };
 

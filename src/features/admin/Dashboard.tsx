@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Title } from 'react-admin';
+import { useTranslation } from 'react-i18next';
 import {
   BarChart,
   Bar,
@@ -59,6 +60,7 @@ const ChartCard = ({ title, children }: { title: string; children: React.ReactNo
 );
 
 export const Dashboard = () => {
+  const { t } = useTranslation('common');
   const [stats, setStats] = useState<any>(null);
   const [reportsStats, setReportsStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -132,7 +134,7 @@ export const Dashboard = () => {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">Загрузка статистики...</div>
+        <div className="text-xl">{t('admin.dashboard.loadingStats')}</div>
       </div>
     );
   }
@@ -140,63 +142,63 @@ export const Dashboard = () => {
   if (!stats) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">Не удалось загрузить статистику</div>
+        <div className="text-xl">{t('admin.dashboard.loadFailed')}</div>
       </div>
     );
   }
 
   // Данные для круговой диаграммы пользователей
   const usersData = [
-    { name: 'Администраторы', value: stats.users.admins },
-    { name: 'Пользователи', value: stats.users.regularUsers },
+    { name: t('admin.dashboard.admins'), value: stats.users.admins },
+    { name: t('admin.dashboard.regularUsers'), value: stats.users.regularUsers },
   ];
 
   const verificationData = [
-    { name: 'Подтверждены', value: stats.users.verified },
-    { name: 'Не подтверждены', value: stats.users.unverified },
+    { name: t('admin.dashboard.verified'), value: stats.users.verified },
+    { name: t('admin.dashboard.unverified'), value: stats.users.unverified },
   ];
 
   // Данные для статистики жалоб
   const reportsStatusData = reportsStats ? [
-    { name: 'Ожидают', value: reportsStats.pending },
-    { name: 'Решены', value: reportsStats.resolved },
-    { name: 'Отклонены', value: reportsStats.dismissed },
+    { name: t('admin.dashboard.pending'), value: reportsStats.pending },
+    { name: t('admin.dashboard.resolved'), value: reportsStats.resolved },
+    { name: t('admin.dashboard.dismissed'), value: reportsStats.dismissed },
   ] : [];
 
   const reportsTypeData = reportsStats ? [
-    { name: 'Точки', value: reportsStats.byType.point },
-    { name: 'Комментарии', value: reportsStats.byType.comment },
-    { name: 'Пользователи', value: reportsStats.byType.user },
+    { name: t('admin.dashboard.pointsType'), value: reportsStats.byType.point },
+    { name: t('admin.dashboard.commentsType'), value: reportsStats.byType.comment },
+    { name: t('admin.dashboard.usersType'), value: reportsStats.byType.user },
   ] : [];
 
   return (
     <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Панель управления</h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">{t('admin.dashboard.title')}</h1>
 
       {/* Карточки с общей статистикой */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard 
-          title="Пользователи" 
+          title={t('admin.dashboard.users')} 
           value={stats.totals.users} 
           color="text-blue-600" 
         />
         <StatCard 
-          title="Точки" 
+          title={t('admin.dashboard.points')} 
           value={stats.totals.points} 
           color="text-green-600" 
         />
         <StatCard 
-          title="Категории" 
+          title={t('admin.dashboard.categories')} 
           value={stats.totals.categories} 
           color="text-yellow-600" 
         />
         <StatCard 
-          title="Контейнеры" 
+          title={t('admin.dashboard.containers')} 
           value={stats.totals.containers} 
           color="text-purple-600" 
         />
         <StatCard 
-          title="Жалобы" 
+          title={t('admin.dashboard.reports')} 
           value={reportsStats?.total || 0} 
           color="text-red-600" 
         />
@@ -206,17 +208,17 @@ export const Dashboard = () => {
       {reportsStats && reportsStats.total > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <StatCard 
-            title="Ожидают рассмотрения" 
+            title={t('admin.dashboard.pendingReview')} 
             value={reportsStats.pending} 
             color="text-orange-600" 
           />
           <StatCard 
-            title="Решены" 
+            title={t('admin.dashboard.resolved')} 
             value={reportsStats.resolved} 
             color="text-green-600" 
           />
           <StatCard 
-            title="Отклонены" 
+            title={t('admin.dashboard.dismissed')} 
             value={reportsStats.dismissed} 
             color="text-gray-600" 
           />
@@ -226,7 +228,7 @@ export const Dashboard = () => {
       {/* Графики */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Распределение пользователей по ролям */}
-        <ChartCard title="Распределение по ролям">
+        <ChartCard title={t('admin.dashboard.roleDistribution')}>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -254,7 +256,7 @@ export const Dashboard = () => {
         </ChartCard>
 
         {/* Подтверждение email */}
-        <ChartCard title="Подтверждение Email">
+        <ChartCard title={t('admin.dashboard.emailVerification')}>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -282,7 +284,7 @@ export const Dashboard = () => {
         </ChartCard>
 
         {/* Точки по категориям */}
-        <ChartCard title="Точки по категориям">
+        <ChartCard title={t('admin.dashboard.pointsByCategory')}>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={stats.pointsByCategory}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -290,7 +292,7 @@ export const Dashboard = () => {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#8884d8" name="Количество точек">
+              <Bar dataKey="count" fill="#8884d8" name={t('admin.dashboard.pointCount')}>
                 {stats.pointsByCategory.map((entry: any, index: number) => (
                   <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
                 ))}
@@ -300,7 +302,7 @@ export const Dashboard = () => {
         </ChartCard>
 
         {/* Топ авторов */}
-        <ChartCard title="Топ-10 авторов точек">
+        <ChartCard title={t('admin.dashboard.topAuthors')}>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={stats.pointsByAuthor} layout="vertical">
               <CartesianGrid strokeDasharray="3 3" />
@@ -308,7 +310,7 @@ export const Dashboard = () => {
               <YAxis dataKey="username" type="category" width={100} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#82ca9d" name="Точек создано" />
+              <Bar dataKey="count" fill="#82ca9d" name={t('admin.dashboard.pointsCreated')} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -316,7 +318,7 @@ export const Dashboard = () => {
         {/* График создания точек по времени */}
         {stats.pointsTimeline.length > 0 && (
           <div className="lg:col-span-2">
-            <ChartCard title="Создание точек за последние 30 дней">
+            <ChartCard title={t('admin.dashboard.pointsTimeline')}>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={stats.pointsTimeline}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -328,7 +330,7 @@ export const Dashboard = () => {
                     type="monotone"
                     dataKey="count"
                     stroke="#8884d8"
-                    name="Точек создано"
+                    name={t('admin.dashboard.pointsCreated')}
                     strokeWidth={2}
                   />
                 </LineChart>
@@ -340,7 +342,7 @@ export const Dashboard = () => {
         {/* Статистика жалоб */}
         {reportsStats && reportsStats.total > 0 && (
           <>
-            <ChartCard title="Статус жалоб">
+            <ChartCard title={t('admin.dashboard.reportsStatus')}>
               <ResponsiveContainer width="100%" height={300}>
                 <PieChart>
                   <Pie
@@ -367,7 +369,7 @@ export const Dashboard = () => {
               </ResponsiveContainer>
             </ChartCard>
 
-            <ChartCard title="Жалобы по типам">
+            <ChartCard title={t('admin.dashboard.reportsByType')}>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={reportsTypeData}>
                   <CartesianGrid strokeDasharray="3 3" />
@@ -375,7 +377,7 @@ export const Dashboard = () => {
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="value" fill="#ef4444" name="Количество жалоб" />
+                  <Bar dataKey="value" fill="#ef4444" name={t('admin.dashboard.reportsCount')} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>

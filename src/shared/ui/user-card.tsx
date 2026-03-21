@@ -24,7 +24,6 @@ export function UserCard({ user, onClick, actionButton, showReportButton = true 
   const canReport = showReportButton && accessToken && currentUserId && currentUserId !== user.id;
 
   const handleReportSuccess = () => {
-    console.log('Жалоба на пользователя успешно отправлена');
   };
   return (
     <div

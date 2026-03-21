@@ -22,32 +22,39 @@ import {
 import { Card, CardContent, Typography, Box, Chip } from '@mui/material';
 import { Flag, User, MessageSquare, MapPin, CheckCircle, XCircle } from 'lucide-react';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-// Choices для статусов и причин
-const statusChoices = [
-  { id: 'pending', name: 'Ожидает рассмотрения' },
-  { id: 'reviewed', name: 'Рассмотрена' },
-  { id: 'resolved', name: 'Решена' },
-  { id: 'dismissed', name: 'Отклонена' },
-];
+const useReportChoices = () => {
+  const { t } = useTranslation('common');
+  
+  const statusChoices = [
+    { id: 'pending', name: t('admin.reports.statusPending') },
+    { id: 'reviewed', name: t('admin.reports.statusReviewed') },
+    { id: 'resolved', name: t('admin.reports.statusResolved') },
+    { id: 'dismissed', name: t('admin.reports.statusDismissed') },
+  ];
 
-const reasonChoices = [
-  { id: 'spam', name: 'Спам' },
-  { id: 'inappropriate', name: 'Неподходящий контент' },
-  { id: 'harassment', name: 'Домогательства' },
-  { id: 'fake', name: 'Фейковая информация' },
-  { id: 'other', name: 'Другое' },
-];
+  const reasonChoices = [
+    { id: 'spam', name: t('admin.reports.reasonSpam') },
+    { id: 'inappropriate', name: t('admin.reports.reasonInappropriate') },
+    { id: 'harassment', name: t('admin.reports.reasonHarassment') },
+    { id: 'fake', name: t('admin.reports.reasonFake') },
+    { id: 'other', name: t('admin.reports.reasonOther') },
+  ];
 
-const typeChoices = [
-  { id: 'point', name: 'Точка' },
-  { id: 'comment', name: 'Комментарий' },
-  { id: 'user', name: 'Пользователь' },
-];
+  const typeChoices = [
+    { id: 'point', name: t('admin.reports.typePoint') },
+    { id: 'comment', name: t('admin.reports.typeComment') },
+    { id: 'user', name: t('admin.reports.typeUser') },
+  ];
+
+  return { statusChoices, reasonChoices, typeChoices };
+};
 
 // Компонент для отображения типа жалобы с иконкой
 const ReportTypeField = () => {
   const record = useRecordContext();
+  const { typeChoices } = useReportChoices();
   if (!record) return null;
 
   const getIcon = (type: string) => {
@@ -75,16 +82,17 @@ const ReportTypeField = () => {
 // Компонент для отображения объекта жалобы
 const ReportTargetField = () => {
   const record = useRecordContext();
+  const { t } = useTranslation('common');
   if (!record) return null;
 
   if (record.point) {
     return (
       <Box>
         <Typography variant="body2" fontWeight="bold">
-          {record.point.name || 'Неизвестная точка'}
+          {record.point.name || t('admin.reports.unknownPoint')}
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          Автор: {record.point.author?.username || 'Неизвестен'}
+          {t('admin.reports.authorLabel')}: {record.point.author?.username || t('admin.reports.unknown')}
         </Typography>
       </Box>
     );
@@ -96,11 +104,11 @@ const ReportTargetField = () => {
         <Typography variant="body2" fontWeight="bold">
           {record.comment.content ? 
             `${record.comment.content.substring(0, 50)}...` : 
-            'Комментарий удален'
+            t('admin.reports.commentDeleted')
           }
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          Автор: {record.comment.author?.username || 'Неизвестен'}
+          {t('admin.reports.authorLabel')}: {record.comment.author?.username || t('admin.reports.unknown')}
         </Typography>
       </Box>
     );
@@ -110,13 +118,13 @@ const ReportTargetField = () => {
     return (
       <Box>
         <Typography variant="body2" fontWeight="bold">
-          {record.reportedUser.username || 'Неизвестный пользователь'}
+          {record.reportedUser.username || t('admin.reports.unknownUser')}
         </Typography>
         <Typography variant="caption" color="textSecondary">
-          Email: {record.reportedUser.email || 'Не указан'}
+          Email: {record.reportedUser.email || t('admin.reports.emailNotProvided')}
         </Typography>
         {record.reportedUser.isBlocked && (
-          <Chip label="Заблокирован" color="error" size="small" />
+          <Chip label={t('admin.reports.blocked')} color="error" size="small" />
         )}
       </Box>
     );
@@ -130,6 +138,7 @@ const ReportActions = () => {
   const record = useRecordContext();
   const dataProvider = useDataProvider();
   const refresh = useRefresh();
+  const { t } = useTranslation('common');
   const [loading, setLoading] = React.useState(false);
 
   if (!record || record.status !== 'pending') return null;
@@ -142,7 +151,6 @@ const ReportActions = () => {
     
     setLoading(true);
     try {
-      // Используем dataProvider напрямую для полного контроля
       await dataProvider.update('reports', {
         id: record.id,
         data: { action },
@@ -160,7 +168,7 @@ const ReportActions = () => {
   return (
     <Box display="flex" gap={1}>
       <Button
-        label="Заблокировать"
+        label={t('admin.reports.block')}
         onClick={(e) => handleResolve(e, 'block')}
         color="warning"
         size="small"
@@ -169,7 +177,7 @@ const ReportActions = () => {
         <XCircle size={16} />
       </Button>
       <Button
-        label="Отклонить"
+        label={t('admin.reports.dismiss')}
         onClick={(e) => handleResolve(e, 'dismiss')}
         color="success"
         size="small"
@@ -181,101 +189,106 @@ const ReportActions = () => {
   );
 };
 
-// Список жалоб
-export const ReportList = () => (
-  <List
-    sort={{ field: 'createdAt', order: 'DESC' }}
-    filters={[
-      <SelectInput source="status" choices={statusChoices} alwaysOn />,
-      <SelectInput source="type" choices={typeChoices} />,
-      <SelectInput source="reason" choices={reasonChoices} />,
-    ]}
-  >
-    <Datagrid rowClick="show" bulkActionButtons={false}>
-      <TextField source="id" label="ID" />
-      <FunctionField 
-        label="Тип" 
-        render={() => <ReportTypeField />}
-      />
-      <SelectField source="reason" choices={reasonChoices} label="Причина" />
-      <ChipField 
-        source="status" 
-        label="Статус"
-        sx={{
-          '&.chip-pending': { backgroundColor: '#fff3cd', color: '#856404' },
-          '&.chip-reviewed': { backgroundColor: '#d1ecf1', color: '#0c5460' },
-          '&.chip-resolved': { backgroundColor: '#d4edda', color: '#155724' },
-          '&.chip-dismissed': { backgroundColor: '#f8d7da', color: '#721c24' },
-        }}
-      />
-      <TextField source="reporter.username" label="Жалобщик" />
-      <FunctionField 
-        label="Объект жалобы" 
-        render={() => <ReportTargetField />}
-      />
-      <DateField source="createdAt" label="Дата создания" showTime />
-      <FunctionField 
-        label="Действия" 
-        render={() => <ReportActions />}
-        onClick={(e: React.MouseEvent) => e.stopPropagation()}
-      />
-    </Datagrid>
-  </List>
-);
+export const ReportList = () => {
+  const { t } = useTranslation('common');
+  const { statusChoices, reasonChoices, typeChoices } = useReportChoices();
+  return (
+    <List
+      sort={{ field: 'createdAt', order: 'DESC' }}
+      filters={[
+        <SelectInput source="status" choices={statusChoices} alwaysOn />,
+        <SelectInput source="type" choices={typeChoices} />,
+        <SelectInput source="reason" choices={reasonChoices} />,
+      ]}
+    >
+      <Datagrid rowClick="show" bulkActionButtons={false}>
+        <TextField source="id" label={t('admin.reports.id')} />
+        <FunctionField 
+          label={t('admin.reports.type')} 
+          render={() => <ReportTypeField />}
+        />
+        <SelectField source="reason" choices={reasonChoices} label={t('admin.reports.reason')} />
+        <ChipField 
+          source="status" 
+          label={t('admin.reports.status')}
+          sx={{
+            '&.chip-pending': { backgroundColor: '#fff3cd', color: '#856404' },
+            '&.chip-reviewed': { backgroundColor: '#d1ecf1', color: '#0c5460' },
+            '&.chip-resolved': { backgroundColor: '#d4edda', color: '#155724' },
+            '&.chip-dismissed': { backgroundColor: '#f8d7da', color: '#721c24' },
+          }}
+        />
+        <TextField source="reporter.username" label={t('admin.reports.reporter')} />
+        <FunctionField 
+          label={t('admin.reports.target')} 
+          render={() => <ReportTargetField />}
+        />
+        <DateField source="createdAt" label={t('admin.reports.createdAt')} showTime />
+        <FunctionField 
+          label={t('admin.reports.actions')} 
+          render={() => <ReportActions />}
+          onClick={(e: React.MouseEvent) => e.stopPropagation()}
+        />
+      </Datagrid>
+    </List>
+  );
+};
 
-// Просмотр жалобы
-export const ReportShow = () => (
-  <Show>
-    <SimpleShowLayout>
-      <TextField source="id" label="ID жалобы" />
-      <SelectField source="type" choices={typeChoices} label="Тип жалобы" />
-      <SelectField source="reason" choices={reasonChoices} label="Причина" />
-      <TextField source="description" label="Описание" />
-      <ChipField source="status" label="Статус" />
-      <DateField source="createdAt" label="Дата создания" showTime />
-      <DateField source="updatedAt" label="Дата обновления" showTime />
-      
-      {/* Информация о жалобщике */}
-      <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-        Информация о жалобщике
-      </Typography>
-      <TextField source="reporter.username" label="Имя пользователя" />
-      <TextField source="reporter.email" label="Email" />
-      
-      {/* Информация об объекте жалобы */}
-      <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-        Объект жалобы
-      </Typography>
-      <FunctionField 
-        label="Детали" 
-        render={() => <ReportTargetField />}
-      />
-      
-      {/* Информация об обработке */}
-      <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-        Обработка
-      </Typography>
-      <FunctionField 
-        source="reviewedBy.username" 
-        label="Обработал"
-        render={(record: any) => record?.reviewedBy?.username || 'Не обработано'}
-      />
-      <TextField source="adminNotes" label="Заметки администратора" />
-      
-      {/* Действия */}
-      <Box sx={{ mt: 2 }}>
-        <ReportActions />
-      </Box>
-    </SimpleShowLayout>
-  </Show>
-);
+export const ReportShow = () => {
+  const { t } = useTranslation('common');
+  const { statusChoices, reasonChoices, typeChoices } = useReportChoices();
+  return (
+    <Show>
+      <SimpleShowLayout>
+        <TextField source="id" label={t('admin.reports.reportId')} />
+        <SelectField source="type" choices={typeChoices} label={t('admin.reports.reportType')} />
+        <SelectField source="reason" choices={reasonChoices} label={t('admin.reports.reason')} />
+        <TextField source="description" label={t('admin.reports.description')} />
+        <ChipField source="status" label={t('admin.reports.status')} />
+        <DateField source="createdAt" label={t('admin.reports.createdAt')} showTime />
+        <DateField source="updatedAt" label={t('admin.reports.updatedAt')} showTime />
+        
+        <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+          {t('admin.reports.reporterInfo')}
+        </Typography>
+        <TextField source="reporter.username" label={t('admin.reports.username')} />
+        <TextField source="reporter.email" label={t('admin.reports.email')} />
+        
+        <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+          {t('admin.reports.reportTarget')}
+        </Typography>
+        <FunctionField 
+          label={t('admin.reports.details')} 
+          render={() => <ReportTargetField />}
+        />
+        
+        <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+          {t('admin.reports.processing')}
+        </Typography>
+        <FunctionField 
+          source="reviewedBy.username" 
+          label={t('admin.reports.processedBy')}
+          render={(record: any) => record?.reviewedBy?.username || t('admin.reports.notProcessed')}
+        />
+        <TextField source="adminNotes" label={t('admin.reports.adminNotes')} />
+        
+        <Box sx={{ mt: 2 }}>
+          <ReportActions />
+        </Box>
+      </SimpleShowLayout>
+    </Show>
+  );
+};
 
-// Редактирование жалобы
-export const ReportEdit = () => (
-  <Edit>
-    <SimpleForm>
-      <SelectInput source="status" choices={statusChoices} label="Статус" />
-      <TextInput source="adminNotes" label="Заметки администратора" multiline rows={4} />
-    </SimpleForm>
-  </Edit>
-);
+export const ReportEdit = () => {
+  const { t } = useTranslation('common');
+  const { statusChoices } = useReportChoices();
+  return (
+    <Edit>
+      <SimpleForm>
+        <SelectInput source="status" choices={statusChoices} label={t('admin.reports.status')} />
+        <TextInput source="adminNotes" label={t('admin.reports.adminNotes')} multiline rows={4} />
+      </SimpleForm>
+    </Edit>
+  );
+};

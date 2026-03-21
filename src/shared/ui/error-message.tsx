@@ -1,4 +1,5 @@
 import { AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { Button } from "./button";
 
 interface ErrorMessageProps {
@@ -8,6 +9,7 @@ interface ErrorMessageProps {
 }
 
 export function ErrorMessage({ message, onRetry, fullScreen = false }: ErrorMessageProps) {
+  const { t } = useTranslation('common');
   const containerClass = fullScreen
     ? "flex min-h-screen items-center justify-center bg-background"
     : "flex items-center justify-center py-8";
@@ -19,7 +21,7 @@ export function ErrorMessage({ message, onRetry, fullScreen = false }: ErrorMess
         <p className="text-text-main mb-4">{message}</p>
         {onRetry && (
           <Button onClick={onRetry} variant="outline">
-            Попробовать снова
+            {t('common.retry')}
           </Button>
         )}
       </div>

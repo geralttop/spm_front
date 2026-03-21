@@ -13,7 +13,11 @@
     "loading": "Загрузка...",
     "error": "Памылка",
     "errorLoading": "Памылка загрузкі даных",
-    "errorUpdating": "Памылка пры абнаўленні"
+    "errorUpdating": "Памылка пры абнаўленні",
+    "close": "Зачыніць",
+    "closeMenu": "Зачыніць меню",
+    "openMenu": "Адкрыць меню",
+    "retry": "Паспрабаваць яшчэ раз"
   },
   "navigation": {
     "home": "Галоўная",
@@ -166,6 +170,20 @@
       "save": "Захаваць",
       "cancel": "Скасаванне"
     },
+    "avatar": {
+      "upload": "Загрузіць аватарку",
+      "change": "Змяніць",
+      "delete": "Выдаліць",
+      "uploadSuccess": "Аватарка паспяхова загружана",
+      "deleteSuccess": "Аватарка паспяхова выдалена",
+      "uploadError": "Памылка загрузкі аватаркі",
+      "deleteError": "Памылка выдалення аватаркі",
+      "invalidType": "Можна загружаць толькі выявы",
+      "tooLarge": "Памер файла не павінен перавышаць 5MB",
+      "crop": "Абрэзаць выяву",
+      "zoom": "Маштаб",
+      "apply": "Прымяніць"
+    },
     "profileHeader": {
       "edit": "Рэдагаваць"
     },
@@ -223,7 +241,8 @@
     "emptyDescription": "Падпішыцеся на іншых карыстальнікаў або стварыце свае кропкі, каб убачыць іх тут",
     "loading": "Загрузка...",
     "allLoaded": "Усе кропкі загружаны",
-    "refresh": "Абнавіць"
+    "refresh": "Абнавіць",
+    "loadError": "Памылка загрузкі стужкі"
   },
   "manage": {
     "title": "Кіраванне данымі",
@@ -292,12 +311,126 @@
   },
   "admin": {
     "loading": "Загрузка...",
+    "noAccess": "У вас няма правоў доступу да адмінкі",
+    "dashboard": {
+      "title": "Панэль кіравання",
+      "loadingStats": "Загрузка статыстыкі...",
+      "loadFailed": "Не атрымалася загрузіць статыстыку",
+      "users": "Карыстальнікі",
+      "points": "Кропкі",
+      "categories": "Катэгорыі",
+      "containers": "Кантэйнеры",
+      "reports": "Скаргі",
+      "pendingReview": "Чакаюць разгляду",
+      "resolved": "Вырашаны",
+      "dismissed": "Адхілены",
+      "roleDistribution": "Размеркаванне па ролях",
+      "admins": "Адміністратары",
+      "regularUsers": "Карыстальнікі",
+      "emailVerification": "Пацверджанне Email",
+      "verified": "Пацверджаны",
+      "unverified": "Не пацверджаны",
+      "pointsByCategory": "Кропкі па катэгорыях",
+      "pointCount": "Колькасць кропак",
+      "topAuthors": "Топ-10 аўтараў кропак",
+      "pointsCreated": "Кропак створана",
+      "pointsTimeline": "Стварэнне кропак за апошнія 30 дзён",
+      "reportsStatus": "Статус скарг",
+      "reportsByType": "Скаргі па тыпах",
+      "reportsCount": "Колькасць скарг",
+      "pending": "Чакаюць",
+      "pointsType": "Кропкі",
+      "commentsType": "Каментарыі",
+      "usersType": "Карыстальнікі"
+    },
+    "nav": {
+      "users": "Карыстальнікі",
+      "points": "Кропкі",
+      "categories": "Катэгорыі",
+      "containers": "Кантэйнеры",
+      "reports": "Скаргі"
+    },
+    "users": {
+      "id": "ID",
+      "username": "Імя карыстальніка",
+      "email": "Email",
+      "role": "Роля",
+      "emailVerified": "Email пацверджаны",
+      "createdAt": "Дата стварэння",
+      "roleUser": "Карыстальнік",
+      "roleAdmin": "Адміністратар",
+      "bio": "Біяграфія",
+      "updatedAt": "Дата абнаўлення"
+    },
+    "points": {
+      "id": "ID",
+      "name": "Назва",
+      "address": "Адрас",
+      "author": "Аўтар",
+      "category": "Катэгорыя",
+      "container": "Кантэйнер",
+      "createdAt": "Дата стварэння",
+      "description": "Апісанне",
+      "longitude": "Даўгата",
+      "latitude": "Шырата"
+    },
     "categories": {
       "id": "ID",
       "name": "Назва",
       "color": "Колер",
       "author": "Аўтар",
       "system": "Сістэмная"
+    },
+    "containers": {
+      "id": "ID",
+      "title": "Назва",
+      "description": "Апісанне",
+      "author": "Аўтар",
+      "createdAt": "Дата стварэння"
+    },
+    "reports": {
+      "id": "ID",
+      "type": "Тып",
+      "reason": "Прычына",
+      "status": "Статус",
+      "reporter": "Скаржнік",
+      "target": "Аб'ект скаргі",
+      "createdAt": "Дата стварэння",
+      "actions": "Дзеянні",
+      "statusPending": "Чакае разгляду",
+      "statusReviewed": "Разгледжана",
+      "statusResolved": "Вырашана",
+      "statusDismissed": "Адхілена",
+      "reasonSpam": "Спам",
+      "reasonInappropriate": "Неадпаведны кантэнт",
+      "reasonHarassment": "Дамаганні",
+      "reasonFake": "Фэйкавая інфармацыя",
+      "reasonOther": "Іншае",
+      "typePoint": "Кропка",
+      "typeComment": "Каментар",
+      "typeUser": "Карыстальнік",
+      "unknownPoint": "Невядомая кропка",
+      "authorLabel": "Аўтар",
+      "unknown": "Невядомы",
+      "commentDeleted": "Каментар выдалены",
+      "unknownUser": "Невядомы карыстальнік",
+      "emailNotProvided": "Не пазначаны",
+      "blocked": "Заблакаваны",
+      "block": "Заблакаваць",
+      "dismiss": "Адхіліць",
+      "reportId": "ID скаргі",
+      "reportType": "Тып скаргі",
+      "description": "Апісанне",
+      "updatedAt": "Дата абнаўлення",
+      "reporterInfo": "Інфармацыя пра скаржніка",
+      "username": "Імя карыстальніка",
+      "email": "Email",
+      "reportTarget": "Аб'ект скаргі",
+      "details": "Дэталі",
+      "processing": "Апрацоўка",
+      "processedBy": "Апрацаваў",
+      "notProcessed": "Не апрацавана",
+      "adminNotes": "Нататкі адміністратара"
     }
   },
   "map": {
@@ -320,7 +453,17 @@
     "containers": "Кантэйнеры",
     "yourLocation": "Ваша месца",
     "closeFilters": "Зачыніць фільтры",
-    "mapLoading": "Загрузка карты…"
+    "mapLoading": "Загрузка карты…",
+    "controls": {
+      "zoomIn": "Наблізіць",
+      "zoomOut": "Аддаліць",
+      "findLocation": "Знайсці маю пазіцыю",
+      "fullscreen": "Поўнаэкранны рэжым",
+      "resetNorth": "Скінуць кірунак на поўнач"
+    },
+    "popup": {
+      "close": "Зачыніць"
+    }
   },
   "mapStyles": {
     "openstreet": {
@@ -397,7 +540,20 @@
     "selectContainerOption": "Выберыце кантэйнер",
     "createNewContainer": "Стварыць новы кантэйнер",
     "newContainer": "Новы кантэйнер",
-    "mapGeoLoading": "Вызначаем пазіцыю…"
+    "mapGeoLoading": "Вызначаем пазіцыю…",
+    "creating": "Стварэнне...",
+    "create": "Стварыць",
+    "createPointButton": "Стварыць кропку",
+    "pointName": "Назва кропкі *",
+    "pointNamePlaceholder": "Увядзіце назву кропкі",
+    "descriptionPlaceholder": "Апішыце гэту кропку...",
+    "categoryNamePlaceholder": "Назва катэгорыі",
+    "containerTitlePlaceholder": "Назва кантэйнера",
+    "containerDescriptionPlaceholder": "Апісанне кантэйнера (неабавязкова)",
+    "containerHelpTitle": "Што такое кантэйнер?",
+    "containerHelpText": "Кантэйнер — гэта калекцыя або група кропак. Напрыклад: «Мае любімыя месцы», «Рэстараны Мінска», «Славутасці».",
+    "containerVsCategoryTitle": "Адрозненне ад катэгорый:",
+    "containerVsCategoryText": "Катэгорыя — гэта тып кропкі (рэстаран, парк, музей). Кантэйнер — гэта ваша асабістая калекцыя кропак любых тыпаў."
   },
   "settings": {
     "title": "Налады",
@@ -418,7 +574,11 @@
     "setAsDefault": "Зрабіць асноўным",
     "mapStylesTip": "Выбраныя стылі карт будуць даступныя пры стварэнні кропак і прагляду картак кропак. Стыль па змаўчанні будзе выкарыстоўвацца пры першым адкрыцці карты. Рэкамендуецца пакінуць уключанымі базавыя стылі для лепшага вопыту.",
     "otherSettings": "Іншыя налады",
-    "otherSettingsDescription": "Дадатковыя налады будуць дададзены ў будучых абнаўленнях"
+    "otherSettingsDescription": "Дадатковыя налады будуць дададзены ў будучых абнаўленнях",
+    "updateError": "Памылка пры абнаўленні налад",
+    "resetConfirm": "Вы ўпэўнены, што хочаце скінуць налады да значэнняў па змаўчанні?",
+    "resetError": "Памылка пры скідзе налад",
+    "resetSidebarError": "Памылка пры скідзе парадку меню"
   },
   "editPoint": {
     "title": "Рэдагаваць кропку",

@@ -14,52 +14,65 @@ import {
   DeleteButton,
   ReferenceField,
 } from 'react-admin';
+import { useTranslation } from 'react-i18next';
 
-export const ContainerList = () => (
-  <List>
-    <Datagrid>
-      <TextField source="id" label="ID" />
-      <TextField source="title" label="Название" />
-      <TextField source="description" label="Описание" />
-      <ReferenceField source="authorId" reference="users" label="Автор">
-        <TextField source="username" />
-      </ReferenceField>
-      <DateField source="createdAt" label="Дата создания" showTime />
-      <EditButton />
-      <ShowButton />
-      <DeleteButton />
-    </Datagrid>
-  </List>
-);
+export const ContainerList = () => {
+  const { t } = useTranslation('common');
+  return (
+    <List>
+      <Datagrid>
+        <TextField source="id" label={t('admin.containers.id')} />
+        <TextField source="title" label={t('admin.containers.title')} />
+        <TextField source="description" label={t('admin.containers.description')} />
+        <ReferenceField source="authorId" reference="users" label={t('admin.containers.author')}>
+          <TextField source="username" />
+        </ReferenceField>
+        <DateField source="createdAt" label={t('admin.containers.createdAt')} showTime />
+        <EditButton />
+        <ShowButton />
+        <DeleteButton />
+      </Datagrid>
+    </List>
+  );
+};
 
-export const ContainerEdit = () => (
-  <Edit>
-    <SimpleForm>
-      <TextInput source="title" label="Название" />
-      <TextInput source="description" label="Описание" multiline />
-    </SimpleForm>
-  </Edit>
-);
+export const ContainerEdit = () => {
+  const { t } = useTranslation('common');
+  return (
+    <Edit>
+      <SimpleForm>
+        <TextInput source="title" label={t('admin.containers.title')} />
+        <TextInput source="description" label={t('admin.containers.description')} multiline />
+      </SimpleForm>
+    </Edit>
+  );
+};
 
-export const ContainerCreate = () => (
-  <Create>
-    <SimpleForm>
-      <TextInput source="title" label="Название" />
-      <TextInput source="description" label="Описание" multiline />
-    </SimpleForm>
-  </Create>
-);
+export const ContainerCreate = () => {
+  const { t } = useTranslation('common');
+  return (
+    <Create>
+      <SimpleForm>
+        <TextInput source="title" label={t('admin.containers.title')} />
+        <TextInput source="description" label={t('admin.containers.description')} multiline />
+      </SimpleForm>
+    </Create>
+  );
+};
 
-export const ContainerShow = () => (
-  <Show>
-    <SimpleShowLayout>
-      <TextField source="id" label="ID" />
-      <TextField source="title" label="Название" />
-      <TextField source="description" label="Описание" />
-      <ReferenceField source="authorId" reference="users" label="Автор">
-        <TextField source="username" />
-      </ReferenceField>
-      <DateField source="createdAt" label="Дата создания" showTime />
-    </SimpleShowLayout>
-  </Show>
-);
+export const ContainerShow = () => {
+  const { t } = useTranslation('common');
+  return (
+    <Show>
+      <SimpleShowLayout>
+        <TextField source="id" label={t('admin.containers.id')} />
+        <TextField source="title" label={t('admin.containers.title')} />
+        <TextField source="description" label={t('admin.containers.description')} />
+        <ReferenceField source="authorId" reference="users" label={t('admin.containers.author')}>
+          <TextField source="username" />
+        </ReferenceField>
+        <DateField source="createdAt" label={t('admin.containers.createdAt')} showTime />
+      </SimpleShowLayout>
+    </Show>
+  );
+};

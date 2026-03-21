@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface BaseModalProps {
   isOpen: boolean;
@@ -13,6 +14,7 @@ interface BaseModalProps {
 }
 
 export function BaseModal({ isOpen, onClose, title, children, footer, size = 'md' }: BaseModalProps) {
+  const { t } = useTranslation('common');
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -49,7 +51,7 @@ export function BaseModal({ isOpen, onClose, title, children, footer, size = 'md
           <button
             onClick={onClose}
             className="p-1 rounded-lg hover:bg-surface transition-colors"
-            aria-label="Закрыть"
+            aria-label={t('common.close')}
           >
             <X className="h-5 w-5 text-text-muted" />
           </button>
