@@ -186,8 +186,8 @@ export function useCreatePointForm() {
     });
   };
 
-  const handlePhotoFilesSelected = (fileList: FileList | null) => {
-    enqueueFiles(fileList, {
+  const handlePhotoFilesSelected = (files: File[]) => {
+    enqueueFiles(files, {
       maxTotal: MAX_POINT_PHOTOS,
       currentDraftCount: photoDrafts.length,
     });

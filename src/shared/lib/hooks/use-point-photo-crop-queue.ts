@@ -11,15 +11,15 @@ export function usePointPhotoCropQueue() {
   const [queue, setQueue] = useState<PendingCrop[]>([]);
 
   const enqueueFiles = useCallback(
-    (fileList: FileList | null, options: { maxTotal: number; currentDraftCount: number }) => {
-      if (!fileList?.length) return;
+    (files: File[], options: { maxTotal: number; currentDraftCount: number }) => {
+      if (!files.length) return;
       setQueue((q) => {
         const remaining = options.maxTotal - options.currentDraftCount - q.length;
         if (remaining <= 0) return q;
-        const files = Array.from(fileList)
+        const toAdd = files
           .filter((f) => f.type.startsWith("image/"))
           .slice(0, remaining);
-        const newItems: PendingCrop[] = files.map((f) => ({
+        const newItems: PendingCrop[] = toAdd.map((f) => ({
           id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
           src: URL.createObjectURL(f),
         }));

@@ -164,8 +164,17 @@ export default function CreatePointPage() {
                     className="sr-only"
                     disabled={isSubmitting || photoDrafts.length >= maxPointPhotos}
                     onChange={(e) => {
-                      void handlePhotoFilesSelected(e.target.files);
-                      e.target.value = "";
+                      const input = e.currentTarget;
+                      const picked =
+                        input.files && input.files.length > 0
+                          ? Array.from(input.files)
+                          : [];
+                      if (picked.length) {
+                        handlePhotoFilesSelected(picked);
+                      }
+                      queueMicrotask(() => {
+                        input.value = "";
+                      });
                     }}
                   />
                   {tI18n("createPoint.pickPhotos")}

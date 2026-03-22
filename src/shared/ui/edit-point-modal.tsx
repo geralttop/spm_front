@@ -97,8 +97,8 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
     setMarkerPosition((prev) => ({ ...prev, lat: value }));
   };
 
-  const handlePhotoFilesChosen = (fileList: FileList | null) => {
-    enqueueFiles(fileList, {
+  const handlePhotoFilesChosen = (files: File[]) => {
+    enqueueFiles(files, {
       maxTotal: MAX_POINT_PHOTOS,
       currentDraftCount: sortedPhotos.length,
     });
@@ -401,8 +401,17 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
                 className="sr-only"
                 disabled={loading || uploadPhotosMutation.isPending || sortedPhotos.length >= MAX_POINT_PHOTOS}
                 onChange={(e) => {
-                  handlePhotoFilesChosen(e.target.files);
-                  e.target.value = '';
+                  const input = e.currentTarget;
+                  const picked =
+                    input.files && input.files.length > 0
+                      ? Array.from(input.files)
+                      : [];
+                  if (picked.length) {
+                    handlePhotoFilesChosen(picked);
+                  }
+                  queueMicrotask(() => {
+                    input.value = '';
+                  });
                 }}
               />
               {t('editPoint.addPhotos')}
