@@ -1,11 +1,23 @@
 import { apiClient } from "./client";
 import { BaseApi } from "./base-api";
 
+export interface PointPhoto {
+  id: string;
+  url: string;
+  sortOrder: number;
+  width?: number | null;
+  height?: number | null;
+}
+
 export interface Point {
   id: string;
   name: string;
   description?: string;
   address?: string;
+  /** Соотношение сторон медиа-блока (карта + фото), из первого снимка */
+  mediaAspectW?: number | null;
+  mediaAspectH?: number | null;
+  photos?: PointPhoto[];
   coords: {
     type: "Point";
     coordinates: [number, number]; // [lng, lat]
@@ -82,10 +94,49 @@ export interface UpdateContainerRequest {
   description?: string;
 }
 
+export interface UploadPointPhotosPayload {
+  files: File[];
+  /** Размеры в том же порядке, что и files */
+  dimensions: { width: number; height: number }[];
+}
+
 // Points API with custom getAll method
 class PointsApi extends BaseApi<Point, CreatePointRequest, UpdatePointRequest> {
   async getAll(params?: Record<string, any>): Promise<Point[]> {
     const response = await apiClient.get<Point[]>("/points", { params });
+    return response.data;
+  }
+
+  async uploadPhotos(
+    pointId: string,
+    payload: UploadPointPhotosPayload
+  ): Promise<Point> {
+    const formData = new FormData();
+    for (const f of payload.files) {
+      formData.append("files", f);
+    }
+    formData.append("dimensions", JSON.stringify(payload.dimensions));
+    const response = await apiClient.post<Point>(
+      `/points/${pointId}/photos`,
+      formData,
+      {
+        transformRequest: [
+          (data, headers) => {
+            if (typeof FormData !== "undefined" && data instanceof FormData) {
+              delete (headers as Record<string, unknown>)["Content-Type"];
+            }
+            return data;
+          },
+        ],
+      }
+    );
+    return response.data;
+  }
+
+  async deletePointPhoto(pointId: string, photoId: string): Promise<Point> {
+    const response = await apiClient.delete<Point>(
+      `/points/${pointId}/photos/${photoId}`
+    );
     return response.data;
   }
 }

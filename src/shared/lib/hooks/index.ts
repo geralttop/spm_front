@@ -7,6 +7,10 @@ export { useTranslation } from './useTranslation';
 export { useFollowManagement } from './use-follow-management';
 export { useUserModal } from './use-user-modal';
 export { useInView } from './use-in-view';
+export {
+  usePointPhotoCropQueue,
+  type PendingCrop,
+} from './use-point-photo-crop-queue';
 export { useFavoriteStatus } from './use-favorite-status';
 export {
   useSharedUserLocation,

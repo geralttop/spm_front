@@ -8,7 +8,8 @@ import { useSettingsStore } from "@/shared/lib/store/settings-store";
 import { useTranslation, useMapSettingsQuery } from "@/shared/lib/hooks";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
-import { ArrowLeft, Map, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban } from "lucide-react";
+import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MENU_ICONS = {
   feed: Rss,
@@ -46,13 +47,16 @@ export default function SettingsPage() {
   const { t, currentLanguage, changeLanguage } = useTranslation();
   const { data: mapSettings } = useMapSettingsQuery();
   
+  const queryClient = useQueryClient();
   const {
     availableMapStyles,
     defaultMapStyle,
+    pointCardInitialView,
     isLoading: settingsLoading,
     loadSettings,
     toggleMapStyle,
     setDefaultMapStyle,
+    setPointCardInitialView,
     resetToDefaults,
   } = useSettingsStore();
 
@@ -158,6 +162,15 @@ export default function SettingsPage() {
       await resetSidebarOrder();
     } catch (error) {
       alert(t('settings.resetSidebarError'));
+    }
+  };
+
+  const handlePointCardInitialView = async (view: "map" | "photos") => {
+    try {
+      await setPointCardInitialView(view);
+      await queryClient.invalidateQueries({ queryKey: ["mapSettings"] });
+    } catch {
+      alert(t("settings.updateError"));
     }
   };
 
@@ -387,14 +400,44 @@ export default function SettingsPage() {
             </div>
           </div>
 
-          {/* Future Settings Sections */}
-          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm opacity-50">
-            <h2 className="text-lg sm:text-xl font-semibold text-text-main mb-3 sm:mb-4">
-              {t('settings.otherSettings')}
-            </h2>
-            <p className="text-xs sm:text-sm text-text-muted">
-              {t('settings.otherSettingsDescription')}
-            </p>
+          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
+            <div className="mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
+                <Images className="h-5 w-5 shrink-0" />
+                {t("settings.pointCardTitle")}
+              </h2>
+              <p className="text-xs sm:text-sm text-text-muted mt-1">
+                {t("settings.pointCardDescription")}
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
+              <button
+                type="button"
+                onClick={() => void handlePointCardInitialView("map")}
+                disabled={settingsLoading}
+                className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors sm:min-h-0 sm:flex-none sm:px-6 ${
+                  pointCardInitialView === "map"
+                    ? "border-primary bg-primary/10 text-text-main"
+                    : "border-border bg-background text-text-main hover:bg-accent"
+                }`}
+              >
+                <Map className="h-4 w-4 shrink-0" aria-hidden />
+                {t("settings.pointCardFirstMap")}
+              </button>
+              <button
+                type="button"
+                onClick={() => void handlePointCardInitialView("photos")}
+                disabled={settingsLoading}
+                className={`flex min-h-11 flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-2.5 text-sm font-medium transition-colors sm:min-h-0 sm:flex-none sm:px-6 ${
+                  pointCardInitialView === "photos"
+                    ? "border-primary bg-primary/10 text-text-main"
+                    : "border-border bg-background text-text-main hover:bg-accent"
+                }`}
+              >
+                <Images className="h-4 w-4 shrink-0" aria-hidden />
+                {t("settings.pointCardFirstPhotos")}
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -17,8 +17,23 @@ import {
   useCreatePointMutation,
   useCreateCategoryMutation,
   useCreateContainerMutation,
+  useUploadPointPhotosMutation,
 } from "@/shared/lib/hooks/queries";
 import { type MapStyleKey } from "@/shared/config/map-styles";
+import {
+  POINT_CROP_OUTPUT_HEIGHT,
+  POINT_CROP_OUTPUT_WIDTH,
+} from "@/shared/lib/point-media-aspect";
+import { usePointPhotoCropQueue } from "@/shared/lib/hooks/use-point-photo-crop-queue";
+
+const MAX_POINT_PHOTOS = 10;
+
+export type PhotoDraft = {
+  file: File;
+  previewUrl: string;
+  width: number;
+  height: number;
+};
 
 export function useCreatePointForm() {
   const router = useRouter();
@@ -29,8 +44,17 @@ export function useCreatePointForm() {
   const { data: categories = [], isLoading: categoriesLoading } = useCategoriesQuery();
   const { data: containers = [], isLoading: containersLoading } = useContainersQuery();
   const createPointMutation = useCreatePointMutation();
+  const uploadPhotosMutation = useUploadPointPhotosMutation();
   const createCategoryMutation = useCreateCategoryMutation();
   const createContainerMutation = useCreateContainerMutation();
+
+  const [photoDrafts, setPhotoDrafts] = useState<PhotoDraft[]>([]);
+  const {
+    activeCrop,
+    enqueueFiles,
+    shiftQueue,
+    clearQueue,
+  } = usePointPhotoCropQueue();
 
   const [showCreateContainer, setShowCreateContainer] = useState(false);
   const [newContainerTitle, setNewContainerTitle] = useState("");
@@ -151,12 +175,71 @@ export function useCreatePointForm() {
     );
   };
 
+  const removePhotoDraft = (index: number) => {
+    setPhotoDrafts((prev) => {
+      const next = [...prev];
+      const [removed] = next.splice(index, 1);
+      if (removed?.previewUrl) {
+        URL.revokeObjectURL(removed.previewUrl);
+      }
+      return next;
+    });
+  };
+
+  const handlePhotoFilesSelected = (fileList: FileList | null) => {
+    enqueueFiles(fileList, {
+      maxTotal: MAX_POINT_PHOTOS,
+      currentDraftCount: photoDrafts.length,
+    });
+  };
+
+  const handleCroppedPhoto = (blob: Blob) => {
+    const file = new File([blob], `point-photo-${Date.now()}.jpg`, {
+      type: "image/jpeg",
+    });
+    const previewUrl = URL.createObjectURL(file);
+    setPhotoDrafts((prev) => [
+      ...prev,
+      {
+        file,
+        previewUrl,
+        width: POINT_CROP_OUTPUT_WIDTH,
+        height: POINT_CROP_OUTPUT_HEIGHT,
+      },
+    ]);
+    shiftQueue();
+  };
+
+  const handleCropModalClose = () => {
+    shiftQueue();
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name.trim() || !formData.containerId || !formData.categoryId) return;
 
     createPointMutation.mutate(formData, {
-      onSuccess: () => {
+      onSuccess: async (point) => {
+        if (photoDrafts.length > 0) {
+          try {
+            await uploadPhotosMutation.mutateAsync({
+              pointId: point.id,
+              payload: {
+                files: photoDrafts.map((p) => p.file),
+                dimensions: photoDrafts.map((p) => ({
+                  width: p.width,
+                  height: p.height,
+                })),
+              },
+            });
+          } catch {
+            // точка уже создана; пользователь может добавить фото при редактировании
+          } finally {
+            photoDrafts.forEach((p) => URL.revokeObjectURL(p.previewUrl));
+            setPhotoDrafts([]);
+            clearQueue();
+          }
+        }
         setTimeout(() => router.push("/profile"), 1500);
       },
     });
@@ -176,6 +259,14 @@ export function useCreatePointForm() {
     categoriesLoading,
     containersLoading,
     createPointMutation,
+    uploadPhotosMutation,
+    photoDrafts,
+    removePhotoDraft,
+    handlePhotoFilesSelected,
+    activeCrop,
+    handleCroppedPhoto,
+    handleCropModalClose,
+    maxPointPhotos: MAX_POINT_PHOTOS,
     createCategoryMutation,
     createContainerMutation,
 
@@ -198,5 +289,8 @@ export function useCreatePointForm() {
     handleCreateCategory,
     handleCreateContainer,
     handleSubmit,
+    isSubmitting:
+      createPointMutation.isPending ||
+      uploadPhotosMutation.isPending,
   };
 }

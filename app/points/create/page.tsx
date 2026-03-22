@@ -16,7 +16,8 @@ import {
   CreateCategoryInline,
   CreateContainerInline,
 } from "@/features/points";
-import { MapPin, Tag, Package, ArrowLeft, Map as MapIcon, HelpCircle, Loader2 } from "lucide-react";
+import { PointPhotoCropModal } from "@/shared/ui/point-photo-crop-modal";
+import { MapPin, Tag, Package, ArrowLeft, Map as MapIcon, HelpCircle, Loader2, ImagePlus, X } from "lucide-react";
 import { MAP_STYLES } from "@/shared/config/map-styles";
 
 export default function CreatePointPage() {
@@ -37,6 +38,13 @@ export default function CreatePointPage() {
     categoriesLoading,
     containersLoading,
     createPointMutation,
+    photoDrafts,
+    removePhotoDraft,
+    handlePhotoFilesSelected,
+    activeCrop,
+    handleCroppedPhoto,
+    handleCropModalClose,
+    maxPointPhotos,
     createCategoryMutation,
     createContainerMutation,
     showCreateCategory,
@@ -56,6 +64,7 @@ export default function CreatePointPage() {
     handleCreateCategory,
     handleCreateContainer,
     handleSubmit,
+    isSubmitting,
   } = useCreatePointForm();
 
   const loading = categoriesLoading || containersLoading;
@@ -69,6 +78,15 @@ export default function CreatePointPage() {
   }
 
   return (
+    <>
+    {activeCrop && (
+      <PointPhotoCropModal
+        key={activeCrop.id}
+        imageSrc={activeCrop.src}
+        onCropComplete={handleCroppedPhoto}
+        onClose={handleCropModalClose}
+      />
+    )}
     <div className="min-h-[100dvh] bg-background pb-[max(1rem,env(safe-area-inset-bottom))]">
       <div className="mx-auto max-w-4xl px-0 py-4 sm:px-6 sm:py-6 lg:px-8">
         <div className="space-y-6">
@@ -131,6 +149,61 @@ export default function CreatePointPage() {
               </div>
             </div>
 
+            <div className="px-1 sm:px-0">
+              <div className="rounded-lg border border-border bg-card p-2 shadow-sm sm:p-6">
+                <h2 className="mb-2 text-base font-semibold text-text-main sm:mb-3 sm:text-lg flex items-center gap-2">
+                  <ImagePlus className="h-5 w-5 shrink-0" aria-hidden />
+                  {tI18n("createPoint.photosTitle")}
+                </h2>
+                <p className="mb-3 text-sm text-text-muted">{tI18n("createPoint.photosHint")}</p>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2.5 text-sm font-medium text-text-main transition-colors hover:bg-accent touch-target sm:py-2">
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/gif,image/webp"
+                    multiple
+                    className="sr-only"
+                    disabled={isSubmitting || photoDrafts.length >= maxPointPhotos}
+                    onChange={(e) => {
+                      void handlePhotoFilesSelected(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                  {tI18n("createPoint.pickPhotos")}
+                </label>
+                <p className="mt-2 text-xs text-text-muted">
+                  {tI18n("createPoint.photosCount", {
+                    current: photoDrafts.length,
+                    max: maxPointPhotos,
+                  })}
+                </p>
+                {photoDrafts.length > 0 && (
+                  <ul className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+                    {photoDrafts.map((draft, index) => (
+                      <li
+                        key={`${draft.previewUrl}-${index}`}
+                        className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted/30"
+                      >
+                        <img
+                          src={draft.previewUrl}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removePhotoDraft(index)}
+                          disabled={isSubmitting}
+                          className="absolute right-1 top-1 flex min-h-9 min-w-9 items-center justify-center rounded-full bg-background/90 text-text-main shadow border border-border hover:bg-accent"
+                          aria-label={tI18n("createPoint.removePhoto")}
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
+
             <div className="space-y-4">
               <div className="px-1 sm:px-0">
                 <h2 className="mb-3 flex items-center gap-2 text-base font-semibold text-text-main sm:mb-4 sm:text-lg">
@@ -160,7 +233,7 @@ export default function CreatePointPage() {
               </div>
 
               <div className="-mx-3 sm:mx-0">
-                <div className="h-[min(52vh,320px)] w-full overflow-hidden border-y border-border bg-muted/20 sm:h-[320px] md:h-[400px] sm:rounded-lg sm:border-x">
+                <div className="aspect-[4/3] w-full overflow-hidden border-y border-border bg-muted/20 sm:rounded-lg sm:border-x">
                   {!geoInitDone ? (
                     <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 px-1 text-text-muted">
                       <Loader2 className="h-8 w-8 shrink-0 animate-spin text-primary" aria-hidden />
@@ -390,10 +463,10 @@ export default function CreatePointPage() {
             <div className="flex flex-col gap-3 px-1 sm:flex-row sm:px-0">
               <Button
                 type="submit"
-                disabled={createPointMutation.isPending}
+                disabled={isSubmitting}
                 className="flex-1 touch-target w-full sm:w-auto"
               >
-                {createPointMutation.isPending
+                {isSubmitting
                   ? tI18n("createPoint.creating")
                   : tI18n("createPoint.createPointButton")}
               </Button>
@@ -401,7 +474,7 @@ export default function CreatePointPage() {
                 type="button"
                 variant="outline"
                 onClick={() => router.back()}
-                disabled={createPointMutation.isPending}
+                disabled={isSubmitting}
                 className="touch-target w-full sm:w-auto sm:min-w-[8rem]"
               >
                 {tI18n("createPoint.cancel")}
@@ -411,5 +484,6 @@ export default function CreatePointPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }

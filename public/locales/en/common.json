@@ -536,7 +536,22 @@
     "containerHelpTitle": "What is a container?",
     "containerHelpText": "A container is a collection or group of points. For example: \"My Favorite Places\", \"Minsk Restaurants\", \"Attractions\".",
     "containerVsCategoryTitle": "Difference from categories:",
-    "containerVsCategoryText": "A category is a type of point (restaurant, park, museum). A container is your personal collection of points of any type."
+    "containerVsCategoryText": "A category is a type of point (restaurant, park, museum). A container is your personal collection of points of any type.",
+    "photosTitle": "Photos",
+    "photosHint": "Optional. Each image is cropped to 4:3 (same as the map on the card).",
+    "pickPhotos": "Choose photos",
+    "photosCount": "{{current}} / {{max}} photos",
+    "removePhoto": "Remove photo"
+  },
+  "pointCard": {
+    "showMap": "Show map",
+    "showPhotos": "Show photos"
+  },
+  "pointPhoto": {
+    "cropTitle": "Crop photo (4:3)",
+    "zoom": "Zoom",
+    "apply": "Apply",
+    "cancel": "Cancel"
   },
   "settings": {
     "title": "Settings",
@@ -561,7 +576,11 @@
     "updateError": "Error updating settings",
     "resetConfirm": "Are you sure you want to reset settings to defaults?",
     "resetError": "Error resetting settings",
-    "resetSidebarError": "Error resetting menu order"
+    "resetSidebarError": "Error resetting menu order",
+    "pointCardTitle": "Point card",
+    "pointCardDescription": "What to show first when a point has photos: the map or the gallery.",
+    "pointCardFirstMap": "Map first",
+    "pointCardFirstPhotos": "Photos first"
   },
   "favorites": {
     "addToFavorites": "Add to favorites",
@@ -599,7 +618,14 @@
     "editTitle": "Edit point",
     "coordinatesLabel": "Coordinates",
     "coordinatesHint": "Drag the marker on the map or enter coordinates manually",
-    "mapPopupTitle": "Point coordinates"
+    "mapPopupTitle": "Point coordinates",
+    "photos": "Photos",
+    "photosHint": "Add or remove photos. New images are cropped to 4:3.",
+    "addPhotos": "Add photos",
+    "photosCount": "{{current}} / {{max}} photos",
+    "deletePhoto": "Delete photo",
+    "errorPhotosUpload": "Could not upload photos",
+    "errorPhotoDelete": "Could not delete photo"
   },
   "errors": {
     "unexpected": {

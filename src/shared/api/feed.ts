@@ -1,10 +1,14 @@
 import { apiClient } from "./client";
+import type { PointPhoto } from "./points";
 
 export interface FeedPoint {
   id: string;
   name: string;
   description: string;
   address: string;
+  mediaAspectW?: number | null;
+  mediaAspectH?: number | null;
+  photos?: PointPhoto[];
   coords: {
     type: "Point";
     coordinates: [number, number];

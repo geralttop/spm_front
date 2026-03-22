@@ -7,5 +7,7 @@ export {
   usePointsQuery,
   usePointQuery,
   useCreatePointMutation,
+  useUploadPointPhotosMutation,
+  useDeletePointPhotoMutation,
 } from "@/shared/lib/hooks/queries/use-points-query";
 

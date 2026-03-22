@@ -553,7 +553,22 @@
     "containerHelpTitle": "Qu'est-ce qu'un conteneur ?",
     "containerHelpText": "Un conteneur est une collection ou un groupe de points. Par exemple : « Mes lieux préférés », « Restaurants de Minsk », « Attractions ».",
     "containerVsCategoryTitle": "Différence avec les catégories :",
-    "containerVsCategoryText": "Une catégorie est un type de point (restaurant, parc, musée). Un conteneur est votre collection personnelle de points de tous types."
+    "containerVsCategoryText": "Une catégorie est un type de point (restaurant, parc, musée). Un conteneur est votre collection personnelle de points de tous types.",
+    "photosTitle": "Photos",
+    "photosHint": "Facultatif. La première image définit le format de la carte et du carrousel sur la fiche du point.",
+    "pickPhotos": "Choisir des photos",
+    "photosCount": "{{current}} / {{max}} photos",
+    "removePhoto": "Supprimer la photo"
+  },
+  "pointCard": {
+    "showMap": "Afficher la carte",
+    "showPhotos": "Afficher les photos"
+  },
+  "pointPhoto": {
+    "cropTitle": "Recadrer la photo (4:3)",
+    "zoom": "Zoom",
+    "apply": "Appliquer",
+    "cancel": "Annuler"
   },
   "settings": {
     "title": "Paramètres",
@@ -578,7 +593,11 @@
     "updateError": "Erreur de mise à jour des paramètres",
     "resetConfirm": "Êtes-vous sûr de vouloir réinitialiser les paramètres par défaut ?",
     "resetError": "Erreur de réinitialisation des paramètres",
-    "resetSidebarError": "Erreur de réinitialisation de l'ordre du menu"
+    "resetSidebarError": "Erreur de réinitialisation de l'ordre du menu",
+    "pointCardTitle": "Fiche du point",
+    "pointCardDescription": "Quoi afficher en premier lorsqu'un point a des photos : la carte ou la galerie.",
+    "pointCardFirstMap": "Carte d'abord",
+    "pointCardFirstPhotos": "Photos d'abord"
   },
   "editPoint": {
     "title": "Modifier le point",
@@ -599,7 +618,14 @@
     "editTitle": "Modifier le point",
     "coordinatesLabel": "Coordonnées",
     "coordinatesHint": "Faites glisser le marqueur sur la carte ou saisissez les coordonnées manuellement",
-    "mapPopupTitle": "Coordonnées du point"
+    "mapPopupTitle": "Coordonnées du point",
+    "photos": "Photos",
+    "photosHint": "Ajouter ou supprimer des photos. Les nouvelles images sont recadrées en 4:3.",
+    "addPhotos": "Ajouter des photos",
+    "photosCount": "{{current}} / {{max}} photos",
+    "deletePhoto": "Supprimer la photo",
+    "errorPhotosUpload": "Échec du téléversement des photos",
+    "errorPhotoDelete": "Échec de la suppression de la photo"
   },
   "errors": {
     "unexpected": {

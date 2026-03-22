@@ -55,8 +55,10 @@ export function useTranslation() {
     }
   };
 
-  // Возвращаем функцию-заглушку для t, если i18n еще не готов
-  const safeT = ready ? t : ((key: string) => key.split(".").pop() || key);
+  const safeT = ready
+    ? t
+    : ((key: string, options?: Record<string, unknown>) =>
+        (key.split(".").pop() || key) as string);
 
   return {
     t: safeT,

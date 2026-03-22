@@ -1,10 +1,22 @@
-import { useState, useEffect } from 'react';
-import { X, MapPin, Map as MapIcon } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { X, MapPin, Map as MapIcon, ImagePlus, Trash2 } from 'lucide-react';
 import { pointsApi, categoriesApi, containersApi, type Point, type Category, type Container } from '@/shared/api';
+import {
+  useUploadPointPhotosMutation,
+  useDeletePointPhotoMutation,
+} from '@/shared/lib/hooks/queries';
+import { usePointPhotoCropQueue } from '@/shared/lib/hooks/use-point-photo-crop-queue';
+import {
+  POINT_CROP_OUTPUT_HEIGHT,
+  POINT_CROP_OUTPUT_WIDTH,
+} from '@/shared/lib/point-media-aspect';
+import { PointPhotoCropModal } from '@/shared/ui/point-photo-crop-modal';
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from '@/shared/ui/map';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { MAP_STYLES, type MapStyleKey } from '@/shared/config/map-styles';
 import { useTranslation } from '@/shared/lib/hooks';
+
+const MAX_POINT_PHOTOS = 10;
 
 interface EditPointModalProps {
   isOpen: boolean;
@@ -16,6 +28,20 @@ interface EditPointModalProps {
 export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointModalProps) {
   const { t } = useTranslation();
   const { availableMapStyles, defaultMapStyle } = useSettingsStore();
+  const uploadPhotosMutation = useUploadPointPhotosMutation();
+  const deletePhotoMutation = useDeletePointPhotoMutation();
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '';
+  const {
+    activeCrop,
+    enqueueFiles,
+    shiftQueue,
+    clearQueue,
+  } = usePointPhotoCropQueue();
+
+  const sortedPhotos = useMemo(
+    () => [...(point.photos ?? [])].sort((a, b) => a.sortOrder - b.sortOrder),
+    [point.photos],
+  );
 
   const [name, setName] = useState(point.name);
   const [description, setDescription] = useState(point.description || '');
@@ -36,8 +62,10 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   useEffect(() => {
     if (isOpen) {
       loadData();
+    } else {
+      clearQueue();
     }
-  }, [isOpen]);
+  }, [isOpen, clearQueue]);
 
   const loadData = async () => {
     try {
@@ -67,6 +95,52 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   const handleLatChange = (value: number) => {
     setLat(value);
     setMarkerPosition((prev) => ({ ...prev, lat: value }));
+  };
+
+  const handlePhotoFilesChosen = (fileList: FileList | null) => {
+    enqueueFiles(fileList, {
+      maxTotal: MAX_POINT_PHOTOS,
+      currentDraftCount: sortedPhotos.length,
+    });
+  };
+
+  const handleCroppedPhotoUpload = async (blob: Blob) => {
+    const file = new File([blob], `point-photo-${Date.now()}.jpg`, {
+      type: 'image/jpeg',
+    });
+    setError('');
+    try {
+      await uploadPhotosMutation.mutateAsync({
+        pointId: point.id,
+        payload: {
+          files: [file],
+          dimensions: [
+            { width: POINT_CROP_OUTPUT_WIDTH, height: POINT_CROP_OUTPUT_HEIGHT },
+          ],
+        },
+      });
+      onSuccess?.();
+    } catch (err: unknown) {
+      console.error('Error uploading photos:', err);
+      setError(t('editPoint.errorPhotosUpload'));
+    } finally {
+      shiftQueue();
+    }
+  };
+
+  const handleCropModalDismiss = () => {
+    shiftQueue();
+  };
+
+  const handleDeletePhoto = async (photoId: string) => {
+    setError('');
+    try {
+      await deletePhotoMutation.mutateAsync({ pointId: point.id, photoId });
+      onSuccess?.();
+    } catch (err: unknown) {
+      console.error('Error deleting photo:', err);
+      setError(t('editPoint.errorPhotoDelete'));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -101,6 +175,15 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   if (!isOpen) return null;
 
   return (
+    <>
+    {activeCrop && (
+      <PointPhotoCropModal
+        key={activeCrop.id}
+        imageSrc={activeCrop.src}
+        onCropComplete={handleCroppedPhotoUpload}
+        onClose={handleCropModalDismiss}
+      />
+    )}
     <div
       className="fixed inset-0 z-50 flex items-stretch justify-center bg-black/50 p-0 sm:items-center sm:p-4"
       onClick={onClose}
@@ -187,7 +270,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
               </div>
             </div>
             <p className="mb-3 text-sm text-text-muted">{t('editPoint.coordinatesHint')}</p>
-            <div className="mb-3 h-[min(42vh,260px)] min-h-[200px] w-full overflow-hidden rounded-lg border border-border sm:mb-4 sm:h-[320px] md:h-[400px]">
+            <div className="mb-3 aspect-[4/3] w-full min-h-[200px] overflow-hidden rounded-lg border border-border sm:mb-4">
               <Map
                 center={[markerPosition.lng, markerPosition.lat]}
                 zoom={12}
@@ -298,6 +381,62 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             </select>
           </div>
 
+          <div>
+            <h3 className="mb-2 flex items-center gap-2 text-sm font-medium text-text-main">
+              <ImagePlus className="h-4 w-4 shrink-0" aria-hidden />
+              {t('editPoint.photos')}
+            </h3>
+            <p className="mb-3 text-xs text-text-muted">{t('editPoint.photosHint')}</p>
+            <label
+              className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border border-border bg-background px-3 py-2 text-sm font-medium text-text-main transition-colors hover:bg-accent ${
+                loading || uploadPhotosMutation.isPending || sortedPhotos.length >= MAX_POINT_PHOTOS
+                  ? 'pointer-events-none opacity-50'
+                  : ''
+              }`}
+            >
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                multiple
+                className="sr-only"
+                disabled={loading || uploadPhotosMutation.isPending || sortedPhotos.length >= MAX_POINT_PHOTOS}
+                onChange={(e) => {
+                  handlePhotoFilesChosen(e.target.files);
+                  e.target.value = '';
+                }}
+              />
+              {t('editPoint.addPhotos')}
+            </label>
+            <p className="mt-1 text-xs text-text-muted">
+              {t('editPoint.photosCount', { current: sortedPhotos.length, max: MAX_POINT_PHOTOS })}
+            </p>
+            {sortedPhotos.length > 0 && (
+              <ul className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {sortedPhotos.map((ph) => (
+                  <li
+                    key={ph.id}
+                    className="relative aspect-[4/3] overflow-hidden rounded-lg border border-border bg-muted/30"
+                  >
+                    <img
+                      src={`${apiBase}${ph.url}`}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => void handleDeletePhoto(ph.id)}
+                      disabled={loading || deletePhotoMutation.isPending}
+                      className="absolute right-1 top-1 flex min-h-9 min-w-9 items-center justify-center rounded-full border border-border bg-background/90 text-destructive shadow hover:bg-destructive/10"
+                      aria-label={t('editPoint.deletePhoto')}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+
           <div className="mt-auto flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:gap-3">
             <button
               type="button"
@@ -318,5 +457,6 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
         </form>
       </div>
     </div>
+    </>
   );
 }

@@ -22,20 +22,22 @@ export type {
   ForgotPasswordRequest,
   ResetPasswordRequest,
 } from "./auth";
-export type { 
-  Point, 
+export type {
+  Point,
+  PointPhoto,
   CreatePointRequest,
-  UpdatePointRequest, 
+  UpdatePointRequest,
   Category,
   CreateCategoryRequest,
-  UpdateCategoryRequest, 
+  UpdateCategoryRequest,
   Container,
   CreateContainerRequest,
-  UpdateContainerRequest 
+  UpdateContainerRequest,
+  UploadPointPhotosPayload,
 } from "./points";
 export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";
 export type { FavoritePoint, FavoriteCheckResponse } from "./favorites";
 export type { FeedResponse } from "./feed";
 export type { Comment, CreateCommentDto, UpdateCommentDto } from "./comments";
 export type { Report, CreateReportRequest } from "./reports";
-export type { MapSettings } from "./settings-api";
+export type { MapSettings, PointCardInitialView } from "./settings-api";

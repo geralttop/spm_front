@@ -20,7 +20,7 @@ import {
 } from "@/shared/ui";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
-import { PointCardMap } from "@/shared/ui/point-card-map";
+import { PointCardMedia } from "@/shared/ui/point-card-media";
 
 const FavoriteIconButton = FavoriteButton as ComponentType<any>;
 const ReportIconButton = ReportButton as ComponentType<any>;
@@ -237,7 +237,7 @@ export const PointCard = React.memo(function PointCard({
         </div>
       </div>
 
-      <PointCardMap point={point} />
+      <PointCardMedia key={point.id} point={point} />
 
       <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
         <button
