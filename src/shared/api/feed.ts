@@ -32,6 +32,8 @@ export interface FeedPoint {
     lastName: string;
     avatar?: string;
   };
+  /** Счётчик из loadRelationCount (если бэкенд отдаёт в ленте) */
+  commentsCount?: number;
 }
 
 export interface FeedResponse {

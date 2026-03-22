@@ -244,6 +244,12 @@
     "refresh": "Обновить",
     "loadError": "Ошибка загрузки ленты"
   },
+  "pointPage": {
+    "loading": "Загрузка точки...",
+    "loadError": "Не удалось загрузить точку",
+    "notFound": "Точка не найдена или удалена",
+    "backToFeed": "К ленте"
+  },
   "manage": {
     "title": "Управление данными",
     "categories": "Категории",
@@ -462,7 +468,11 @@
       "resetNorth": "Сбросить направление на север"
     },
     "popup": {
-      "close": "Закрыть"
+      "close": "Закрыть",
+      "directions": "Маршрут",
+      "openInNewTab": "Открыть точку в новой вкладке",
+      "noCategory": "Без категории",
+      "commentsWithCount": "{{count}} коммент."
     }
   },
   "mapStyles": {

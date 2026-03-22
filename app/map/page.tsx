@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import i18n from "@/shared/config/i18n";
@@ -13,12 +14,25 @@ import {
   Map as MapComponent,
   MapControls,
   MapMarker,
+  MapPopupPhotos,
   MarkerContent,
+  MarkerLabel,
   MarkerPopup,
   MarkerTooltip,
 } from "@/shared/ui/map";
+import { buttonVariants } from "@/shared/ui/button/button";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
-import { MapPin, User, Calendar, Loader2, ChevronDown } from "lucide-react";
+import {
+  MapPin,
+  User,
+  Calendar,
+  Loader2,
+  ChevronDown,
+  MessageCircle,
+  Navigation,
+  ExternalLink,
+} from "lucide-react";
+import { cn } from "@/shared/lib/utils";
 import { formatRelativeDate } from "@/shared/lib/utils";
 import { MapFiltersComponent, type MapFilters } from "@/widgets/map-filters";
 import { getInitialGeolocation } from "@/shared/lib/user-location";
@@ -26,6 +40,16 @@ import { getInitialGeolocation } from "@/shared/lib/user-location";
 /** Запасной вид, если нет ни гео, ни точек (не Москва). */
 const FALLBACK_CENTER: [number, number] = [15, 50];
 const FALLBACK_ZOOM = 4;
+
+function markerLabelText(point: FeedPoint): string {
+  const raw = point.category?.name?.trim() || point.name.trim();
+  if (raw.length <= 22) return raw;
+  return `${raw.slice(0, 20)}…`;
+}
+
+function mapsDirectionsUrl(lat: number, lng: number) {
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+}
 
 export default function MapPage() {
   const { t } = useTranslation();
@@ -243,77 +267,117 @@ export default function MapPage() {
               dark: MAP_STYLES[mapStyle].dark,
             }}
           >
-            {points.map((point) => (
-              <MapMarker
-                key={point.id}
-                longitude={point.coords.coordinates[0]}
-                latitude={point.coords.coordinates[1]}
-              >
-                <MarkerContent>
-                  <div
-                    className="size-6 rounded-full border-2 border-white shadow-lg cursor-pointer hover:scale-110 transition-transform"
-                    style={{ backgroundColor: point.category?.color || "#6B7280" }}
-                  />
-                </MarkerContent>
-                <MarkerPopup closeButton>
-                  <div className="min-w-0 max-w-[min(100vw-2rem,350px)] space-y-3 sm:min-w-[250px]">
-                    <div>
-                      <h3 className="font-semibold text-base text-text-main mb-1">
-                        {point.name}
-                      </h3>
-                      {point.description && (
-                        <p className="text-sm text-text-muted">{point.description}</p>
-                      )}
-                    </div>
+            {points.map((point) => {
+              const [lng, lat] = point.coords.coordinates;
+              const categoryName = point.category?.name ?? "";
+              const commentsCount = point.commentsCount ?? 0;
 
-                    {point.address && (
-                      <div className="flex items-start gap-2 text-xs text-text-muted">
-                        <MapPin className="h-3 w-3 shrink-0 mt-0.5" />
-                        <span>{point.address}</span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-2 pt-2 border-t border-border">
-                      <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center shrink-0">
-                        <User className="h-3 w-3 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium text-text-main truncate">
-                          {point.author.firstName} {point.author.lastName}
-                        </p>
-                        <p className="text-xs text-text-muted truncate">
-                          @{point.author.username}
-                        </p>
-                      </div>
-                    </div>
-
-                    {point.category && (
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-text-muted">{t("map.category")}</span>
-                        <span
-                          className="text-xs font-medium px-2 py-0.5 rounded text-white"
-                          style={{ backgroundColor: point.category.color }}
-                        >
-                          {point.category.name}
-                        </span>
-                      </div>
-                    )}
-
-                    <div className="flex items-center gap-1 text-xs text-text-muted">
-                      <Calendar className="h-3 w-3" />
-                      <span>{formatRelativeDate(point.createdAt)}</span>
-                    </div>
-
-                    <button
-                      onClick={() => router.push(`/points/${point.id}`)}
-                      className="w-full mt-2 px-3 py-1.5 text-xs font-medium text-white bg-primary hover:bg-primary/90 rounded transition-colors"
+              return (
+                <MapMarker key={point.id} longitude={lng} latitude={lat}>
+                  <MarkerContent>
+                    <div
+                      className="size-5 rounded-full border-2 border-background shadow-lg cursor-pointer hover:scale-110 transition-transform motion-reduce:transition-none"
+                      style={{
+                        backgroundColor: point.category?.color || "hsl(var(--muted-foreground))",
+                      }}
+                    />
+                    <MarkerLabel
+                      position="bottom"
+                      className="max-w-[9rem] truncate rounded-md border border-border bg-card/95 px-1.5 py-0.5 text-[10px] font-medium text-text-main shadow-sm backdrop-blur-sm"
                     >
-                      {t("map.viewDetails")}
-                    </button>
-                  </div>
-                </MarkerPopup>
-              </MapMarker>
-            ))}
+                      {markerLabelText(point)}
+                    </MarkerLabel>
+                  </MarkerContent>
+                  <MarkerPopup closeButton className="p-0 w-[min(calc(100vw-2rem),17.5rem)] overflow-hidden border-border">
+                    <MapPopupPhotos
+                      photos={point.photos ?? []}
+                      pointName={point.name}
+                      categoryColor={point.category?.color}
+                    />
+                    <div className="space-y-2 p-3">
+                      <div>
+                        {categoryName ? (
+                          <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                            {categoryName}
+                          </span>
+                        ) : (
+                          <span className="text-xs font-medium uppercase tracking-wide text-text-muted">
+                            {t("map.popup.noCategory")}
+                          </span>
+                        )}
+                        <h3 className="font-semibold leading-tight text-text-main">
+                          {point.name}
+                        </h3>
+                      </div>
+
+                      {point.description ? (
+                        <p className="line-clamp-2 text-sm text-text-muted">{point.description}</p>
+                      ) : null}
+
+                      {commentsCount > 0 ? (
+                        <div className="flex items-center gap-1.5 text-sm text-text-muted">
+                          <MessageCircle className="size-3.5 shrink-0 text-primary" />
+                          <span>
+                            {t("map.popup.commentsWithCount", { count: commentsCount })}
+                          </span>
+                        </div>
+                      ) : null}
+
+                      <div className="flex items-center gap-1.5 text-sm text-text-muted">
+                        <Calendar className="size-3.5 shrink-0" />
+                        <span>{formatRelativeDate(point.createdAt)}</span>
+                      </div>
+
+                      {point.address ? (
+                        <div className="flex items-start gap-2 text-xs text-text-muted">
+                          <MapPin className="mt-0.5 size-3 shrink-0" />
+                          <span className="min-w-0 leading-snug">{point.address}</span>
+                        </div>
+                      ) : null}
+
+                      <div className="flex items-center gap-2 border-t border-border pt-2">
+                        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                          <User className="size-3.5 text-primary" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate text-xs font-medium text-text-main">
+                            {point.author.firstName} {point.author.lastName}
+                          </p>
+                          <p className="truncate text-xs text-text-muted">@{point.author.username}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex gap-2 pt-1">
+                        <a
+                          href={mapsDirectionsUrl(lat, lng)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            buttonVariants({ size: "sm", variant: "default" }),
+                            "h-8 flex-1 gap-0"
+                          )}
+                        >
+                          <Navigation className="mr-1.5 size-3.5 shrink-0" />
+                          {t("map.popup.directions")}
+                        </a>
+                        <Link
+                          href={`/points/${point.id}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={cn(
+                            buttonVariants({ size: "sm", variant: "outline" }),
+                            "size-8 shrink-0 p-0"
+                          )}
+                          aria-label={t("map.popup.openInNewTab")}
+                        >
+                          <ExternalLink className="size-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+                  </MarkerPopup>
+                </MapMarker>
+              );
+            })}
 
             {userLocation && (
               <MapMarker

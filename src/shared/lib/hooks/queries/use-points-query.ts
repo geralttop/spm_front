@@ -17,6 +17,7 @@ export function usePointQuery(id: string) {
   return useQuery({
     queryKey: ["point", id],
     queryFn: () => pointsApi.getById(id),
+    enabled: Boolean(id),
   });
 }
 

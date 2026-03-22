@@ -244,6 +244,12 @@
     "refresh": "Actualiser",
     "loadError": "Erreur de chargement du fil"
   },
+  "pointPage": {
+    "loading": "Chargement du point...",
+    "loadError": "Impossible de charger le point",
+    "notFound": "Point introuvable ou supprimé",
+    "backToFeed": "Retour au fil"
+  },
   "manage": {
     "title": "Gestion des données",
     "categories": "Catégories",
@@ -462,7 +468,11 @@
       "resetNorth": "Réinitialiser vers le nord"
     },
     "popup": {
-      "close": "Fermer"
+      "close": "Fermer",
+      "directions": "Itinéraire",
+      "openInNewTab": "Ouvrir le point dans un nouvel onglet",
+      "noCategory": "Sans catégorie",
+      "commentsWithCount": "{{count}} commentaires"
     }
   },
   "mapStyles": {

@@ -244,6 +244,12 @@
     "refresh": "Абнавіць",
     "loadError": "Памылка загрузкі стужкі"
   },
+  "pointPage": {
+    "loading": "Загрузка кропкі...",
+    "loadError": "Не атрымалася загрузіць кропку",
+    "notFound": "Кропка не знойдзена або выдалена",
+    "backToFeed": "Да стужкі"
+  },
   "manage": {
     "title": "Кіраванне данымі",
     "categories": "Катэгорыі",
@@ -462,7 +468,11 @@
       "resetNorth": "Скінуць кірунак на поўнач"
     },
     "popup": {
-      "close": "Зачыніць"
+      "close": "Зачыніць",
+      "directions": "Маршрут",
+      "openInNewTab": "Адкрыць кропку ў новай укладцы",
+      "noCategory": "Без катэгорыі",
+      "commentsWithCount": "{{count}} камент."
     }
   },
   "mapStyles": {

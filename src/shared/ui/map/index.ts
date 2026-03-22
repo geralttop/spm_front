@@ -20,6 +20,8 @@ export type { MapPopupProps } from "./MapPopup";
 export { MapClusterLayer } from "./MapClusterLayer";
 export type { MapClusterLayerProps } from "./MapClusterLayer";
 
+export { MapPopupPhotos } from "./MapPopupPhotos";
+
 export { useResolvedTheme, getDocumentTheme, getSystemTheme } from "./hooks/use-map-theme";
 export type { Theme } from "./hooks/use-map-theme";
 

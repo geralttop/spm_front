@@ -227,6 +227,12 @@
     "refresh": "Refresh",
     "loadError": "Error loading feed"
   },
+  "pointPage": {
+    "loading": "Loading point...",
+    "loadError": "Could not load the point",
+    "notFound": "Point not found or removed",
+    "backToFeed": "Back to feed"
+  },
   "manage": {
     "title": "Data Management",
     "categories": "Categories",
@@ -445,7 +451,11 @@
       "resetNorth": "Reset bearing to north"
     },
     "popup": {
-      "close": "Close"
+      "close": "Close",
+      "directions": "Directions",
+      "openInNewTab": "Open point in new tab",
+      "noCategory": "Uncategorized",
+      "commentsWithCount": "{{count}} comments"
     }
   },
   "mapStyles": {
