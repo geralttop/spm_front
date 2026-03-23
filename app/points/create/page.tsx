@@ -59,6 +59,8 @@ export default function CreatePointPage() {
     setNewContainerTitle,
     newContainerDescription,
     setNewContainerDescription,
+    newContainerColor,
+    setNewContainerColor,
     handleInputChange,
     handleMarkerDragEnd,
     handleCreateCategory,
@@ -461,6 +463,8 @@ export default function CreatePointPage() {
                     onContainerTitleChange={setNewContainerTitle}
                     containerDescription={newContainerDescription}
                     onContainerDescriptionChange={setNewContainerDescription}
+                    containerColor={newContainerColor}
+                    onContainerColorChange={setNewContainerColor}
                     onSubmit={handleCreateContainer}
                     onCancel={() => setShowCreateContainer(false)}
                     mutation={createContainerMutation}

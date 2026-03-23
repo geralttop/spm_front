@@ -47,6 +47,23 @@ function markerLabelText(point: FeedPoint): string {
   return `${raw.slice(0, 20)}…`;
 }
 
+function getAuthorInitials(point: FeedPoint): string {
+  const first = point.author.firstName?.trim().charAt(0) ?? "";
+  const last = point.author.lastName?.trim().charAt(0) ?? "";
+  const initials = `${first}${last}`.toUpperCase();
+  if (initials) return initials;
+  return point.author.username?.slice(0, 2).toUpperCase() || "U";
+}
+
+function resolveAuthorAvatarUrl(avatar?: string): string | null {
+  if (!avatar) return null;
+  if (avatar.startsWith("http://") || avatar.startsWith("https://")) {
+    return avatar;
+  }
+  const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "";
+  return `${apiBase}${avatar}`;
+}
+
 function mapsDirectionsUrl(lat: number, lng: number) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 }
@@ -271,16 +288,35 @@ export default function MapPage() {
               const [lng, lat] = point.coords.coordinates;
               const categoryName = point.category?.name ?? "";
               const commentsCount = point.commentsCount ?? 0;
+              const categoryColor = point.category?.color ?? "hsl(var(--muted-foreground))";
+              const containerColor = point.container?.color ?? "hsl(var(--primary))";
+              const avatarUrl = resolveAuthorAvatarUrl(point.author.avatar);
+              const authorInitials = getAuthorInitials(point);
 
               return (
                 <MapMarker key={point.id} longitude={lng} latitude={lat}>
                   <MarkerContent>
                     <div
-                      className="size-5 rounded-full border-2 border-background shadow-lg cursor-pointer hover:scale-110 transition-transform motion-reduce:transition-none"
+                      className="relative size-9 cursor-pointer rounded-full p-[3px] shadow-lg hover:scale-110 transition-transform motion-reduce:transition-none"
                       style={{
-                        backgroundColor: point.category?.color || "hsl(var(--muted-foreground))",
+                        background: `conic-gradient(${containerColor} 0deg 180deg, ${categoryColor} 180deg 360deg)`,
                       }}
-                    />
+                    >
+                      <div className="flex size-full items-center justify-center rounded-full bg-background p-[1px]">
+                        <div className="relative flex size-full items-center justify-center overflow-hidden rounded-full bg-muted text-[10px] font-semibold text-text-main">
+                          {avatarUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element -- URL с API
+                            <img
+                              src={avatarUrl}
+                              alt={`${point.author.firstName} ${point.author.lastName}`}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <span>{authorInitials}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
                     <MarkerLabel
                       position="bottom"
                       className="max-w-[9rem] truncate rounded-md border border-border bg-card/95 px-1.5 py-0.5 text-[10px] font-medium text-text-main shadow-sm backdrop-blur-sm"

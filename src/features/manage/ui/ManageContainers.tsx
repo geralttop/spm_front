@@ -276,6 +276,11 @@ export function ManageContainers() {
                     >
                       {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>
+                    <span
+                      className="h-4 w-4 shrink-0 rounded-full border border-border"
+                      style={{ backgroundColor: container.color }}
+                      title={container.color}
+                    />
                     <div className="flex-1 min-w-0">
                       <h3 className="font-medium text-sm sm:text-base text-text-main truncate">{container.title}</h3>
                       {container.description && (

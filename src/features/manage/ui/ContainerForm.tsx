@@ -16,6 +16,7 @@ export function ContainerForm({ editingContainer, onSuccess, onCancel }: Contain
     initialValues: {
       title: editingContainer?.title || '',
       description: editingContainer?.description || '',
+      color: editingContainer?.color || '#3B82F6',
     },
     onSubmit: async (values) => {
       if (editingContainer) {
@@ -56,6 +57,29 @@ export function ContainerForm({ editingContainer, onSuccess, onCancel }: Contain
             className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-primary"
             rows={3}
           />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-text-main mb-2">
+            {t('manage.containerForm.color')} <span className="text-red-500">{t('manage.containerForm.required')}</span>
+          </label>
+          <div className="flex items-center gap-3">
+            <input
+              type="color"
+              value={values.color}
+              onChange={(e) => handleChange('color', e.target.value)}
+              className="h-10 w-14 cursor-pointer rounded border border-border bg-background p-1"
+              required
+            />
+            <input
+              type="text"
+              value={values.color}
+              onChange={(e) => handleChange('color', e.target.value)}
+              className="w-full px-3 py-2 border border-border rounded-lg bg-background text-text-main focus:outline-none focus:ring-2 focus:ring-primary"
+              required
+              pattern="^#([A-Fa-f0-9]{6})$"
+              placeholder="#3B82F6"
+            />
+          </div>
         </div>
         <div className="flex gap-2">
           <button

@@ -69,6 +69,7 @@ export interface Container {
   id: string;
   title: string;
   description?: string;
+  color?: string;
   createdAt: string;
   /** null — системный контейнер (сидер), иначе владелец */
   authorId?: number | null;
@@ -87,11 +88,13 @@ export interface UpdateCategoryRequest {
 export interface CreateContainerRequest {
   title: string;
   description?: string;
+  color: string;
 }
 
 export interface UpdateContainerRequest {
   title?: string;
   description?: string;
+  color?: string;
 }
 
 export interface UploadPointPhotosPayload {

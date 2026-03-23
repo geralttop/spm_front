@@ -24,6 +24,7 @@ export const ContainerList = () => {
         <TextField source="id" label={t('admin.containers.id')} />
         <TextField source="title" label={t('admin.containers.title')} />
         <TextField source="description" label={t('admin.containers.description')} />
+        <TextField source="color" label={t('admin.containers.color')} />
         <ReferenceField source="authorId" reference="users" label={t('admin.containers.author')}>
           <TextField source="username" />
         </ReferenceField>
@@ -43,6 +44,7 @@ export const ContainerEdit = () => {
       <SimpleForm>
         <TextInput source="title" label={t('admin.containers.title')} />
         <TextInput source="description" label={t('admin.containers.description')} multiline />
+        <TextInput source="color" label={t('admin.containers.color')} />
       </SimpleForm>
     </Edit>
   );
@@ -55,6 +57,7 @@ export const ContainerCreate = () => {
       <SimpleForm>
         <TextInput source="title" label={t('admin.containers.title')} />
         <TextInput source="description" label={t('admin.containers.description')} multiline />
+        <TextInput source="color" label={t('admin.containers.color')} defaultValue="#3B82F6" />
       </SimpleForm>
     </Create>
   );
@@ -68,6 +71,7 @@ export const ContainerShow = () => {
         <TextField source="id" label={t('admin.containers.id')} />
         <TextField source="title" label={t('admin.containers.title')} />
         <TextField source="description" label={t('admin.containers.description')} />
+        <TextField source="color" label={t('admin.containers.color')} />
         <ReferenceField source="authorId" reference="users" label={t('admin.containers.author')}>
           <TextField source="username" />
         </ReferenceField>

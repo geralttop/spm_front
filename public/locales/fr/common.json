@@ -270,6 +270,7 @@
       "new": "Nouveau conteneur",
       "title": "Titre",
       "description": "Description",
+      "color": "Couleur",
       "required": "*",
       "saving": "Enregistrement...",
       "save": "Enregistrer",
@@ -391,6 +392,7 @@
       "id": "ID",
       "title": "Titre",
       "description": "Description",
+      "color": "Couleur",
       "author": "Auteur",
       "createdAt": "Date de création"
     },

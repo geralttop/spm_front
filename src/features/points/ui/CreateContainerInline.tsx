@@ -4,6 +4,7 @@ import { useTranslation as useI18n } from "react-i18next";
 import { Button, Input, Textarea } from "@/shared/ui";
 import { Plus } from "lucide-react";
 import type { UseMutationResult } from "@tanstack/react-query";
+import type { Container, CreateContainerRequest } from "@/shared/api";
 
 interface CreateContainerInlineProps {
   show: boolean;
@@ -12,9 +13,11 @@ interface CreateContainerInlineProps {
   onContainerTitleChange: (value: string) => void;
   containerDescription: string;
   onContainerDescriptionChange: (value: string) => void;
+  containerColor: string;
+  onContainerColorChange: (value: string) => void;
   onSubmit: () => void;
   onCancel: () => void;
-  mutation: UseMutationResult<any, any, any, any>;
+  mutation: UseMutationResult<Container, Error, CreateContainerRequest, unknown>;
 }
 
 export function CreateContainerInline({
@@ -24,6 +27,8 @@ export function CreateContainerInline({
   onContainerTitleChange,
   containerDescription,
   onContainerDescriptionChange,
+  containerColor,
+  onContainerColorChange,
   onSubmit,
   onCancel,
   mutation,
@@ -66,11 +71,37 @@ export function CreateContainerInline({
               rows={2}
               className="text-base sm:text-sm"
             />
+            <div>
+              <label className="mb-2 block text-sm font-medium text-text-main">
+                {t("createPoint.color")}
+              </label>
+              <div className="flex items-center gap-3">
+                <Input
+                  type="color"
+                  value={containerColor}
+                  onChange={(e) => onContainerColorChange(e.target.value)}
+                  className="h-10 w-14 cursor-pointer rounded border border-border bg-background p-1"
+                />
+                <Input
+                  type="text"
+                  value={containerColor}
+                  onChange={(e) => onContainerColorChange(e.target.value)}
+                  className="text-base sm:text-sm"
+                  maxLength={7}
+                  pattern="^#([A-Fa-f0-9]{6})$"
+                  placeholder="#3B82F6"
+                />
+              </div>
+            </div>
             <div className="flex flex-col gap-2 sm:flex-row">
               <Button
                 type="button"
                 onClick={onSubmit}
-                disabled={mutation.isPending || !containerTitle.trim()}
+                disabled={
+                  mutation.isPending ||
+                  !containerTitle.trim() ||
+                  !/^#([A-Fa-f0-9]{6})$/.test(containerColor)
+                }
                 size="sm"
                 className="w-full touch-target sm:w-auto sm:min-h-0"
               >

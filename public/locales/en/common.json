@@ -253,6 +253,7 @@
       "new": "New Container",
       "title": "Title",
       "description": "Description",
+      "color": "Color",
       "required": "*",
       "saving": "Saving...",
       "save": "Save",
@@ -374,6 +375,7 @@
       "id": "ID",
       "title": "Title",
       "description": "Description",
+      "color": "Color",
       "author": "Author",
       "createdAt": "Created at"
     },

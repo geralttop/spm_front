@@ -59,6 +59,7 @@ export function useCreatePointForm() {
   const [showCreateContainer, setShowCreateContainer] = useState(false);
   const [newContainerTitle, setNewContainerTitle] = useState("");
   const [newContainerDescription, setNewContainerDescription] = useState("");
+  const [newContainerColor, setNewContainerColor] = useState("#3B82F6");
 
   const [showCreateCategory, setShowCreateCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -139,17 +140,20 @@ export function useCreatePointForm() {
 
   const handleCreateContainer = () => {
     if (!newContainerTitle.trim()) return;
+    if (!/^#([A-Fa-f0-9]{6})$/.test(newContainerColor)) return;
 
     createContainerMutation.mutate(
       {
         title: newContainerTitle,
         description: newContainerDescription || undefined,
+        color: newContainerColor,
       },
       {
         onSuccess: (newContainer) => {
           setFormData((prev) => ({ ...prev, containerId: newContainer.id }));
           setNewContainerTitle("");
           setNewContainerDescription("");
+          setNewContainerColor("#3B82F6");
           setShowCreateContainer(false);
         },
       }
@@ -283,6 +287,8 @@ export function useCreatePointForm() {
     setNewContainerTitle,
     newContainerDescription,
     setNewContainerDescription,
+    newContainerColor,
+    setNewContainerColor,
 
     handleInputChange,
     handleMarkerDragEnd,

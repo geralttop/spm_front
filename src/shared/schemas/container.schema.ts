@@ -7,6 +7,8 @@ export const createContainerSchema = z.object({
   description: z.string()
     .max(1000, 'Описание не должно превышать 1000 символов')
     .optional(),
+  color: z.string()
+    .regex(/^#([A-Fa-f0-9]{6})$/, 'Цвет должен быть в формате HEX (#RRGGBB)'),
 });
 
 export const updateContainerSchema = z.object({
@@ -16,6 +18,9 @@ export const updateContainerSchema = z.object({
     .optional(),
   description: z.string()
     .max(1000, 'Описание не должно превышать 1000 символов')
+    .optional(),
+  color: z.string()
+    .regex(/^#([A-Fa-f0-9]{6})$/, 'Цвет должен быть в формате HEX (#RRGGBB)')
     .optional(),
 });
 

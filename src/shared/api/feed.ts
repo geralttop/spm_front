@@ -23,6 +23,7 @@ export interface FeedPoint {
     id: string;
     title: string;
     description?: string;
+    color?: string;
     createdAt: string;
   } | null;
   author: {
