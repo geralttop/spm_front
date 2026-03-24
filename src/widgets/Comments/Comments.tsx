@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import Link from 'next/link';
 import { useTranslation } from 'react-i18next';
 import { MoreVertical, Pencil, Trash2, Flag, User } from 'lucide-react';
 import { commentsApi, Comment } from '@/shared/api';
@@ -153,23 +154,34 @@ export function Comments({ pointId }: CommentsProps) {
               key={comment.id}
               className={`${styles.comment} ${currentUserId === comment.authorId ? styles.commentMine : ''}`}
             >
-              <div className={styles.avatar}>
-                {comment.author.avatar ? (
-                  <img
-                    src={`${process.env.NEXT_PUBLIC_API_URL}${comment.author.avatar}`}
-                    alt=""
-                    className={styles.avatarImg}
-                  />
-                ) : (
-                  <div className={styles.avatarPlaceholder}>
-                    <User className={styles.avatarIcon} aria-hidden />
-                  </div>
-                )}
-              </div>
+              <Link
+                href={`/user/${comment.author.id}`}
+                className={styles.authorAvatarLink}
+                aria-label={t('search.viewProfile')}
+              >
+                <div className={styles.avatar}>
+                  {comment.author.avatar ? (
+                    <img
+                      src={`${process.env.NEXT_PUBLIC_API_URL}${comment.author.avatar}`}
+                      alt=""
+                      className={styles.avatarImg}
+                    />
+                  ) : (
+                    <div className={styles.avatarPlaceholder}>
+                      <User className={styles.avatarIcon} aria-hidden />
+                    </div>
+                  )}
+                </div>
+              </Link>
               <div className={styles.commentBody}>
                 <div className={styles.metaRow}>
                   <div className={styles.metaLeft}>
-                    <span className={styles.username}>@{comment.author.username}</span>
+                    <Link
+                      href={`/user/${comment.author.id}`}
+                      className={`${styles.username} ${styles.profileLink}`}
+                    >
+                      @{comment.author.username}
+                    </Link>
                     <span className={styles.metaSep} aria-hidden>
                       ·
                     </span>

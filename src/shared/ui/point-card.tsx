@@ -6,6 +6,7 @@ import {
   Calendar,
   MessageCircle,
 } from "lucide-react";
+import Link from "next/link";
 import React, { useState, type ComponentType } from "react";
 import { useAuthStore } from "@/shared/lib/store";
 import type { Point } from "@/shared/api";
@@ -105,44 +106,50 @@ export const PointCard = React.memo(function PointCard({
     <div className="bg-surface border border-border rounded-xl p-3 sm:p-6 hover:shadow-md transition-shadow">
       {showAuthor && (
         <div className="mb-3 sm:mb-4 flex items-center gap-2.5 sm:gap-3">
-          <div className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 overflow-hidden rounded-full border-2 border-border bg-primary/10">
-            {point.author.avatar ? (
-              <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}${point.author.avatar}`}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
-              </div>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-text-main sm:text-base">
-              {point.author.firstName} {point.author.lastName}
-            </p>
-            <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-text-muted sm:text-sm">
-              <span className="min-w-0 truncate">
-                @{point.author.username}
-              </span>
-              <span
-                className="text-text-muted/40 select-none"
-                aria-hidden
-              >
-                ·
-              </span>
-              <span className="inline-flex shrink-0 items-center gap-1">
-                <Calendar
-                  className="h-3 w-3 shrink-0 sm:h-4 sm:w-4"
-                  aria-hidden
+          <Link
+            href={`/user/${point.author.id}`}
+            className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3 rounded-xl -m-1 p-1 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            aria-label={t("search.viewProfile")}
+          >
+            <div className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0 overflow-hidden rounded-full border-2 border-border bg-primary/10">
+              {point.author.avatar ? (
+                <img
+                  src={`${process.env.NEXT_PUBLIC_API_URL}${point.author.avatar}`}
+                  alt=""
+                  className="h-full w-full object-cover"
                 />
-                <time dateTime={point.createdAt}>
-                  {formatRelativeDate(point.createdAt)}
-                </time>
-              </span>
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5 text-primary" />
+                </div>
+              )}
             </div>
-          </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-text-main sm:text-base">
+                {point.author.firstName} {point.author.lastName}
+              </p>
+              <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-text-muted sm:text-sm">
+                <span className="min-w-0 truncate">
+                  @{point.author.username}
+                </span>
+                <span
+                  className="text-text-muted/40 select-none"
+                  aria-hidden
+                >
+                  ·
+                </span>
+                <span className="inline-flex shrink-0 items-center gap-1">
+                  <Calendar
+                    className="h-3 w-3 shrink-0 sm:h-4 sm:w-4"
+                    aria-hidden
+                  />
+                  <time dateTime={point.createdAt}>
+                    {formatRelativeDate(point.createdAt)}
+                  </time>
+                </span>
+              </div>
+            </div>
+          </Link>
           <div className="-mr-0.5 flex-shrink-0 sm:mr-0">
             <ActionButtons
               isAuthor={!!isAuthor}
