@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import React, { useState, type ComponentType } from "react";
+import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { useAuthStore } from "@/shared/lib/store";
 import type { Point } from "@/shared/api";
 import { formatRelativeDate } from "@/shared/lib/utils";
@@ -107,7 +108,7 @@ export const PointCard = React.memo(function PointCard({
       {showAuthor && (
         <div className="mb-3 sm:mb-4 flex items-center gap-2.5 sm:gap-3">
           <Link
-            href={`/user/${point.author.id}`}
+            href={userProfilePath(point.author.username)}
             className="flex min-w-0 flex-1 items-center gap-2.5 sm:gap-3 rounded-xl -m-1 p-1 transition-colors hover:bg-muted/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             aria-label={t("search.viewProfile")}
           >

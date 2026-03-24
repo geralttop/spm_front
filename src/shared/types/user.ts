@@ -27,5 +27,6 @@ export interface SearchUserResult {
   username: string;
   email: string;
   bio: string | null;
+  /** Путь к аватару (как в ответе GET /auth/user/...) */
   avatar?: string;
 }

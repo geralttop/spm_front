@@ -8,6 +8,7 @@ import { useAuthStore } from "@/shared/lib/store";
 import { useTranslation } from "@/shared/lib/hooks";
 import { useSearchUsersQuery, useProfileQuery } from "@/shared/lib/hooks/queries";
 import { Search, X, User } from "lucide-react";
+import { userProfilePath } from "@/shared/lib/user-profile-path";
 
 export default function SearchPage() {
   const router = useRouter();
@@ -58,8 +59,8 @@ export default function SearchPage() {
     setHasSearched(false);
   };
 
-  const handleUserClick = (userId: number) => {
-    router.push(`/user/${userId}`);
+  const handleUserClick = (username: string) => {
+    router.push(userProfilePath(username));
   };
 
   return (
@@ -144,7 +145,7 @@ export default function SearchPage() {
                     <UserCard
                       key={user.id}
                       user={user}
-                      onClick={() => handleUserClick(user.id)}
+                      onClick={() => handleUserClick(user.username)}
                       actionButton={
                         <Button
                           variant="outline"

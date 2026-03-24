@@ -2,6 +2,7 @@ import { X, User as UserIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { Button } from "./button";
 import { useRouter } from "next/navigation";
+import { userProfilePath } from "@/shared/lib/user-profile-path";
 import type { SubscriptionUser } from "@/shared/api";
 
 interface UserListModalProps {
@@ -38,12 +39,12 @@ export function UserListModal({
 
   if (!isOpen) return null;
 
-  const handleUserClick = (userId: number) => {
+  const handleUserClick = (userId: number, username: string) => {
     onClose();
     if (currentUserId === userId) {
       router.push("/profile");
     } else {
-      router.push(`/user/${userId}`);
+      router.push(userProfilePath(username));
     }
   };
 
@@ -79,7 +80,7 @@ export function UserListModal({
               >
                 <div
                   className="flex-1 cursor-pointer"
-                  onClick={() => handleUserClick(user.id)}
+                  onClick={() => handleUserClick(user.id, user.username)}
                 >
                   <p className="font-medium text-text-main">{user.username}</p>
                   <p className="text-sm text-text-muted">{user.email}</p>

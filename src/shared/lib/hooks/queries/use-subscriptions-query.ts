@@ -1,10 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { subscriptionsApi } from "@/shared/api";
 
-export function useSubscriptionStatsQuery(userId: number) {
+export function useSubscriptionStatsQuery(
+  userId: number,
+  options?: { enabled?: boolean }
+) {
   return useQuery({
     queryKey: ["subscription-stats", userId],
     queryFn: () => subscriptionsApi.getStats(userId),
+    enabled: options?.enabled !== false && userId > 0,
   });
 }
 

@@ -54,6 +54,7 @@ export interface SearchUserResult {
   username: string;
   email: string;
   bio: string | null;
+  avatar?: string;
 }
 
 export const authApi = {
@@ -110,6 +111,12 @@ export const authApi = {
 
   getUserById: async (id: number): Promise<SearchUserResult> => {
     const response = await apiClient.get<SearchUserResult>(`/auth/user/${id}`);
+    return response.data;
+  },
+
+  getUserByUsername: async (username: string): Promise<SearchUserResult> => {
+    const encoded = encodeURIComponent(username);
+    const response = await apiClient.get<SearchUserResult>(`/auth/user/username/${encoded}`);
     return response.data;
   },
 

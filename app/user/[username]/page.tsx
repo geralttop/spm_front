@@ -4,14 +4,16 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Button, UserListModal, Loading } from "@/shared/ui";
 import { authApi } from "@/shared/api";
+import type { SearchUserResult } from "@/shared/types";
 import { useAuthStore } from "@/shared/lib/store";
+import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
-import { 
-  useProfileQuery, 
-  usePointsQuery, 
+import {
+  useProfileQuery,
+  usePointsQuery,
   useSubscriptionStatsQuery,
   useFollowMutation,
-  useUnfollowMutation 
+  useUnfollowMutation,
 } from "@/shared/lib/hooks/queries";
 import { User, Mail, Users, MapPin } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
@@ -19,43 +21,66 @@ import { PointCard } from "@/src/shared/ui/point-card";
 export default function UserProfilePage() {
   const router = useRouter();
   const params = useParams();
-  const userId = Number(params.id);
+  const raw = params.username;
+  const segment =
+    typeof raw === "string" ? raw : Array.isArray(raw) ? raw[0] ?? "" : "";
+
   const { t } = useTranslation();
   const checkAuth = useAuthStore((state) => state.checkAuth);
-  
-  const { data: currentProfile } = useProfileQuery();
+
+  const { data: currentProfile, isLoading: profileLoading } = useProfileQuery();
   const currentUserId = currentProfile ? Number(currentProfile.userId) : null;
-  
-  const [user, setUser] = useState<any>(null);
+
+  const [user, setUser] = useState<SearchUserResult | null>(null);
   const [loading, setLoading] = useState(true);
-  
-  const { data: stats, refetch: refetchStats } = useSubscriptionStatsQuery(userId);
-  const { data: points = [], isLoading: pointsLoading, refetch: refetchPoints } = usePointsQuery(userId);
+
+  const targetId = user?.id ?? 0;
+  const { data: stats, refetch: refetchStats } = useSubscriptionStatsQuery(targetId, {
+    enabled: Boolean(user?.id),
+  });
+  const {
+    data: points = [],
+    isLoading: pointsLoading,
+    refetch: refetchPoints,
+  } = usePointsQuery(user ? user.id : undefined, { enabled: Boolean(user?.id) });
+
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
-  
+
   const followersModal = useUserModal();
   const followingModal = useUserModal();
-  const { followingStates, actionLoadingStates, initializeFollowingStates, handleFollowToggle } = useFollowManagement();
+  const { followingStates, actionLoadingStates, initializeFollowingStates, handleFollowToggle } =
+    useFollowManagement();
 
   useEffect(() => {
+    if (!segment || profileLoading) return;
+
     const fetchUserData = async () => {
       try {
+        setLoading(true);
         const isAuthenticated = await checkAuth();
         if (!isAuthenticated) {
           router.push("/auth");
           return;
         }
 
-        if (currentUserId === userId) {
-          router.push("/profile");
+        if (/^\d+$/.test(segment)) {
+          const byId = await authApi.getUserById(Number(segment));
+          router.replace(userProfilePath(byId.username));
           return;
         }
-        
-        const userData = await authApi.getUserById(userId);
+
+        const userData = await authApi.getUserByUsername(segment);
+
+        if (currentUserId !== null && userData.id === currentUserId) {
+          router.replace("/profile");
+          return;
+        }
+
         setUser(userData);
       } catch (error) {
         console.error("Error fetching user data:", error);
+        setUser(null);
         const isStillAuth = await checkAuth();
         if (!isStillAuth) {
           router.push("/auth");
@@ -65,16 +90,15 @@ export default function UserProfilePage() {
       }
     };
 
-    if (userId && currentUserId !== null) {
-      fetchUserData();
-    }
-  }, [userId, currentUserId, router, checkAuth]);
+    void fetchUserData();
+  }, [segment, profileLoading, currentUserId, router, checkAuth]);
 
   const handleFollowToggleMain = () => {
+    if (!user?.id) return;
     const isFollowing = stats?.isFollowing || false;
     const mutation = isFollowing ? unfollowMutation : followMutation;
-    
-    mutation.mutate(userId, {
+
+    mutation.mutate(user.id, {
       onSuccess: () => {
         refetchStats();
       },
@@ -82,12 +106,14 @@ export default function UserProfilePage() {
   };
 
   const handleShowFollowers = async () => {
-    const users = await followersModal.openModal(userId, "followers");
+    if (!user?.id) return;
+    const users = await followersModal.openModal(user.id, "followers");
     await initializeFollowingStates(users);
   };
 
   const handleShowFollowing = async () => {
-    const users = await followingModal.openModal(userId, "following");
+    if (!user?.id) return;
+    const users = await followingModal.openModal(user.id, "following");
     await initializeFollowingStates(users);
   };
 
@@ -120,9 +146,8 @@ export default function UserProfilePage() {
     <div className="min-h-screen bg-background py-4 sm:py-6 lg:py-8">
       <div className="container mx-auto max-w-4xl px-0 sm:px-4 lg:px-6">
         <div className="space-y-4 sm:space-y-6">
-          {/* Статистика подписок — как на личном профиле */}
           {stats && (
-            <div className="grid grid-cols-2 gap-2 px-4 sm:gap-4 sm:flex sm:w-auto sm:px-0">
+            <div className="grid grid-cols-2 gap-2 px-0 sm:flex sm:w-auto sm:gap-4">
               <button
                 type="button"
                 onClick={handleShowFollowers}
@@ -130,7 +155,9 @@ export default function UserProfilePage() {
               >
                 <Users className="h-4 w-4 shrink-0 text-text-muted sm:h-5 sm:w-5" />
                 <div className="min-w-0 text-left">
-                  <div className="text-base font-bold tabular-nums text-text-main sm:text-2xl">{stats.followersCount}</div>
+                  <div className="text-base font-bold tabular-nums text-text-main sm:text-2xl">
+                    {stats.followersCount}
+                  </div>
                   <div className="truncate text-xs text-text-muted sm:text-sm">{t("profile.followers")}</div>
                 </div>
               </button>
@@ -142,14 +169,15 @@ export default function UserProfilePage() {
               >
                 <Users className="h-4 w-4 shrink-0 text-text-muted sm:h-5 sm:w-5" />
                 <div className="min-w-0 text-left">
-                  <div className="text-base font-bold tabular-nums text-text-main sm:text-2xl">{stats.followingCount}</div>
+                  <div className="text-base font-bold tabular-nums text-text-main sm:text-2xl">
+                    {stats.followingCount}
+                  </div>
                   <div className="truncate text-xs text-text-muted sm:text-sm">{t("profile.following")}</div>
                 </div>
               </button>
             </div>
           )}
 
-          {/* Карточка профиля: шапка как в ProfileForm, вместо «Редактировать» — подписка */}
           <div className="rounded-xl border border-border bg-card p-3 shadow-sm sm:p-6">
             <div className="mb-5 flex flex-col gap-3 border-b border-border pb-5 sm:mb-6 sm:flex-row sm:items-center sm:gap-4 sm:pb-6">
               <div className="shrink-0">
@@ -173,12 +201,14 @@ export default function UserProfilePage() {
                 <h1 className="truncate text-xl font-bold text-text-main sm:text-3xl">
                   {user?.username || "User"}
                 </h1>
-                <p className="mt-0.5 truncate text-xs text-text-muted break-all sm:mt-1 sm:text-sm">{user?.email}</p>
+                <p className="mt-0.5 truncate text-xs text-text-muted break-all sm:mt-1 sm:text-sm">
+                  {user?.email}
+                </p>
               </div>
 
               <Button
                 onClick={handleFollowToggleMain}
-                disabled={actionLoading}
+                disabled={actionLoading || !user?.id}
                 variant={isFollowing ? "destructive" : "outline"}
                 className="w-full shrink-0 touch-target gap-2 sm:w-auto"
               >
@@ -210,27 +240,24 @@ export default function UserProfilePage() {
             </div>
           </div>
 
-          {/* User Points Section */}
           <div>
-            <h2 className="mb-3 sm:mb-4 text-base sm:text-lg font-semibold text-text-main flex items-center gap-2 px-4 sm:px-0">
-              <MapPin className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
-              <span className="truncate">{t("profile.userPoints")} {user?.username}</span>
+            <h2 className="mb-3 flex items-center gap-2 px-4 text-base font-semibold text-text-main sm:mb-4 sm:px-0 sm:text-lg">
+              <MapPin className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+              <span className="truncate">
+                {t("profile.userPoints")} {user?.username}
+              </span>
             </h2>
 
             {pointsLoading ? (
-              <div className="text-center py-8 text-text-muted px-4 sm:px-0">
-                {t("profile.loadingPoints")}
-              </div>
+              <div className="px-4 py-8 text-center text-text-muted sm:px-0">{t("profile.loadingPoints")}</div>
             ) : points.length === 0 ? (
-              <div className="text-center py-8 text-text-muted px-4 sm:px-0">
-                {t("profile.noUserPoints")}
-              </div>
+              <div className="px-4 py-8 text-center text-text-muted sm:px-0">{t("profile.noUserPoints")}</div>
             ) : (
-              <div className="space-y-4 sm:space-y-6 -mx-3 sm:mx-0">
+              <div className="-mx-3 space-y-4 sm:mx-0 sm:space-y-6">
                 {points.map((point) => (
-                  <PointCard 
-                    key={point.id} 
-                    point={point} 
+                  <PointCard
+                    key={point.id}
+                    point={point}
                     onFavoriteChange={() => refetchPoints()}
                     onPointUpdate={() => refetchPoints()}
                   />
@@ -241,7 +268,6 @@ export default function UserProfilePage() {
         </div>
       </div>
 
-      {/* Followers Modal */}
       <UserListModal
         isOpen={followersModal.showModal}
         onClose={followersModal.closeModal}
@@ -257,7 +283,6 @@ export default function UserProfilePage() {
         unfollowLabel={t("profile.unfollow")}
       />
 
-      {/* Following Modal */}
       <UserListModal
         isOpen={followingModal.showModal}
         onClose={followingModal.closeModal}

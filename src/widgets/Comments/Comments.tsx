@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { userProfilePath } from '@/shared/lib/user-profile-path';
 import { useTranslation } from 'react-i18next';
 import { MoreVertical, Pencil, Trash2, Flag, User } from 'lucide-react';
 import { commentsApi, Comment } from '@/shared/api';
@@ -155,7 +156,7 @@ export function Comments({ pointId }: CommentsProps) {
               className={`${styles.comment} ${currentUserId === comment.authorId ? styles.commentMine : ''}`}
             >
               <Link
-                href={`/user/${comment.author.id}`}
+                href={userProfilePath(comment.author.username)}
                 className={styles.authorAvatarLink}
                 aria-label={t('search.viewProfile')}
               >
@@ -177,7 +178,7 @@ export function Comments({ pointId }: CommentsProps) {
                 <div className={styles.metaRow}>
                   <div className={styles.metaLeft}>
                     <Link
-                      href={`/user/${comment.author.id}`}
+                      href={userProfilePath(comment.author.username)}
                       className={`${styles.username} ${styles.profileLink}`}
                     >
                       @{comment.author.username}

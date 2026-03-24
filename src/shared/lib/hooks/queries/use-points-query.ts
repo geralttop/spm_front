@@ -5,11 +5,17 @@ import {
   type UploadPointPhotosPayload,
 } from "@/shared/api";
 
-export function usePointsQuery(userId?: number) {
+export function usePointsQuery(
+  userId?: number,
+  options?: { enabled?: boolean }
+) {
+  const enabledByDefault =
+    userId === undefined ? true : userId > 0;
   return useQuery({
     queryKey: ["points", userId],
     queryFn: () =>
       pointsApi.getAll(userId ? { userId } : undefined),
+    enabled: options?.enabled !== false && enabledByDefault,
   });
 }
 
