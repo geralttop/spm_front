@@ -12,7 +12,7 @@
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 20px color-mix(in srgb, var(--foreground) 12%, transparent);
 }
 
 .chart-card {
@@ -20,7 +20,7 @@
 }
 
 .chart-card:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 16px color-mix(in srgb, var(--foreground) 10%, transparent);
 }
 
 /* Анимация появления */
@@ -46,11 +46,11 @@
 
 .recharts-cartesian-axis-tick-value {
   font-size: 12px;
-  fill: #6b7280;
+  fill: var(--muted-foreground);
 }
 
 .recharts-legend-item-text {
-  color: #374151 !important;
+  color: var(--text-main) !important;
 }
 
 /* Адаптивность */

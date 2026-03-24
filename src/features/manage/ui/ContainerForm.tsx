@@ -36,7 +36,7 @@ export function ContainerForm({ editingContainer, onSuccess, onCancel }: Contain
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-text-main mb-2">
-            {t('manage.containerForm.title')} <span className="text-red-500">{t('manage.containerForm.required')}</span>
+            {t('manage.containerForm.title')} <span className="text-destructive">{t('manage.containerForm.required')}</span>
           </label>
           <input
             type="text"
@@ -60,7 +60,7 @@ export function ContainerForm({ editingContainer, onSuccess, onCancel }: Contain
         </div>
         <div>
           <label className="block text-sm font-medium text-text-main mb-2">
-            {t('manage.containerForm.color')} <span className="text-red-500">{t('manage.containerForm.required')}</span>
+            {t('manage.containerForm.color')} <span className="text-destructive">{t('manage.containerForm.required')}</span>
           </label>
           <div className="flex items-center gap-3">
             <input
@@ -85,7 +85,7 @@ export function ContainerForm({ editingContainer, onSuccess, onCancel }: Contain
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {isSubmitting ? t('manage.containerForm.saving') : editingContainer ? t('manage.containerForm.save') : t('manage.containerForm.create')}
           </button>

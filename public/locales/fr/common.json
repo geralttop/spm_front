@@ -594,6 +594,42 @@
     "dragTip": "Faites glisser les éléments avec votre souris pour modifier l'ordre. Les modifications sont enregistrées automatiquement.",
     "language": "Langue de l'interface",
     "languageDescription": "Sélectionnez la langue de l'interface de l'application",
+    "colorScheme": "Schéma de couleurs",
+    "colorSchemeDescription": "Jeu de couleurs pour les modes clair et sombre. Basculez clair/sombre depuis l'en-tête du site.",
+    "colorPalette": {
+      "default": {
+        "name": "Classique",
+        "description": "Fond neutre et accent bleu, style éditeur"
+      },
+      "slate": {
+        "name": "Ardoise",
+        "description": "Tons bleu-gris froids"
+      },
+      "warm": {
+        "name": "Chaud",
+        "description": "Fond crème et accents ambrés"
+      },
+      "forest": {
+        "name": "Forêt",
+        "description": "Tons verts doux"
+      },
+      "lavender": {
+        "name": "Lavande",
+        "description": "Fond lilas et accents violets"
+      },
+      "rose": {
+        "name": "Rose",
+        "description": "Tons et accents roses"
+      },
+      "ocean": {
+        "name": "Océan",
+        "description": "Tons turquoise et cyan marins"
+      },
+      "sunset": {
+        "name": "Coucher de soleil",
+        "description": "Fond pêche et accents orange-corail"
+      }
+    },
     "mapStyles": "Styles de carte",
     "mapStylesDescription": "Sélectionnez les styles de carte qui seront disponibles dans la liste déroulante",
     "default": "Par défaut",

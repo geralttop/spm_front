@@ -157,7 +157,7 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
                   latitude={point.coords.coordinates[1]}
                 >
                   <MarkerContent>
-                    <div className="size-4 rounded-full bg-primary border-2 border-white shadow-lg" />
+                    <div className="size-4 rounded-full bg-primary border-2 border-background shadow-lg" />
                   </MarkerContent>
                   <MarkerTooltip>{point.name}</MarkerTooltip>
                   <MarkerPopup>

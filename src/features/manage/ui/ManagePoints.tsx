@@ -77,7 +77,7 @@ export function ManagePoints() {
           </div>
           <button
             onClick={() => handleDeletePoint(point.id)}
-            className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors shrink-0"
+            className="p-1.5 sm:p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors shrink-0"
             title={t('manage.managePoints.delete')}
           >
             <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />

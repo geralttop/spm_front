@@ -577,6 +577,42 @@
     "dragTip": "Drag items with your mouse to change the order. Changes are saved automatically.",
     "language": "Interface Language",
     "languageDescription": "Select the language for the application interface",
+    "colorScheme": "Color scheme",
+    "colorSchemeDescription": "Color sets for light and dark mode. Switch light/dark from the site header.",
+    "colorPalette": {
+      "default": {
+        "name": "Classic",
+        "description": "Neutral background and blue accent, editor-style"
+      },
+      "slate": {
+        "name": "Slate",
+        "description": "Cool blue-gray tones"
+      },
+      "warm": {
+        "name": "Warm",
+        "description": "Cream background and amber accents"
+      },
+      "forest": {
+        "name": "Forest",
+        "description": "Soft green tones"
+      },
+      "lavender": {
+        "name": "Lavender",
+        "description": "Lilac background and violet accents"
+      },
+      "rose": {
+        "name": "Rose",
+        "description": "Pink tones and accents"
+      },
+      "ocean": {
+        "name": "Ocean",
+        "description": "Teal and cyan sea tones"
+      },
+      "sunset": {
+        "name": "Sunset",
+        "description": "Peach background and orange-coral accents"
+      }
+    },
     "mapStyles": "Map Styles",
     "mapStylesDescription": "Select which map styles will be available in the dropdown",
     "default": "Default",

@@ -1,16 +1,19 @@
 "use client";
 
-import { useEffect } from "react";
 import { useThemeStore } from "../store/theme-store";
 
 export function useTheme() {
-  const { theme, setTheme, toggleTheme } = useThemeStore();
+  const theme = useThemeStore((state) => state.theme);
+  const colorPalette = useThemeStore((state) => state.colorPalette);
+  const setTheme = useThemeStore((state) => state.setTheme);
+  const setColorPalette = useThemeStore((state) => state.setColorPalette);
+  const toggleTheme = useThemeStore((state) => state.toggleTheme);
 
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(theme);
-  }, [theme]);
-
-  return { theme, setTheme, toggleTheme };
+  return {
+    theme,
+    colorPalette,
+    setTheme,
+    setColorPalette,
+    toggleTheme,
+  };
 }

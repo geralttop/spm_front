@@ -209,10 +209,16 @@ export const PointCard = React.memo(function PointCard({
             <Tag className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
             <span className="text-text-muted">{t("profile.category")}:</span>
             <span
-              className="font-medium px-2 py-1 rounded text-white text-xs flex-shrink-0"
-              style={{
-                backgroundColor: point.category?.color || "#6B7280",
-              }}
+              className={`font-medium px-2 py-1 rounded text-xs flex-shrink-0 ${
+                point.category?.color
+                  ? "text-white"
+                  : "bg-muted text-text-main"
+              }`}
+              style={
+                point.category?.color
+                  ? { backgroundColor: point.category.color }
+                  : undefined
+              }
             >
               {point.category?.name || t("profile.noCategory")}
             </span>

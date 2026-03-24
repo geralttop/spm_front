@@ -35,7 +35,7 @@ export function CategoryForm({ editingCategory, onSuccess, onCancel }: CategoryF
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-text-main mb-2">
-            {t('manage.categoryForm.name')} <span className="text-red-500">{t('manage.categoryForm.required')}</span>
+            {t('manage.categoryForm.name')} <span className="text-destructive">{t('manage.categoryForm.required')}</span>
           </label>
           <input
             type="text"
@@ -61,7 +61,7 @@ export function CategoryForm({ editingCategory, onSuccess, onCancel }: CategoryF
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
           >
             {isSubmitting ? t('manage.categoryForm.saving') : editingCategory ? t('manage.categoryForm.save') : t('manage.categoryForm.create')}
           </button>

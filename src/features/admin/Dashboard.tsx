@@ -34,18 +34,26 @@ const getAccessToken = () => {
   }
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D'];
+/** Серии для графиков — из CSS-переменных темы */
+const CHART_FILLS = [
+  "var(--primary)",
+  "var(--secondary)",
+  "var(--ring)",
+  "var(--muted-foreground)",
+  "var(--destructive)",
+  "var(--accent-foreground)",
+];
 
 // Простой компонент карточки
 const Card = ({ children, className = '' }: { children: React.ReactNode; className?: string }) => (
-  <div className={`bg-white rounded-lg shadow-md p-6 animate-fade-in ${className}`}>
+  <div className={`rounded-lg border border-border bg-card p-6 shadow-sm animate-fade-in ${className}`}>
     {children}
   </div>
 );
 
 const StatCard = ({ title, value, color }: { title: string; value: number; color: string }) => (
   <Card className="stat-card">
-    <h3 className="text-sm font-medium text-gray-600 mb-2">{title}</h3>
+    <h3 className="text-sm font-medium text-text-muted mb-2">{title}</h3>
     <div className={`text-4xl font-bold ${color}`}>
       {value.toLocaleString()}
     </div>
@@ -54,7 +62,7 @@ const StatCard = ({ title, value, color }: { title: string; value: number; color
 
 const ChartCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <Card className="chart-card">
-    <h3 className="text-lg font-semibold mb-4 text-gray-800">{title}</h3>
+    <h3 className="text-lg font-semibold mb-4 text-text-main">{title}</h3>
     {children}
   </Card>
 );
@@ -133,16 +141,16 @@ export const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">{t('admin.dashboard.loadingStats')}</div>
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="text-xl text-text-main">{t('admin.dashboard.loadingStats')}</div>
       </div>
     );
   }
 
   if (!stats) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl">{t('admin.dashboard.loadFailed')}</div>
+      <div className="flex items-center justify-center h-screen bg-background">
+        <div className="text-xl text-text-main">{t('admin.dashboard.loadFailed')}</div>
       </div>
     );
   }
@@ -172,35 +180,35 @@ export const Dashboard = () => {
   ] : [];
 
   return (
-    <div className="p-6 space-y-6 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">{t('admin.dashboard.title')}</h1>
+    <div className="p-6 space-y-6 bg-background min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-text-main">{t('admin.dashboard.title')}</h1>
 
       {/* Карточки с общей статистикой */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard 
           title={t('admin.dashboard.users')} 
           value={stats.totals.users} 
-          color="text-blue-600" 
+          color="text-primary" 
         />
         <StatCard 
           title={t('admin.dashboard.points')} 
           value={stats.totals.points} 
-          color="text-green-600" 
+          color="text-secondary" 
         />
         <StatCard 
           title={t('admin.dashboard.categories')} 
           value={stats.totals.categories} 
-          color="text-yellow-600" 
+          color="text-primary/80" 
         />
         <StatCard 
           title={t('admin.dashboard.containers')} 
           value={stats.totals.containers} 
-          color="text-purple-600" 
+          color="text-secondary/90" 
         />
         <StatCard 
           title={t('admin.dashboard.reports')} 
           value={reportsStats?.total || 0} 
-          color="text-red-600" 
+          color="text-destructive" 
         />
       </div>
 
@@ -210,17 +218,17 @@ export const Dashboard = () => {
           <StatCard 
             title={t('admin.dashboard.pendingReview')} 
             value={reportsStats.pending} 
-            color="text-orange-600" 
+            color="text-primary" 
           />
           <StatCard 
             title={t('admin.dashboard.resolved')} 
             value={reportsStats.resolved} 
-            color="text-green-600" 
+            color="text-secondary" 
           />
           <StatCard 
             title={t('admin.dashboard.dismissed')} 
             value={reportsStats.dismissed} 
-            color="text-gray-600" 
+            color="text-muted-foreground" 
           />
         </div>
       )}
@@ -240,13 +248,13 @@ export const Dashboard = () => {
                   `${name}: ${((percent || 0) * 100).toFixed(0)}%`
                 }
                 outerRadius={80}
-                fill="#8884d8"
+                fill="var(--primary)"
                 dataKey="value"
               >
                 {usersData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
+                    fill={CHART_FILLS[index % CHART_FILLS.length]}
                   />
                 ))}
               </Pie>
@@ -268,13 +276,13 @@ export const Dashboard = () => {
                   `${name}: ${((percent || 0) * 100).toFixed(0)}%`
                 }
                 outerRadius={80}
-                fill="#8884d8"
+                fill="var(--secondary)"
                 dataKey="value"
               >
                 {verificationData.map((entry, index) => (
                   <Cell
                     key={`cell-${index}`}
-                    fill={COLORS[index + 2 % COLORS.length]}
+                    fill={CHART_FILLS[(index + 2) % CHART_FILLS.length]}
                   />
                 ))}
               </Pie>
@@ -287,14 +295,14 @@ export const Dashboard = () => {
         <ChartCard title={t('admin.dashboard.pointsByCategory')}>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={stats.pointsByCategory}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#8884d8" name={t('admin.dashboard.pointCount')}>
+              <Bar dataKey="count" fill="var(--primary)" name={t('admin.dashboard.pointCount')}>
                 {stats.pointsByCategory.map((entry: any, index: number) => (
-                  <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={entry.color || CHART_FILLS[index % CHART_FILLS.length]} />
                 ))}
               </Bar>
             </BarChart>
@@ -305,12 +313,12 @@ export const Dashboard = () => {
         <ChartCard title={t('admin.dashboard.topAuthors')}>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={stats.pointsByAuthor} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
               <XAxis type="number" />
               <YAxis dataKey="username" type="category" width={100} />
               <Tooltip />
               <Legend />
-              <Bar dataKey="count" fill="#82ca9d" name={t('admin.dashboard.pointsCreated')} />
+              <Bar dataKey="count" fill="var(--secondary)" name={t('admin.dashboard.pointsCreated')} />
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
@@ -321,7 +329,7 @@ export const Dashboard = () => {
             <ChartCard title={t('admin.dashboard.pointsTimeline')}>
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={stats.pointsTimeline}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="date" />
                   <YAxis />
                   <Tooltip />
@@ -329,7 +337,7 @@ export const Dashboard = () => {
                   <Line
                     type="monotone"
                     dataKey="count"
-                    stroke="#8884d8"
+                    stroke="var(--primary)"
                     name={t('admin.dashboard.pointsCreated')}
                     strokeWidth={2}
                   />
@@ -354,13 +362,13 @@ export const Dashboard = () => {
                       `${name}: ${((percent || 0) * 100).toFixed(0)}%`
                     }
                     outerRadius={80}
-                    fill="#8884d8"
+                    fill="var(--primary)"
                     dataKey="value"
                   >
                     {reportsStatusData.map((entry, index) => (
                       <Cell
                         key={`cell-${index}`}
-                        fill={['#f59e0b', '#10b981', '#6b7280'][index]}
+                        fill={[CHART_FILLS[0], CHART_FILLS[1], CHART_FILLS[3]][index]}
                       />
                     ))}
                   </Pie>
@@ -372,12 +380,12 @@ export const Dashboard = () => {
             <ChartCard title={t('admin.dashboard.reportsByType')}>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={reportsTypeData}>
-                  <CartesianGrid strokeDasharray="3 3" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="value" fill="#ef4444" name={t('admin.dashboard.reportsCount')} />
+                  <Bar dataKey="value" fill="var(--destructive)" name={t('admin.dashboard.reportsCount')} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartCard>

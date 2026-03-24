@@ -65,7 +65,7 @@ export default function MyCommentsPage() {
   };
 
   const goToPoint = (pointId: string) => {
-    router.push(`/?pointId=${pointId}`);
+    router.push(`/points/${pointId}`);
   };
 
   if (loading) {

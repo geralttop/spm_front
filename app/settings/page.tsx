@@ -5,10 +5,15 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/shared/ui";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
-import { useTranslation, useMapSettingsQuery } from "@/shared/lib/hooks";
+import { useTranslation, useMapSettingsQuery, useTheme } from "@/shared/lib/hooks";
+import {
+  COLOR_PALETTE_IDS,
+  COLOR_PALETTE_PREVIEWS,
+  type ColorPaletteId,
+} from "@/shared/config/theme";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
-import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban } from "lucide-react";
+import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 const MENU_ICONS = {
@@ -45,6 +50,7 @@ export default function SettingsPage() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
   const [isLoading, setIsLoading] = useState(true);
   const { t, currentLanguage, changeLanguage } = useTranslation();
+  const { colorPalette, setColorPalette } = useTheme();
   const { data: mapSettings } = useMapSettingsQuery();
   
   const queryClient = useQueryClient();
@@ -301,6 +307,75 @@ export default function SettingsPage() {
             </div>
           </div>
 
+          {/* Color scheme */}
+          <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
+            <div className="mb-3 sm:mb-4">
+              <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
+                <Palette className="h-5 w-5 shrink-0" />
+                {t("settings.colorScheme")}
+              </h2>
+              <p className="text-xs sm:text-sm text-text-muted mt-1">
+                {t("settings.colorSchemeDescription")}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+              {COLOR_PALETTE_IDS.map((paletteId: ColorPaletteId) => {
+                const isSelected = colorPalette === paletteId;
+                const preview = COLOR_PALETTE_PREVIEWS[paletteId];
+                return (
+                  <button
+                    key={paletteId}
+                    type="button"
+                    onClick={() => setColorPalette(paletteId)}
+                    className={`text-left relative p-2.5 sm:p-3 rounded-lg border transition-all w-full ${
+                      isSelected
+                        ? "border-primary bg-primary/5 hover:bg-primary/10"
+                        : "border-border bg-muted/30 hover:bg-muted/50"
+                    }`}
+                  >
+                    <div className="flex items-start gap-2.5 sm:gap-3">
+                      <div
+                        className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected
+                            ? "border-primary bg-primary"
+                            : "border-border bg-background"
+                        }`}
+                      >
+                        {isSelected && (
+                          <Check className="h-3 w-3 text-primary-foreground" />
+                        )}
+                      </div>
+                      <div className="flex gap-2 flex-1 min-w-0">
+                        <div
+                          className="shrink-0 w-10 h-10 rounded-md border border-border overflow-hidden flex flex-col shadow-sm"
+                          aria-hidden
+                        >
+                          <div
+                            className="h-1/2 w-full"
+                            style={{ backgroundColor: preview.background }}
+                          />
+                          <div
+                            className="h-1/2 w-full"
+                            style={{ backgroundColor: preview.primary }}
+                          />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <h3 className="font-medium text-sm text-text-main">
+                            {t(`settings.colorPalette.${paletteId}.name`)}
+                          </h3>
+                          <p className="text-xs text-text-muted line-clamp-2 mt-0.5">
+                            {t(`settings.colorPalette.${paletteId}.description`)}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Map Styles Settings */}
           <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
             <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between mb-4 sm:mb-6">
@@ -353,7 +428,7 @@ export default function SettingsPage() {
                             : 'border-border bg-background'
                         } ${!canDisable || settingsLoading ? 'opacity-50' : ''}`}
                       >
-                        {isEnabled && <Check className="h-3 w-3 text-white" />}
+                        {isEnabled && <Check className="h-3 w-3 text-primary-foreground" />}
                       </div>
                       
                       <div className="flex-1 min-w-0">

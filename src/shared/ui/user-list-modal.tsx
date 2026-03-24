@@ -97,11 +97,6 @@ export function UserListModal({
                       e.stopPropagation();
                       onFollowToggle(user.id, followingStates[user.id] || false);
                     }}
-                    className={
-                      followingStates[user.id]
-                        ? "bg-red-500 hover:bg-red-600 text-white border-red-500"
-                        : "bg-blue-500 hover:bg-blue-600 text-white border-blue-500"
-                    }
                   >
                     {actionLoadingStates[user.id]
                       ? "..."

@@ -463,8 +463,8 @@ export default function MapPage() {
           />
 
           {error && (
-            <div className="absolute left-1/2 top-16 z-20 max-w-[calc(100%-1rem)] -translate-x-1/2 rounded-lg border border-red-200 bg-red-50 p-3 shadow-lg dark:border-red-800 dark:bg-red-900/20 sm:top-20 sm:max-w-lg sm:p-4">
-              <p className="text-center text-xs text-red-600 dark:text-red-400 sm:text-left sm:text-sm">
+            <div className="absolute left-1/2 top-16 z-20 max-w-[calc(100%-1rem)] -translate-x-1/2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 shadow-lg sm:top-20 sm:max-w-lg sm:p-4">
+              <p className="text-center text-xs text-destructive sm:text-left sm:text-sm">
                 {error}
               </p>
             </div>

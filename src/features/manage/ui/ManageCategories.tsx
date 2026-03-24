@@ -138,7 +138,7 @@ export function ManageCategories() {
         {!showCategoryForm && !editingCategory && (
           <button
             onClick={() => setShowCategoryForm(true)}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm sm:text-base self-start xs:self-auto"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm sm:text-base self-start xs:self-auto"
           >
             <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
             {t('manage.manageCategories.create')}
@@ -146,8 +146,8 @@ export function ManageCategories() {
         )}
       </div>
 
-      <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-        <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-300">
+      <div className="mb-4 p-3 rounded-lg border border-primary/25 bg-primary/10">
+        <p className="text-xs sm:text-sm text-text-main">
           {t('manage.manageCategories.tip')}
         </p>
       </div>
@@ -170,7 +170,7 @@ export function ManageCategories() {
               draggedPoint &&
               draggedPoint.category !== null &&
               (systemCategoryId == null || draggedPoint.category?.id !== systemCategoryId)
-                ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-950/30'
+                ? 'border-primary/40 bg-primary/10'
                 : 'border-border'
             }`}
             onDragOver={handleDragOver}
@@ -181,7 +181,7 @@ export function ManageCategories() {
                 <button
                   type="button"
                   onClick={() => toggleCategoryExpand(MANAGE_VIRTUAL_CATEGORY_EXPAND_ID)}
-                  className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors shrink-0"
+                  className="p-1 hover:bg-accent rounded transition-colors shrink-0"
                 >
                   {isVirtualCategoryExpanded ? (
                     <ChevronDown className="h-4 w-4" />
@@ -189,8 +189,8 @@ export function ManageCategories() {
                     <ChevronRight className="h-4 w-4" />
                   )}
                 </button>
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center shrink-0">
-                  <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-gray-600 dark:text-gray-300" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
+                  <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-sm sm:text-base text-text-main truncate">{t('manage.manageCategories.noCategory')}</h3>
@@ -250,7 +250,7 @@ export function ManageCategories() {
               <div 
                 key={category.id} 
                 className={`bg-surface rounded-lg border-2 transition-colors ${
-                  draggedPoint && draggedPoint.category?.id !== category.id ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-950/30' : 'border-border'
+                  draggedPoint && draggedPoint.category?.id !== category.id ? 'border-primary/40 bg-primary/10' : 'border-border'
                 }`}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDropOnCategory(category.id)}
@@ -259,7 +259,7 @@ export function ManageCategories() {
                   <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                     <button
                       onClick={() => toggleCategoryExpand(category.id)}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors shrink-0"
+                      className="p-1 hover:bg-accent rounded transition-colors shrink-0"
                     >
                       {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>
@@ -274,13 +274,13 @@ export function ManageCategories() {
                   <div className="flex gap-1 sm:gap-2 shrink-0">
                     <button
                       onClick={() => setEditingCategory(category)}
-                      className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
+                      className="p-1.5 sm:p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                     >
                       <Edit2 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       onClick={() => handleDeleteCategory(category.id)}
-                      className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                      className="p-1.5 sm:p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                       disabled={categoryPoints.length > 0}
                     >
                       <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />

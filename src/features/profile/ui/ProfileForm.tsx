@@ -100,7 +100,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
                 className="text-base touch-target"
               />
               {errors.username && (
-                <p className="mt-1 text-sm text-red-600">{errors.username}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.username}</p>
               )}
             </>
           ) : (
@@ -133,7 +133,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
                 className="text-base touch-target min-h-[100px]"
               />
               {errors.bio && (
-                <p className="mt-1 text-sm text-red-600">{errors.bio}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.bio}</p>
               )}
             </>
           ) : (
@@ -167,7 +167,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
         )}
 
         {errors.submit && (
-          <p className="text-sm text-red-600">{errors.submit}</p>
+          <p className="text-sm text-destructive">{errors.submit}</p>
         )}
       </form>
     </div>

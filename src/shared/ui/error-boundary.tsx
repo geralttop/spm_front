@@ -66,7 +66,7 @@ export class ErrorBoundary extends React.Component<
           <button
             type="button"
             onClick={this.reset}
-            className="px-4 py-2 rounded-lg bg-primary text-white hover:bg-primary/90"
+            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90"
           >
             {t("errors.unexpected.retry")}
           </button>

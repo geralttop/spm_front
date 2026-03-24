@@ -212,10 +212,22 @@ export const ReportList = () => {
           source="status" 
           label={t('admin.reports.status')}
           sx={{
-            '&.chip-pending': { backgroundColor: '#fff3cd', color: '#856404' },
-            '&.chip-reviewed': { backgroundColor: '#d1ecf1', color: '#0c5460' },
-            '&.chip-resolved': { backgroundColor: '#d4edda', color: '#155724' },
-            '&.chip-dismissed': { backgroundColor: '#f8d7da', color: '#721c24' },
+            '&.chip-pending': {
+              backgroundColor: 'color-mix(in srgb, var(--primary) 18%, var(--background))',
+              color: 'var(--text-main)',
+            },
+            '&.chip-reviewed': {
+              backgroundColor: 'var(--muted)',
+              color: 'var(--text-main)',
+            },
+            '&.chip-resolved': {
+              backgroundColor: 'color-mix(in srgb, var(--secondary) 12%, var(--background))',
+              color: 'var(--secondary-foreground)',
+            },
+            '&.chip-dismissed': {
+              backgroundColor: 'color-mix(in srgb, var(--destructive) 15%, var(--background))',
+              color: 'var(--destructive)',
+            },
           }}
         />
         <TextField source="reporter.username" label={t('admin.reports.reporter')} />

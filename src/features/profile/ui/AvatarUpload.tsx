@@ -104,7 +104,7 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
               size="sm"
               onClick={handleDelete}
               disabled={isUploading}
-              className="gap-2 text-red-600 hover:text-red-700 touch-target w-full sm:w-auto"
+              className="gap-2 text-destructive hover:text-destructive/90 touch-target w-full sm:w-auto"
             >
               <Trash2 className="h-4 w-4" />
               {t('profile.avatar.delete')}

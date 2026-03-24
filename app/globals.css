@@ -34,63 +34,70 @@
   --radius-2xl: calc(var(--radius) + 8px);
 }
 
-/* Светлая тема — в стиле Cursor/VS Code */
+/* Fallback до гидрации: палитра default, светлый режим (не чисто белый фон) */
 :root {
   --radius: 0.5rem;
-
-  /* Основные цвета */
-  --background: #ffffff;
+  --background: #eef1f4;
   --foreground: #3c3c3c;
   --text-main: #3c3c3c;
   --text-muted: #6e6e6e;
-
-  /* Primary (синий акцент как в Cursor) */
   --primary: #0e639c;
   --primary-foreground: #ffffff;
-
-  /* Secondary */
   --secondary: #3794ff;
   --secondary-foreground: #ffffff;
-
-  /* Card/Container */
-  --card: #ffffff;
+  --card: #f8f9fb;
   --card-foreground: #3c3c3c;
-
-  /* Дополнительные цвета */
-  --border: #e5e5e5;
-  --input: #e5e5e5;
+  --border: #dde2e8;
+  --input: #dde2e8;
   --ring: #0e639c;
-  --muted: #f3f3f3;
+  --muted: #e4e8ed;
   --muted-foreground: #6e6e6e;
-  --accent: #f3f3f3;
+  --accent: #e4e8ed;
   --accent-foreground: #3c3c3c;
   --destructive: #e51400;
   --destructive-foreground: #ffffff;
-  --popover: #ffffff;
+  --popover: #f8f9fb;
   --popover-foreground: #3c3c3c;
 }
 
-/* Темная тема — в стиле Cursor/VS Code (тёмно-серый + синий акцент) */
-.dark {
-  /* Основные цвета */
+/* --- Палитра default (Cursor / VS Code) --- */
+html.light:not([data-color-palette]),
+html.light[data-color-palette="default"] {
+  --background: #eef1f4;
+  --foreground: #3c3c3c;
+  --text-main: #3c3c3c;
+  --text-muted: #6e6e6e;
+  --primary: #0e639c;
+  --primary-foreground: #ffffff;
+  --secondary: #3794ff;
+  --secondary-foreground: #ffffff;
+  --card: #f8f9fb;
+  --card-foreground: #3c3c3c;
+  --border: #dde2e8;
+  --input: #dde2e8;
+  --ring: #0e639c;
+  --muted: #e4e8ed;
+  --muted-foreground: #6e6e6e;
+  --accent: #e4e8ed;
+  --accent-foreground: #3c3c3c;
+  --destructive: #e51400;
+  --destructive-foreground: #ffffff;
+  --popover: #f8f9fb;
+  --popover-foreground: #3c3c3c;
+}
+
+html.dark:not([data-color-palette]),
+html.dark[data-color-palette="default"] {
   --background: #1e1e1e;
   --foreground: #d4d4d4;
   --text-main: #d4d4d4;
   --text-muted: #858585;
-
-  /* Primary (синий акцент как в Cursor) */
   --primary: #0e639c;
   --primary-foreground: #ffffff;
-
-  /* Secondary (бирюзовый для второстепенных действий) */
   --secondary: #3794ff;
   --secondary-foreground: #1e1e1e;
-
-  /* Card/Container */
   --card: #252526;
   --card-foreground: #d4d4d4;
-
-  /* Дополнительные цвета */
   --border: #3c3c3c;
   --input: #3c3c3c;
   --ring: #0e639c;
@@ -102,6 +109,349 @@
   --destructive-foreground: #ffffff;
   --popover: #252526;
   --popover-foreground: #d4d4d4;
+}
+
+/* --- Палитра slate (холодный сине-серый) --- */
+html.light[data-color-palette="slate"] {
+  --background: #e8eef5;
+  --foreground: #1e293b;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #3b82f6;
+  --secondary-foreground: #ffffff;
+  --card: #f8fafc;
+  --card-foreground: #1e293b;
+  --border: #cbd5e1;
+  --input: #cbd5e1;
+  --ring: #2563eb;
+  --muted: #e2e8f0;
+  --muted-foreground: #64748b;
+  --accent: #e2e8f0;
+  --accent-foreground: #1e293b;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --popover: #f8fafc;
+  --popover-foreground: #1e293b;
+}
+
+html.dark[data-color-palette="slate"] {
+  --background: #0f172a;
+  --foreground: #e2e8f0;
+  --text-main: #e2e8f0;
+  --text-muted: #94a3b8;
+  --primary: #38bdf8;
+  --primary-foreground: #0f172a;
+  --secondary: #3b82f6;
+  --secondary-foreground: #f8fafc;
+  --card: #1e293b;
+  --card-foreground: #e2e8f0;
+  --border: #334155;
+  --input: #334155;
+  --ring: #38bdf8;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #334155;
+  --accent-foreground: #e2e8f0;
+  --destructive: #f87171;
+  --destructive-foreground: #0f172a;
+  --popover: #1e293b;
+  --popover-foreground: #e2e8f0;
+}
+
+/* --- Палитра warm (тёплый нейтраль) --- */
+html.light[data-color-palette="warm"] {
+  --background: #f5f0e8;
+  --foreground: #3d3833;
+  --text-main: #3d3833;
+  --text-muted: #78716c;
+  --primary: #b45309;
+  --primary-foreground: #fffbeb;
+  --secondary: #d97706;
+  --secondary-foreground: #fffbeb;
+  --card: #fffdf9;
+  --card-foreground: #3d3833;
+  --border: #e7e0d6;
+  --input: #e7e0d6;
+  --ring: #b45309;
+  --muted: #ebe4d9;
+  --muted-foreground: #78716c;
+  --accent: #ebe4d9;
+  --accent-foreground: #3d3833;
+  --destructive: #b91c1c;
+  --destructive-foreground: #fffbeb;
+  --popover: #fffdf9;
+  --popover-foreground: #3d3833;
+}
+
+html.dark[data-color-palette="warm"] {
+  --background: #1c1917;
+  --foreground: #e7e5e4;
+  --text-main: #e7e5e4;
+  --text-muted: #a8a29e;
+  --primary: #fb923c;
+  --primary-foreground: #1c1917;
+  --secondary: #f59e0b;
+  --secondary-foreground: #1c1917;
+  --card: #292524;
+  --card-foreground: #e7e5e4;
+  --border: #44403c;
+  --input: #44403c;
+  --ring: #fb923c;
+  --muted: #292524;
+  --muted-foreground: #a8a29e;
+  --accent: #44403c;
+  --accent-foreground: #e7e5e4;
+  --destructive: #f87171;
+  --destructive-foreground: #1c1917;
+  --popover: #292524;
+  --popover-foreground: #e7e5e4;
+}
+
+/* --- Палитра forest (мягкий зелёный) --- */
+html.light[data-color-palette="forest"] {
+  --background: #ecf3ef;
+  --foreground: #1a2e22;
+  --text-main: #1a2e22;
+  --text-muted: #52796a;
+  --primary: #166534;
+  --primary-foreground: #f0fdf4;
+  --secondary: #22c55e;
+  --secondary-foreground: #14532d;
+  --card: #f7faf8;
+  --card-foreground: #1a2e22;
+  --border: #c9ddd2;
+  --input: #c9ddd2;
+  --ring: #166534;
+  --muted: #dce8e2;
+  --muted-foreground: #52796a;
+  --accent: #dce8e2;
+  --accent-foreground: #1a2e22;
+  --destructive: #b91c1c;
+  --destructive-foreground: #f0fdf4;
+  --popover: #f7faf8;
+  --popover-foreground: #1a2e22;
+}
+
+html.dark[data-color-palette="forest"] {
+  --background: #0f1f17;
+  --foreground: #d8ebe2;
+  --text-main: #d8ebe2;
+  --text-muted: #7da896;
+  --primary: #4ade80;
+  --primary-foreground: #052e16;
+  --secondary: #22c55e;
+  --secondary-foreground: #052e16;
+  --card: #1a2e22;
+  --card-foreground: #d8ebe2;
+  --border: #2d4a3e;
+  --input: #2d4a3e;
+  --ring: #4ade80;
+  --muted: #1a2e22;
+  --muted-foreground: #7da896;
+  --accent: #2d4a3e;
+  --accent-foreground: #d8ebe2;
+  --destructive: #f87171;
+  --destructive-foreground: #052e16;
+  --popover: #1a2e22;
+  --popover-foreground: #d8ebe2;
+}
+
+/* --- Палитра lavender (сиреневый) --- */
+html.light[data-color-palette="lavender"] {
+  --background: #f3f0fa;
+  --foreground: #2e1065;
+  --text-main: #312e42;
+  --text-muted: #6b5f7a;
+  --primary: #6d28d9;
+  --primary-foreground: #faf5ff;
+  --secondary: #a78bfa;
+  --secondary-foreground: #2e1065;
+  --card: #faf8ff;
+  --card-foreground: #312e42;
+  --border: #e4d4f5;
+  --input: #e4d4f5;
+  --ring: #6d28d9;
+  --muted: #ede9fe;
+  --muted-foreground: #6b5f7a;
+  --accent: #ede9fe;
+  --accent-foreground: #312e42;
+  --destructive: #b91c1c;
+  --destructive-foreground: #faf5ff;
+  --popover: #faf8ff;
+  --popover-foreground: #312e42;
+}
+
+html.dark[data-color-palette="lavender"] {
+  --background: #1e1b2e;
+  --foreground: #e9e4f5;
+  --text-main: #e9e4f5;
+  --text-muted: #a89bb8;
+  --primary: #a78bfa;
+  --primary-foreground: #1e1b2e;
+  --secondary: #8b5cf6;
+  --secondary-foreground: #f5f3ff;
+  --card: #2d2640;
+  --card-foreground: #e9e4f5;
+  --border: #4c3f66;
+  --input: #4c3f66;
+  --ring: #a78bfa;
+  --muted: #2d2640;
+  --muted-foreground: #a89bb8;
+  --accent: #4c3f66;
+  --accent-foreground: #e9e4f5;
+  --destructive: #f87171;
+  --destructive-foreground: #1e1b2e;
+  --popover: #2d2640;
+  --popover-foreground: #e9e4f5;
+}
+
+/* --- Палитра rose (розовый) --- */
+html.light[data-color-palette="rose"] {
+  --background: #fdf2f4;
+  --foreground: #4c0519;
+  --text-main: #431f26;
+  --text-muted: #9f6b78;
+  --primary: #e11d48;
+  --primary-foreground: #fff1f2;
+  --secondary: #fb7185;
+  --secondary-foreground: #4c0519;
+  --card: #fff5f7;
+  --card-foreground: #431f26;
+  --border: #f9cfd9;
+  --input: #f9cfd9;
+  --ring: #e11d48;
+  --muted: #fce7ec;
+  --muted-foreground: #9f6b78;
+  --accent: #fce7ec;
+  --accent-foreground: #431f26;
+  --destructive: #b91c1c;
+  --destructive-foreground: #fff1f2;
+  --popover: #fff5f7;
+  --popover-foreground: #431f26;
+}
+
+html.dark[data-color-palette="rose"] {
+  --background: #1f1318;
+  --foreground: #fce7ec;
+  --text-main: #fce7ec;
+  --text-muted: #c79aa6;
+  --primary: #fb7185;
+  --primary-foreground: #1f1318;
+  --secondary: #f43f5e;
+  --secondary-foreground: #fff1f2;
+  --card: #3d1f2a;
+  --card-foreground: #fce7ec;
+  --border: #5c2d3d;
+  --input: #5c2d3d;
+  --ring: #fb7185;
+  --muted: #3d1f2a;
+  --muted-foreground: #c79aa6;
+  --accent: #5c2d3d;
+  --accent-foreground: #fce7ec;
+  --destructive: #f87171;
+  --destructive-foreground: #1f1318;
+  --popover: #3d1f2a;
+  --popover-foreground: #fce7ec;
+}
+
+/* --- Палитра ocean (бирюза / море) --- */
+html.light[data-color-palette="ocean"] {
+  --background: #ecfeff;
+  --foreground: #164e63;
+  --text-main: #164e63;
+  --text-muted: #5e8a96;
+  --primary: #0e7490;
+  --primary-foreground: #ecfeff;
+  --secondary: #06b6d4;
+  --secondary-foreground: #164e63;
+  --card: #f0fdff;
+  --card-foreground: #164e63;
+  --border: #bae6fd;
+  --input: #bae6fd;
+  --ring: #0e7490;
+  --muted: #cffafe;
+  --muted-foreground: #5e8a96;
+  --accent: #cffafe;
+  --accent-foreground: #164e63;
+  --destructive: #b91c1c;
+  --destructive-foreground: #ecfeff;
+  --popover: #f0fdff;
+  --popover-foreground: #164e63;
+}
+
+html.dark[data-color-palette="ocean"] {
+  --background: #082f35;
+  --foreground: #cffafe;
+  --text-main: #cffafe;
+  --text-muted: #7cbac7;
+  --primary: #22d3ee;
+  --primary-foreground: #082f35;
+  --secondary: #06b6d4;
+  --secondary-foreground: #ecfeff;
+  --card: #0c4a50;
+  --card-foreground: #cffafe;
+  --border: #155e66;
+  --input: #155e66;
+  --ring: #22d3ee;
+  --muted: #0c4a50;
+  --muted-foreground: #7cbac7;
+  --accent: #155e66;
+  --accent-foreground: #cffafe;
+  --destructive: #f87171;
+  --destructive-foreground: #082f35;
+  --popover: #0c4a50;
+  --popover-foreground: #cffafe;
+}
+
+/* --- Палитра sunset (закат, коралл и оранжевый) --- */
+html.light[data-color-palette="sunset"] {
+  --background: #fff7ed;
+  --foreground: #431407;
+  --text-main: #422006;
+  --text-muted: #9a6b4a;
+  --primary: #ea580c;
+  --primary-foreground: #fffbeb;
+  --secondary: #fb923c;
+  --secondary-foreground: #431407;
+  --card: #fffcf5;
+  --card-foreground: #422006;
+  --border: #fed7aa;
+  --input: #fed7aa;
+  --ring: #ea580c;
+  --muted: #ffedd5;
+  --muted-foreground: #9a6b4a;
+  --accent: #ffedd5;
+  --accent-foreground: #422006;
+  --destructive: #b91c1c;
+  --destructive-foreground: #fffbeb;
+  --popover: #fffcf5;
+  --popover-foreground: #422006;
+}
+
+html.dark[data-color-palette="sunset"] {
+  --background: #1c1410;
+  --foreground: #ffedd5;
+  --text-main: #ffedd5;
+  --text-muted: #c4a484;
+  --primary: #fb923c;
+  --primary-foreground: #1c1410;
+  --secondary: #f97316;
+  --secondary-foreground: #fffbeb;
+  --card: #2d1f18;
+  --card-foreground: #ffedd5;
+  --border: #4a3428;
+  --input: #4a3428;
+  --ring: #fb923c;
+  --muted: #2d1f18;
+  --muted-foreground: #c4a484;
+  --accent: #4a3428;
+  --accent-foreground: #ffedd5;
+  --destructive: #f87171;
+  --destructive-foreground: #1c1410;
+  --popover: #2d1f18;
+  --popover-foreground: #ffedd5;
 }
 
 @layer base {

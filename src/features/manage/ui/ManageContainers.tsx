@@ -144,7 +144,7 @@ export function ManageContainers() {
         {!showContainerForm && !editingContainer && (
           <button
             onClick={() => setShowContainerForm(true)}
-            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm sm:text-base self-start xs:self-auto"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors text-sm sm:text-base self-start xs:self-auto"
           >
             <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
             {t('manage.manageContainers.create')}
@@ -152,8 +152,8 @@ export function ManageContainers() {
         )}
       </div>
 
-      <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-        <p className="text-xs sm:text-sm text-blue-800 dark:text-blue-300">
+      <div className="mb-4 p-3 rounded-lg border border-primary/25 bg-primary/10">
+        <p className="text-xs sm:text-sm text-text-main">
           {t('manage.manageContainers.tip')}
         </p>
       </div>
@@ -176,7 +176,7 @@ export function ManageContainers() {
               draggedPoint &&
               draggedPoint.container !== null &&
               (systemContainerId == null || draggedPoint.container?.id !== systemContainerId)
-                ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-950/30'
+                ? 'border-primary/40 bg-primary/10'
                 : 'border-border'
             }`}
             onDragOver={handleDragOver}
@@ -187,7 +187,7 @@ export function ManageContainers() {
                 <button
                   type="button"
                   onClick={() => toggleContainerExpand(MANAGE_VIRTUAL_CONTAINER_EXPAND_ID)}
-                  className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors shrink-0"
+                  className="p-1 hover:bg-accent rounded transition-colors shrink-0"
                 >
                   {isVirtualContainerExpanded ? (
                     <ChevronDown className="h-4 w-4" />
@@ -199,7 +199,7 @@ export function ManageContainers() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-sm sm:text-base text-text-main truncate">{t('manage.manageContainers.noContainer')}</h3>
                   {virtualContainerPointsCount > 0 && (
-                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5 sm:mt-1">
+                    <p className="text-xs text-primary mt-0.5 sm:mt-1">
                       📍 {virtualContainerPointsCount} {t('manage.manageContainers.points')}
                     </p>
                   )}
@@ -263,7 +263,7 @@ export function ManageContainers() {
               <div 
                 key={container.id} 
                 className={`bg-surface rounded-lg border-2 transition-colors ${
-                  draggedPoint && draggedPoint.container?.id !== container.id ? 'border-blue-300 bg-blue-50 dark:border-blue-500/40 dark:bg-blue-950/30' : 'border-border'
+                  draggedPoint && draggedPoint.container?.id !== container.id ? 'border-primary/40 bg-primary/10' : 'border-border'
                 }`}
                 onDragOver={handleDragOver}
                 onDrop={() => handleDropOnContainer(container.id)}
@@ -272,7 +272,7 @@ export function ManageContainers() {
                   <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
                     <button
                       onClick={() => toggleContainerExpand(container.id)}
-                      className="p-1 hover:bg-gray-100 dark:hover:bg-white/10 rounded transition-colors shrink-0"
+                      className="p-1 hover:bg-accent rounded transition-colors shrink-0"
                     >
                       {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
                     </button>
@@ -287,20 +287,20 @@ export function ManageContainers() {
                         <p className="text-xs sm:text-sm text-text-muted mt-0.5 sm:mt-1 line-clamp-1 sm:line-clamp-none">{container.description}</p>
                       )}
                       {containerPoints.length > 0 && (
-                        <p className="text-xs text-blue-600 dark:text-blue-400 mt-0.5 sm:mt-1">📍 {containerPoints.length} {t('manage.manageContainers.points')}</p>
+                        <p className="text-xs text-primary mt-0.5 sm:mt-1">📍 {containerPoints.length} {t('manage.manageContainers.points')}</p>
                       )}
                     </div>
                   </div>
                   <div className="flex gap-1 sm:gap-2 shrink-0">
                     <button
                       onClick={() => setEditingContainer(container)}
-                      className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/30 rounded-lg transition-colors"
+                      className="p-1.5 sm:p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
                     >
                       <Edit2 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
                     <button
                       onClick={() => handleDeleteContainer(container.id)}
-                      className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg transition-colors"
+                      className="p-1.5 sm:p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                     >
                       <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>

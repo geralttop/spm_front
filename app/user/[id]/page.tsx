@@ -125,10 +125,7 @@ export default function UserProfilePage() {
               onClick={handleFollowToggleMain}
               disabled={actionLoading}
               variant={isFollowing ? "destructive" : "default"}
-              className={`shrink-0 touch-target text-sm sm:text-base ${isFollowing 
-                ? "bg-red-500 hover:bg-red-600 text-white border-red-500" 
-                : "bg-blue-500 hover:bg-blue-600 text-white border-blue-500"
-              }`}
+              className="shrink-0 touch-target text-sm sm:text-base"
             >
               {actionLoading ? "..." : isFollowing ? t("profile.unfollow") : t("profile.follow")}
             </Button>
