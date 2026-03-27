@@ -232,10 +232,22 @@ export const PointCard = React.memo(function PointCard({
             </span>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <Package className="h-3 w-3 sm:h-4 sm:w-4 text-text-muted flex-shrink-0" />
             <span className="text-text-muted">{t("profile.container")}:</span>
-            <span className="text-text-main font-medium truncate">
+            <span
+              className={`font-medium px-2 py-1 rounded text-xs flex-shrink-0 min-w-0 max-w-full truncate ${
+                point.container?.color
+                  ? "text-white"
+                  : "bg-muted text-text-main"
+              }`}
+              style={
+                point.container?.color
+                  ? { backgroundColor: point.container.color }
+                  : undefined
+              }
+              title={point.container?.title || t("profile.noContainer")}
+            >
               {point.container?.title || t("profile.noContainer")}
             </span>
           </div>
