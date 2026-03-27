@@ -1,6 +1,18 @@
 import { create } from 'zustand';
 import { type MapStyleKey } from '@/shared/config/map-styles';
-import { settingsApi, type PointCardInitialView } from '@/shared/api';
+import { settingsApi, type MapSettings, type PointCardInitialView } from '@/shared/api';
+
+/** Один параллельный запрос getMapSettings на все вызовы loadSettings без данных (защита от 429). */
+let mapSettingsFetchInFlight: Promise<MapSettings> | null = null;
+
+function fetchMapSettingsDeduped(): Promise<MapSettings> {
+  if (!mapSettingsFetchInFlight) {
+    mapSettingsFetchInFlight = settingsApi.getMapSettings().finally(() => {
+      mapSettingsFetchInFlight = null;
+    });
+  }
+  return mapSettingsFetchInFlight;
+}
 
 interface SettingsState {
   availableMapStyles: MapStyleKey[];
@@ -34,14 +46,18 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   isInitialized: false,
 
   loadSettings: async (settingsData) => {
-    if (get().isInitialized) return;
+    // Повторно применяем данные из API/кэша query, даже если уже инициализировались
+    // (например после смены настроек и invalidateQueries).
+    if (get().isInitialized && settingsData === undefined) {
+      return;
+    }
 
     set({ isLoading: true });
     try {
       let settings = settingsData;
 
       if (!settings) {
-        settings = await settingsApi.getMapSettings();
+        settings = await fetchMapSettingsDeduped();
       }
 
       set({

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { MapPin, Loader2, RefreshCw } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PointCard } from '@/src/shared/ui/point-card';
-import { Loading, ErrorMessage } from '@/shared/ui';
+import { ErrorMessage, PointCardSkeletonList } from '@/shared/ui';
 import { useFeedQuery } from '@/shared/lib/hooks';
 
 export default function FeedPage() {
@@ -36,10 +36,6 @@ export default function FeedPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (isLoading) {
-    return <Loading message={t('feed.loading')} fullScreen />;
-  }
-
   if (error) {
     return (
       <ErrorMessage
@@ -66,8 +62,10 @@ export default function FeedPage() {
             <span className="sm:inline">{t('feed.refresh')}</span>
           </button>
         </div>
-        
-        {points.length === 0 ? (
+
+        {isLoading ? (
+          <PointCardSkeletonList ariaLabel={t('feed.loading')} className="px-4 sm:px-0" />
+        ) : points.length === 0 ? (
           <div className="text-center py-12 px-4">
             <MapPin className="h-12 w-12 text-text-muted mx-auto mb-4" />
             <p className="text-text-muted mb-2 text-lg">{t('feed.empty')}</p>

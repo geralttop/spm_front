@@ -2,6 +2,7 @@
 
 import { MapPin } from 'lucide-react';
 import { PointCard } from '@/entities/point';
+import { PointCardSkeletonList } from '@/shared/ui';
 import type { Point } from '@/shared/types';
 import { useTranslation } from '@/shared/lib/hooks';
 
@@ -22,9 +23,10 @@ export function ProfilePoints({ points, loading, onRefetch }: ProfilePointsProps
       </h2>
 
       {loading ? (
-        <div className="text-center py-8 text-text-muted px-4 sm:px-0">
-          {t('profile.pointsLoading')}
-        </div>
+        <PointCardSkeletonList
+          ariaLabel={t('profile.pointsLoading')}
+          className="px-4 sm:px-0"
+        />
       ) : points.length === 0 ? (
         <div className="text-center py-8 text-text-muted px-4 sm:px-0">
           {t('profile.noPoints')}

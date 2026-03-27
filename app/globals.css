@@ -458,6 +458,12 @@ html.dark[data-color-palette="sunset"] {
   * {
     @apply border-border outline-ring/50;
   }
+  /* Edge: скрываем встроенную кнопку показа пароля, используем наш Eye/EyeOff */
+  input[type="password"]::-ms-reveal,
+  input[type="password"]::-ms-clear {
+    display: none;
+  }
+
   body {
     @apply bg-background text-text-main;
     font-feature-settings: "rlig" 1, "calt" 1;

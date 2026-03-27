@@ -82,9 +82,7 @@ export default function SettingsPage() {
       if (!isAuth) {
         router.push("/auth");
       } else {
-        if (mapSettings) {
-          await loadSettings(mapSettings);
-        }
+        await loadSettings(mapSettings ?? undefined);
         await loadSidebarOrder();
         setIsLoading(false);
       }

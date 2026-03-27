@@ -18,7 +18,7 @@ import {
 } from "@/features/points";
 import { PointPhotoCropModal } from "@/shared/ui/point-photo-crop-modal";
 import { MapPin, Tag, Package, ArrowLeft, Map as MapIcon, HelpCircle, Loader2, ImagePlus, X } from "lucide-react";
-import { MAP_STYLES } from "@/shared/config/map-styles";
+import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 
 export default function CreatePointPage() {
   const { t: tI18n } = useI18n();
@@ -32,6 +32,7 @@ export default function CreatePointPage() {
     userLocation,
     mapStyle,
     setMapStyle,
+    mapStyleReady,
     availableMapStyles,
     categories,
     containers,
@@ -227,18 +228,29 @@ export default function CreatePointPage() {
                   </p>
                   <div className="flex min-w-0 items-center gap-2 sm:max-w-xs sm:shrink-0">
                     <MapIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden />
-                    <select
-                      value={mapStyle}
-                      onChange={(e) => setMapStyle(e.target.value as any)}
-                      className="min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-2 text-sm text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target sm:min-h-0 sm:py-1"
-                      aria-label={t("map.mapStyle")}
-                    >
-                      {availableMapStyles.map((key) => (
-                        <option key={key} value={key}>
-                          {t(`mapStyles.${key}.name`)}
-                        </option>
-                      ))}
-                    </select>
+                    {mapStyleReady && mapStyle ? (
+                      <select
+                        value={mapStyle}
+                        onChange={(e) =>
+                          setMapStyle(e.target.value as MapStyleKey)
+                        }
+                        className="min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-2 text-sm text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target sm:min-h-0 sm:py-1"
+                        aria-label={t("map.mapStyle")}
+                      >
+                        {availableMapStyles.map((key) => (
+                          <option key={key} value={key}>
+                            {t(`mapStyles.${key}.name`)}
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <div
+                        className="h-10 min-w-[10rem] flex-1 animate-pulse rounded-md bg-muted dark:bg-muted/80 sm:h-9"
+                        role="status"
+                        aria-busy="true"
+                        aria-label={t("map.mapLoading")}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -249,6 +261,11 @@ export default function CreatePointPage() {
                     <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 px-1 text-text-muted">
                       <Loader2 className="h-8 w-8 shrink-0 animate-spin text-primary" aria-hidden />
                       <p className="text-center text-sm">{tI18n("createPoint.mapGeoLoading")}</p>
+                    </div>
+                  ) : !mapStyleReady || !mapStyle ? (
+                    <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 px-1 text-text-muted">
+                      <Loader2 className="h-8 w-8 shrink-0 animate-spin text-primary" aria-hidden />
+                      <p className="text-center text-sm">{t("map.mapLoading")}</p>
                     </div>
                   ) : (
                     <Map

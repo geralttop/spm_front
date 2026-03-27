@@ -18,6 +18,10 @@ export { EditPointModal } from "./edit-point-modal";
 export { MobileNav } from "./mobile-nav";
 export { BaseModal } from "./modal";
 export { PointCard } from "./point-card";
+export {
+  PointCardSkeleton,
+  PointCardSkeletonList,
+} from "./point-card-skeleton";
 export { FavoriteButton, ReportButton, EditButton } from "./action-buttons";
 export { ErrorBoundary } from "./error-boundary";
 export { CodeInput } from "./code-input";

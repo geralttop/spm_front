@@ -29,7 +29,14 @@ export default function ProfilePage() {
 
   const followersModal = useUserModal();
   const followingModal = useUserModal();
-  const { followingStates, actionLoadingStates, initializeFollowingStates, initializeFollowingList, handleFollowToggle } = useFollowManagement();
+  const {
+    followingStates,
+    actionLoadingStates,
+    followStatesLoading,
+    initializeFollowingStates,
+    initializeFollowingList,
+    handleFollowToggle,
+  } = useFollowManagement();
 
   useEffect(() => {
     const initAuth = async () => {
@@ -128,7 +135,7 @@ export default function ProfilePage() {
         onClose={followersModal.closeModal}
         title={t("profile.followers")}
         users={followersModal.users}
-        loading={followersModal.loading}
+        loading={followersModal.loading || followStatesLoading}
         emptyMessage={t("profile.noFollowers")}
         currentUserId={profile ? Number(profile.userId) : undefined}
         followingStates={followingStates}

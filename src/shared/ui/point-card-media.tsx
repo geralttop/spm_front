@@ -7,6 +7,7 @@ import {
   useTranslation,
   useMapSettingsQuery,
   useInView,
+  useMapStylePreference,
 } from "@/shared/lib/hooks";
 import {
   Map as MapComponent,
@@ -35,14 +36,11 @@ interface PointCardMediaProps {
 export function PointCardMedia({ point }: PointCardMediaProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
-  const {
-    availableMapStyles,
-    defaultMapStyle,
-    pointCardInitialView,
-    loadSettings,
-  } = useSettingsStore();
+  const { availableMapStyles, pointCardInitialView, loadSettings } =
+    useSettingsStore();
   const { data: mapSettings } = useMapSettingsQuery();
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
+  const { mapStyle, setMapStyle, isReady: mapStyleReady } =
+    useMapStylePreference();
 
   const photos = useMemo(
     () =>
@@ -68,7 +66,7 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
 
   useEffect(() => {
     if (accessToken && mapSettings) {
-      loadSettings(mapSettings);
+      void loadSettings(mapSettings);
     }
   }, [accessToken, mapSettings, loadSettings]);
 
@@ -80,17 +78,26 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
         <p className="text-xs sm:text-sm text-text-muted">{t("map.mapStyle")}</p>
         <div className="flex items-center gap-2">
           <MapIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-text-muted shrink-0" />
-          <select
-            value={mapStyle}
-            onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-            className="text-xs sm:text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target min-h-9 sm:min-h-[44px]"
-          >
-            {availableMapStyles.map((key) => (
-              <option key={key} value={key}>
-                {t(`mapStyles.${key}.name`)}
-              </option>
-            ))}
-          </select>
+          {mapStyleReady && mapStyle ? (
+            <select
+              value={mapStyle}
+              onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
+              className="text-xs sm:text-sm rounded-md border border-border bg-background px-2 py-1 text-text-main focus:outline-none focus:ring-2 focus:ring-ring touch-target min-h-9 sm:min-h-[44px]"
+            >
+              {availableMapStyles.map((key) => (
+                <option key={key} value={key}>
+                  {t(`mapStyles.${key}.name`)}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <div
+              className="min-h-9 min-w-[10rem] animate-pulse rounded-md bg-muted dark:bg-muted/80 sm:min-h-[44px]"
+              role="status"
+              aria-busy="true"
+              aria-label={t("map.mapLoading")}
+            />
+          )}
         </div>
       </div>
       <div className="-mx-3 sm:mx-0" ref={mapViewportRef}>
@@ -140,7 +147,7 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
             )}
             aria-hidden={view !== "map"}
           >
-            {mapViewportVisible ? (
+            {mapViewportVisible && mapStyleReady && mapStyle ? (
               <MapComponent
                 center={[
                   point.coords.coordinates[0],

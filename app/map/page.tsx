@@ -9,7 +9,7 @@ import { feedApi } from "@/shared/api";
 import type { FeedPoint } from "@/shared/api/feed";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
-import { useMapSettingsQuery } from "@/shared/lib/hooks";
+import { useMapSettingsQuery, useMapStylePreference } from "@/shared/lib/hooks";
 import {
   Map as MapComponent,
   MapControls,
@@ -72,14 +72,14 @@ export default function MapPage() {
   const { t } = useTranslation();
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
-  const { availableMapStyles, defaultMapStyle, loadSettings, isInitialized } = useSettingsStore();
+  const { availableMapStyles, loadSettings, isInitialized } = useSettingsStore();
   const { data: mapSettings } = useMapSettingsQuery();
+  const { mapStyle, setMapStyle, isReady: mapStyleReady } = useMapStylePreference();
 
   const [points, setPoints] = useState<FeedPoint[]>([]);
   const [allPoints, setAllPoints] = useState<FeedPoint[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
   const [center, setCenter] = useState<[number, number]>(FALLBACK_CENTER);
   const [zoom, setZoom] = useState(FALLBACK_ZOOM);
   const [filters, setFilters] = useState<MapFilters>({
@@ -164,17 +164,14 @@ export default function MapPage() {
       return;
     }
 
-    if (mapSettings) {
-      loadSettings(mapSettings);
-    }
+    void loadSettings(mapSettings ?? undefined);
   }, [accessToken, router, mapSettings, loadSettings]);
 
   useEffect(() => {
     if (isInitialized) {
-      setMapStyle(defaultMapStyle);
       void loadMapData();
     }
-  }, [isInitialized, defaultMapStyle, loadMapData]);
+  }, [isInitialized, loadMapData]);
 
   useEffect(() => {
     let filtered = [...allPoints];
@@ -228,7 +225,7 @@ export default function MapPage() {
 
   return (
     <div className="fixed inset-0 top-14 z-0 h-[calc(100vh-3.5rem)] w-full pb-[env(safe-area-inset-bottom)] sm:top-16 sm:h-[calc(100vh-4rem)] lg:left-64 lg:w-[calc(100%-16rem)]">
-      {loading ? (
+      {loading || !mapStyleReady ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-background">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
           <p className="text-sm text-text-muted">{t("map.loadingPoints")}</p>
@@ -246,7 +243,7 @@ export default function MapPage() {
               </label>
               <select
                 id="map-style-select"
-                value={mapStyle}
+                value={mapStyle!}
                 onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
                 className="w-full min-w-0 cursor-pointer appearance-none rounded-lg border-0 bg-transparent py-2 pl-2.5 pr-9 text-xs text-text-main focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary sm:py-2.5 sm:pl-3 sm:pr-10 sm:text-sm touch-manipulation"
                 title={t("map.mapStyle")}
@@ -280,8 +277,8 @@ export default function MapPage() {
             center={center}
             zoom={zoom}
             styles={{
-              light: MAP_STYLES[mapStyle].light,
-              dark: MAP_STYLES[mapStyle].dark,
+              light: MAP_STYLES[mapStyle!].light,
+              dark: MAP_STYLES[mapStyle!].dark,
             }}
           >
             {points.map((point) => {

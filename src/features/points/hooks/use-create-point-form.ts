@@ -10,7 +10,7 @@ import {
 import { type CreatePointRequest } from "@/shared/api";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
-import { useMapSettingsQuery } from "@/shared/lib/hooks";
+import { useMapSettingsQuery, useMapStylePreference } from "@/shared/lib/hooks";
 import {
   useCategoriesQuery,
   useContainersQuery,
@@ -19,7 +19,6 @@ import {
   useCreateContainerMutation,
   useUploadPointPhotosMutation,
 } from "@/shared/lib/hooks/queries";
-import { type MapStyleKey } from "@/shared/config/map-styles";
 import {
   POINT_CROP_OUTPUT_HEIGHT,
   POINT_CROP_OUTPUT_WIDTH,
@@ -38,8 +37,9 @@ export type PhotoDraft = {
 export function useCreatePointForm() {
   const router = useRouter();
   const checkAuth = useAuthStore((state) => state.checkAuth);
-  const { availableMapStyles, defaultMapStyle, loadSettings } = useSettingsStore();
+  const { availableMapStyles, loadSettings, isInitialized } = useSettingsStore();
   const { data: mapSettings } = useMapSettingsQuery();
+  const { mapStyle, setMapStyle, isReady: mapStyleReady } = useMapStylePreference();
 
   const { data: categories = [], isLoading: categoriesLoading } = useCategoriesQuery();
   const { data: containers = [], isLoading: containersLoading } = useContainersQuery();
@@ -64,8 +64,6 @@ export function useCreatePointForm() {
   const [showCreateCategory, setShowCreateCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryColor, setNewCategoryColor] = useState("#3B82F6");
-
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
 
   const [formData, setFormData] = useState<CreatePointRequest>({
     name: "",
@@ -110,8 +108,8 @@ export function useCreatePointForm() {
       const isAuth = await checkAuth();
       if (!isAuth) {
         router.push("/auth");
-      } else if (mapSettings) {
-        await loadSettings(mapSettings);
+      } else {
+        await loadSettings(mapSettings ?? undefined);
       }
     };
 
@@ -257,6 +255,7 @@ export function useCreatePointForm() {
     userLocation,
     mapStyle,
     setMapStyle,
+    mapStyleReady,
     availableMapStyles,
     categories,
     containers,

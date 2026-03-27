@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Heart, MapPin, RefreshCw, Calendar, User as UserIcon } from 'lucide-react';
 import { PointCard } from '@/src/shared/ui/point-card';
-import { Loading, ErrorMessage } from '@/shared/ui';
+import { ErrorMessage, PointCardSkeletonList } from '@/shared/ui';
 import { useFavoritesQuery, useTranslation } from '@/shared/lib/hooks';
 
 export default function FavoritesPage() {
@@ -38,10 +38,6 @@ export default function FavoritesPage() {
     }
   });
 
-  if (isLoading) {
-    return <Loading message={t('profile.loading')} fullScreen />;
-  }
-
   if (error) {
     return (
       <ErrorMessage
@@ -55,7 +51,26 @@ export default function FavoritesPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="mx-auto max-w-4xl px-0 py-4 sm:px-6 sm:py-6 lg:px-8">
-        
+        {isLoading ? (
+          <>
+            <div className="mb-6 flex flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between sm:px-0">
+              <div className="flex min-w-0 items-center gap-3">
+                <Heart className="h-5 w-5 shrink-0 text-destructive sm:h-6 sm:w-6" />
+                <h1 className="truncate text-xl font-bold text-text-main sm:text-2xl">{t('favorites.title')}</h1>
+              </div>
+              <button
+                type="button"
+                disabled
+                className="flex w-full touch-target items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3 py-2.5 text-sm opacity-60 min-h-[44px] sm:min-h-0 sm:w-auto sm:py-2"
+              >
+                <RefreshCw className="h-4 w-4 shrink-0 animate-spin" />
+                <span>{t('favorites.refresh')}</span>
+              </button>
+            </div>
+            <PointCardSkeletonList ariaLabel={t('feed.loading')} className="px-2 sm:px-0" />
+          </>
+        ) : (
+          <>
         <div className="mb-6 flex flex-col gap-4 px-2 sm:flex-row sm:items-center sm:justify-between sm:px-0">
           <div className="flex min-w-0 items-center gap-3">
             <Heart className="h-5 w-5 shrink-0 text-destructive sm:h-6 sm:w-6" />
@@ -162,6 +177,8 @@ export default function FavoritesPage() {
                 </div>
               ))}
             </div>
+          </>
+        )}
           </>
         )}
       </div>

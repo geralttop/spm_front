@@ -4,24 +4,36 @@ import { subscriptionsApi, type SubscriptionUser } from "@/shared/api";
 export function useFollowManagement() {
   const [followingStates, setFollowingStates] = useState<Record<number, boolean>>({});
   const [actionLoadingStates, setActionLoadingStates] = useState<Record<number, boolean>>({});
+  /** Пока идёт запрос статуса подписки по списку — не показываем кнопки (иначе мигание «Подписаться» → «Отписаться»). */
+  const [followStatesLoading, setFollowStatesLoading] = useState(false);
 
   const initializeFollowingStates = async (users: SubscriptionUser[]) => {
-    const followingStatesPromises = users.map(async (user) => {
-      try {
-        const userStats = await subscriptionsApi.getStats(user.id);
-        return { userId: user.id, isFollowing: userStats.isFollowing || false };
-      } catch (error) {
-        console.error(`Error getting stats for user ${user.id}:`, error);
-        return { userId: user.id, isFollowing: false };
-      }
-    });
+    if (users.length === 0) {
+      setFollowingStates({});
+      return;
+    }
 
-    const followingStatesResults = await Promise.all(followingStatesPromises);
-    const initialStates: Record<number, boolean> = {};
-    followingStatesResults.forEach(({ userId, isFollowing }) => {
-      initialStates[userId] = isFollowing;
-    });
-    setFollowingStates(initialStates);
+    setFollowStatesLoading(true);
+    try {
+      const followingStatesPromises = users.map(async (user) => {
+        try {
+          const userStats = await subscriptionsApi.getStats(user.id);
+          return { userId: user.id, isFollowing: userStats.isFollowing || false };
+        } catch (error) {
+          console.error(`Error getting stats for user ${user.id}:`, error);
+          return { userId: user.id, isFollowing: false };
+        }
+      });
+
+      const followingStatesResults = await Promise.all(followingStatesPromises);
+      const initialStates: Record<number, boolean> = {};
+      followingStatesResults.forEach(({ userId, isFollowing }) => {
+        initialStates[userId] = isFollowing;
+      });
+      setFollowingStates(initialStates);
+    } finally {
+      setFollowStatesLoading(false);
+    }
   };
 
   const initializeFollowingList = (users: SubscriptionUser[]) => {
@@ -59,6 +71,7 @@ export function useFollowManagement() {
   return {
     followingStates,
     actionLoadingStates,
+    followStatesLoading,
     initializeFollowingStates,
     initializeFollowingList,
     handleFollowToggle,

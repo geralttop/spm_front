@@ -17,6 +17,7 @@ import {
 } from "@/shared/lib/hooks/queries";
 import { User, Mail, Users, MapPin } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
+import { PointCardSkeletonList } from "@/shared/ui";
 
 export default function UserProfilePage() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function UserProfilePage() {
 
   const followersModal = useUserModal();
   const followingModal = useUserModal();
-  const { followingStates, actionLoadingStates, initializeFollowingStates, handleFollowToggle } =
+  const { followingStates, actionLoadingStates, followStatesLoading, initializeFollowingStates, handleFollowToggle } =
     useFollowManagement();
 
   useEffect(() => {
@@ -249,7 +250,10 @@ export default function UserProfilePage() {
             </h2>
 
             {pointsLoading ? (
-              <div className="px-4 py-8 text-center text-text-muted sm:px-0">{t("profile.loadingPoints")}</div>
+              <PointCardSkeletonList
+                ariaLabel={t("profile.loadingPoints")}
+                className="px-4 sm:px-0"
+              />
             ) : points.length === 0 ? (
               <div className="px-4 py-8 text-center text-text-muted sm:px-0">{t("profile.noUserPoints")}</div>
             ) : (
@@ -273,7 +277,7 @@ export default function UserProfilePage() {
         onClose={followersModal.closeModal}
         title={t("profile.followers")}
         users={followersModal.users}
-        loading={followersModal.loading}
+        loading={followersModal.loading || followStatesLoading}
         emptyMessage={t("profile.noFollowers")}
         currentUserId={currentUserId || undefined}
         followingStates={followingStates}
@@ -288,7 +292,7 @@ export default function UserProfilePage() {
         onClose={followingModal.closeModal}
         title={t("profile.following")}
         users={followingModal.users}
-        loading={followingModal.loading}
+        loading={followingModal.loading || followStatesLoading}
         emptyMessage={t("profile.noFollowing")}
         currentUserId={currentUserId || undefined}
         followingStates={followingStates}

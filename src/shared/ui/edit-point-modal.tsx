@@ -14,7 +14,7 @@ import { PointPhotoCropModal } from '@/shared/ui/point-photo-crop-modal';
 import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from '@/shared/ui/map';
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { MAP_STYLES, type MapStyleKey } from '@/shared/config/map-styles';
-import { useTranslation } from '@/shared/lib/hooks';
+import { useTranslation, useMapSettingsQuery, useMapStylePreference } from '@/shared/lib/hooks';
 
 const MAX_POINT_PHOTOS = 10;
 
@@ -27,7 +27,10 @@ interface EditPointModalProps {
 
 export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointModalProps) {
   const { t } = useTranslation();
-  const { availableMapStyles, defaultMapStyle } = useSettingsStore();
+  const { data: mapSettings } = useMapSettingsQuery();
+  const { availableMapStyles, loadSettings } = useSettingsStore();
+  const { mapStyle, setMapStyle, isReady: mapStyleReady, reset: resetMapStyle } =
+    useMapStylePreference();
   const uploadPhotosMutation = useUploadPointPhotosMutation();
   const deletePhotoMutation = useDeletePointPhotoMutation();
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '';
@@ -53,7 +56,6 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   const [containers, setContainers] = useState<Container[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [mapStyle, setMapStyle] = useState<MapStyleKey>(defaultMapStyle);
   const [markerPosition, setMarkerPosition] = useState({
     lng: point.coords.coordinates[0],
     lat: point.coords.coordinates[1],
@@ -66,6 +68,18 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
       clearQueue();
     }
   }, [isOpen, clearQueue]);
+
+  useEffect(() => {
+    if (isOpen && mapSettings) {
+      void loadSettings(mapSettings);
+    }
+  }, [isOpen, mapSettings, loadSettings]);
+
+  useEffect(() => {
+    if (isOpen) {
+      resetMapStyle();
+    }
+  }, [isOpen, resetMapStyle]);
 
   const loadData = async () => {
     try {
@@ -254,58 +268,73 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
               </label>
               <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:max-w-[min(100%,18rem)]">
                 <MapIcon className="h-4 w-4 shrink-0 text-text-muted" aria-hidden />
-                <select
-                  value={mapStyle}
-                  onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
-                  className="min-h-[44px] min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-2 text-sm text-text-main focus:outline-none focus:ring-2 focus:ring-ring sm:min-h-0 sm:flex-none sm:py-1"
-                  disabled={loading}
-                  aria-label={t('map.mapStyle')}
-                >
-                  {availableMapStyles.map((key) => (
-                    <option key={key} value={key}>
-                      {t(`mapStyles.${key}.name`)}
-                    </option>
-                  ))}
-                </select>
+                {mapStyleReady && mapStyle ? (
+                  <select
+                    value={mapStyle}
+                    onChange={(e) => setMapStyle(e.target.value as MapStyleKey)}
+                    className="min-h-[44px] min-w-0 flex-1 rounded-md border border-border bg-background px-2 py-2 text-sm text-text-main focus:outline-none focus:ring-2 focus:ring-ring sm:min-h-0 sm:flex-none sm:py-1"
+                    disabled={loading}
+                    aria-label={t('map.mapStyle')}
+                  >
+                    {availableMapStyles.map((key) => (
+                      <option key={key} value={key}>
+                        {t(`mapStyles.${key}.name`)}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <div
+                    className="min-h-[44px] min-w-[10rem] flex-1 animate-pulse rounded-md bg-muted dark:bg-muted/80 sm:min-h-0 sm:flex-none"
+                    role="status"
+                    aria-busy="true"
+                    aria-label={t('map.mapLoading')}
+                  />
+                )}
               </div>
             </div>
             <p className="mb-3 text-sm text-text-muted">{t('editPoint.coordinatesHint')}</p>
             <div className="mb-3 aspect-[4/3] w-full min-h-[200px] overflow-hidden rounded-lg border border-border sm:mb-4">
-              <Map
-                center={[markerPosition.lng, markerPosition.lat]}
-                zoom={12}
-                styles={{
-                  light: MAP_STYLES[mapStyle].light,
-                  dark: MAP_STYLES[mapStyle].dark,
-                }}
-              >
-                <MapMarker
-                  draggable
-                  longitude={markerPosition.lng}
-                  latitude={markerPosition.lat}
-                  onDragEnd={handleMarkerDragEnd}
+              {mapStyleReady && mapStyle ? (
+                <Map
+                  center={[markerPosition.lng, markerPosition.lat]}
+                  zoom={12}
+                  styles={{
+                    light: MAP_STYLES[mapStyle].light,
+                    dark: MAP_STYLES[mapStyle].dark,
+                  }}
                 >
-                  <MarkerContent>
-                    <div className="cursor-move">
-                      <MapPin className="fill-primary stroke-white" size={32} />
-                    </div>
-                  </MarkerContent>
-                  <MarkerPopup>
-                    <div className="space-y-1">
-                      <p className="font-medium text-text-main">{t('editPoint.mapPopupTitle')}</p>
-                      <p className="text-xs text-text-muted">
-                        {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
-                      </p>
-                    </div>
-                  </MarkerPopup>
-                </MapMarker>
-                <MapControls
-                  showZoom
-                  showLocate
-                  showFullscreen
-                  className="[&_button]:size-7 [&_svg]:size-3.5 sm:[&_button]:size-8 sm:[&_svg]:size-4"
-                />
-              </Map>
+                  <MapMarker
+                    draggable
+                    longitude={markerPosition.lng}
+                    latitude={markerPosition.lat}
+                    onDragEnd={handleMarkerDragEnd}
+                  >
+                    <MarkerContent>
+                      <div className="cursor-move">
+                        <MapPin className="fill-primary stroke-white" size={32} />
+                      </div>
+                    </MarkerContent>
+                    <MarkerPopup>
+                      <div className="space-y-1">
+                        <p className="font-medium text-text-main">{t('editPoint.mapPopupTitle')}</p>
+                        <p className="text-xs text-text-muted">
+                          {markerPosition.lat.toFixed(6)}, {markerPosition.lng.toFixed(6)}
+                        </p>
+                      </div>
+                    </MarkerPopup>
+                  </MapMarker>
+                  <MapControls
+                    showZoom
+                    showLocate
+                    showFullscreen
+                    className="[&_button]:size-7 [&_svg]:size-3.5 sm:[&_button]:size-8 sm:[&_svg]:size-4"
+                  />
+                </Map>
+              ) : (
+                <div className="flex h-full min-h-[200px] w-full flex-col items-center justify-center gap-2 bg-muted/30 px-4 text-center text-sm text-text-muted">
+                  {t('map.mapLoading')}
+                </div>
+              )}
             </div>
           </div>
 

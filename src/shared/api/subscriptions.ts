@@ -5,6 +5,8 @@ export interface SubscriptionUser {
   username: string;
   email: string;
   bio: string | null;
+  /** С бэкенда; для старых ответов может отсутствовать */
+  avatar?: string | null;
 }
 
 export interface SubscriptionStats {

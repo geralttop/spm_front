@@ -12,6 +12,7 @@ export {
   type PendingCrop,
 } from './use-point-photo-crop-queue';
 export { useFavoriteStatus } from './use-favorite-status';
+export { useMapStylePreference } from './use-map-style-preference';
 export {
   useSharedUserLocation,
   updateSharedUserCoords,
