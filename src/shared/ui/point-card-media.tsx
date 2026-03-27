@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { Map as MapIcon, Images } from "lucide-react";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
@@ -16,6 +16,7 @@ import {
   MarkerContent,
   MarkerPopup,
   MarkerTooltip,
+  useMap,
 } from "@/shared/ui/map";
 import {
   updateSharedUserCoords,
@@ -31,9 +32,40 @@ import { POINT_MEDIA_ASPECT_CSS } from "@/shared/lib/point-media-aspect";
 
 interface PointCardMediaProps {
   point: Point;
+  /** Увеличивается при нажатии «к точке» в шапке карточки — перелёт к маркеру поста */
+  recenterMapNonce?: number;
 }
 
-export function PointCardMedia({ point }: PointCardMediaProps) {
+/** Перелёт к координатам поста (аналог кнопки геолокации на общей карте) */
+function MapFlyToPostPoint({
+  point,
+  nonce,
+}: {
+  point: Point;
+  nonce: number;
+}) {
+  const { map, isLoaded } = useMap();
+  const lastHandledNonce = useRef(0);
+
+  useEffect(() => {
+    if (!map || !isLoaded || nonce === 0) return;
+    if (nonce <= lastHandledNonce.current) return;
+    lastHandledNonce.current = nonce;
+    const [lng, lat] = point.coords.coordinates;
+    map.flyTo({
+      center: [lng, lat],
+      zoom: 15,
+      duration: 900,
+    });
+  }, [map, isLoaded, nonce, point]);
+
+  return null;
+}
+
+export function PointCardMedia({
+  point,
+  recenterMapNonce = 0,
+}: PointCardMediaProps) {
   const { t } = useTranslation();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, pointCardInitialView, loadSettings } =
@@ -69,6 +101,12 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
       void loadSettings(mapSettings);
     }
   }, [accessToken, mapSettings, loadSettings]);
+
+  useEffect(() => {
+    if (recenterMapNonce > 0) {
+      setView("map");
+    }
+  }, [recenterMapNonce]);
 
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? "";
 
@@ -183,6 +221,8 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
                   </MarkerPopup>
                 </MapMarker>
 
+                <MapFlyToPostPoint point={point} nonce={recenterMapNonce} />
+
                 {userLocation && (
                   <MapMarker
                     longitude={userLocation.longitude}
@@ -214,6 +254,11 @@ export function PointCardMedia({ point }: PointCardMediaProps) {
                   showZoom
                   showCompass
                   showLocate
+                  showCenterOnPoint
+                  centerOnPointCoords={{
+                    longitude: point.coords.coordinates[0],
+                    latitude: point.coords.coordinates[1],
+                  }}
                   showFullscreen
                   onLocate={(c) =>
                     updateSharedUserCoords({

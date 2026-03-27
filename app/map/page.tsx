@@ -1,8 +1,15 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import i18n from "@/shared/config/i18n";
 import { feedApi } from "@/shared/api";
@@ -19,6 +26,7 @@ import {
   MarkerLabel,
   MarkerPopup,
   MarkerTooltip,
+  useMap,
 } from "@/shared/ui/map";
 import { buttonVariants } from "@/shared/ui/button/button";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
@@ -68,8 +76,41 @@ function mapsDirectionsUrl(lat: number, lng: number) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 }
 
-export default function MapPage() {
+/** Перелёт к точке из query ?point= (данные из полного списка, даже если фильтр скрыл маркер) */
+function MapFlyToPointFromQuery({
+  pointId,
+  allPoints,
+}: {
+  pointId: string | null;
+  allPoints: FeedPoint[];
+}) {
+  const { map, isLoaded } = useMap();
+  const flownRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (!map || !isLoaded || !pointId) {
+      flownRef.current = null;
+      return;
+    }
+    const p = allPoints.find((x) => x.id === pointId);
+    if (!p) return;
+    if (flownRef.current === pointId) return;
+    flownRef.current = pointId;
+    const [lng, lat] = p.coords.coordinates;
+    map.flyTo({
+      center: [lng, lat],
+      zoom: 14,
+      duration: 1500,
+    });
+  }, [map, isLoaded, pointId, allPoints]);
+
+  return null;
+}
+
+function MapPageClient() {
   const { t } = useTranslation();
+  const searchParams = useSearchParams();
+  const pointFromQuery = searchParams.get("point");
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, loadSettings, isInitialized } = useSettingsStore();
@@ -93,6 +134,8 @@ export default function MapPage() {
     longitude: number;
     latitude: number;
   } | null>(null);
+  /** Пост с открытым попапом маркера — для кнопки «к точке поста» */
+  const [openPostPointId, setOpenPostPointId] = useState<string | null>(null);
 
   const loadMapData = useCallback(async () => {
     setLoading(true);
@@ -219,6 +262,23 @@ export default function MapPage() {
     setPoints(filtered);
   }, [filters, allPoints]);
 
+  const centerOnPointCoords = useMemo(() => {
+    if (!openPostPointId) return null;
+    const p = points.find((x) => x.id === openPostPointId);
+    if (!p) return null;
+    const [lng, lat] = p.coords.coordinates;
+    return { longitude: lng, latitude: lat };
+  }, [openPostPointId, points]);
+
+  useEffect(() => {
+    if (
+      openPostPointId &&
+      !points.some((p) => p.id === openPostPointId)
+    ) {
+      setOpenPostPointId(null);
+    }
+  }, [points, openPostPointId]);
+
   if (!accessToken) {
     return null;
   }
@@ -281,6 +341,10 @@ export default function MapPage() {
               dark: MAP_STYLES[mapStyle!].dark,
             }}
           >
+            <MapFlyToPointFromQuery
+              pointId={pointFromQuery}
+              allPoints={allPoints}
+            />
             {points.map((point) => {
               const [lng, lat] = point.coords.coordinates;
               const categoryName = point.category?.name ?? "";
@@ -321,7 +385,14 @@ export default function MapPage() {
                       {markerLabelText(point)}
                     </MarkerLabel>
                   </MarkerContent>
-                  <MarkerPopup closeButton className="p-0 w-[min(calc(100vw-2rem),17.5rem)] overflow-hidden border-border">
+                  <MarkerPopup
+                    closeButton
+                    className="p-0 w-[min(calc(100vw-2rem),17.5rem)] overflow-hidden border-border"
+                    initialOpen={pointFromQuery === point.id}
+                    onOpenChange={(open) =>
+                      setOpenPostPointId(open ? point.id : null)
+                    }
+                  >
                     <MapPopupPhotos
                       photos={point.photos ?? []}
                       pointName={point.name}
@@ -443,6 +514,8 @@ export default function MapPage() {
               showZoom
               showCompass
               showLocate
+              showCenterOnPoint
+              centerOnPointCoords={centerOnPointCoords}
               showFullscreen
               onLocate={(coords) =>
                 setUserLocation({
@@ -469,5 +542,21 @@ export default function MapPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function MapPage() {
+  const { t } = useTranslation();
+  return (
+    <Suspense
+      fallback={
+        <div className="fixed inset-0 top-14 z-0 flex h-[calc(100dvh-3.5rem)] w-full flex-col items-center justify-center gap-3 bg-background pb-[env(safe-area-inset-bottom)] sm:top-16 sm:h-[calc(100dvh-4rem)] lg:left-64 lg:w-[calc(100%-16rem)]">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-sm text-text-muted">{t("map.loadingPoints")}</p>
+        </div>
+      }
+    >
+      <MapPageClient />
+    </Suspense>
   );
 }

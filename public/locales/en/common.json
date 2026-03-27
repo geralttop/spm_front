@@ -452,12 +452,14 @@
     "categories": "Categories",
     "containers": "Containers",
     "yourLocation": "Your location",
+    "openOnMap": "Show on map",
     "closeFilters": "Close filters",
     "mapLoading": "Loading map…",
     "controls": {
       "zoomIn": "Zoom in",
       "zoomOut": "Zoom out",
       "findLocation": "Find my location",
+      "centerOnPoint": "Center on post",
       "fullscreen": "Toggle fullscreen",
       "resetNorth": "Reset bearing to north"
     },

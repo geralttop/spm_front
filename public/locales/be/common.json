@@ -469,12 +469,14 @@
     "categories": "Катэгорыі",
     "containers": "Кантэйнеры",
     "yourLocation": "Ваша месца",
+    "openOnMap": "Паказаць на карце",
     "closeFilters": "Зачыніць фільтры",
     "mapLoading": "Загрузка карты…",
     "controls": {
       "zoomIn": "Наблізіць",
       "zoomOut": "Аддаліць",
       "findLocation": "Знайсці маю пазіцыю",
+      "centerOnPoint": "Да пункта паста",
       "fullscreen": "Поўнаэкранны рэжым",
       "resetNorth": "Скінуць кірунак на поўнач"
     },

@@ -188,17 +188,26 @@ type MarkerPopupProps = {
   children: ReactNode;
   className?: string;
   closeButton?: boolean;
+  /** Вызывается при открытии/закрытии попапа (карта, другой маркер и т.д.) */
+  onOpenChange?: (open: boolean) => void;
+  /** Открыть попап после монтирования (например, при переходе с /map?point=…) */
+  initialOpen?: boolean;
 } & Omit<PopupOptions, "className" | "closeButton">;
 
 function MarkerPopup({
   children,
   className,
   closeButton = false,
+  onOpenChange,
+  initialOpen = false,
   ...popupOptions
 }: MarkerPopupProps) {
   const { marker, map } = useMarkerContext();
   const container = useMemo(() => document.createElement("div"), []);
   const prevPopupOptions = useRef(popupOptions);
+  const onOpenChangeRef = useRef(onOpenChange);
+  onOpenChangeRef.current = onOpenChange;
+  const initialOpenDoneRef = useRef(false);
 
   const popup = useMemo(() => {
     const popupInstance = new MapLibreGL.Popup({
@@ -219,11 +228,31 @@ function MarkerPopup({
     popup.setDOMContent(container);
     marker.setPopup(popup);
 
+    const handleOpen = () => onOpenChangeRef.current?.(true);
+    const handleClose = () => onOpenChangeRef.current?.(false);
+    popup.on("open", handleOpen);
+    popup.on("close", handleClose);
+
     return () => {
+      popup.off("open", handleOpen);
+      popup.off("close", handleClose);
       marker.setPopup(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [map]);
+
+  useEffect(() => {
+    if (!map || !initialOpen) {
+      initialOpenDoneRef.current = false;
+      return;
+    }
+    if (initialOpenDoneRef.current) return;
+    const timer = window.setTimeout(() => {
+      marker.togglePopup();
+      initialOpenDoneRef.current = true;
+    }, 400);
+    return () => window.clearTimeout(timer);
+  }, [map, initialOpen, marker]);
 
   if (popup.isOpen()) {
     const prev = prevPopupOptions.current;

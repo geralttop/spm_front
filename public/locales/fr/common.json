@@ -469,12 +469,14 @@
     "categories": "Catégories",
     "containers": "Conteneurs",
     "yourLocation": "Votre position",
+    "openOnMap": "Afficher sur la carte",
     "closeFilters": "Fermer les filtres",
     "mapLoading": "Chargement de la carte…",
     "controls": {
       "zoomIn": "Zoomer",
       "zoomOut": "Dézoomer",
       "findLocation": "Trouver ma position",
+      "centerOnPoint": "Centrer sur la publication",
       "fullscreen": "Plein écran",
       "resetNorth": "Réinitialiser vers le nord"
     },

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Minus, Plus, Locate, Maximize, Loader2 } from "lucide-react";
+import { Minus, Plus, Locate, Maximize, Loader2, Crosshair } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 import { cn } from "@/shared/lib/utils";
@@ -13,6 +13,10 @@ type MapControlsProps = {
   showZoom?: boolean;
   showCompass?: boolean;
   showLocate?: boolean;
+  /** Кнопка «к точке поста» (пока открыт попап маркера) */
+  showCenterOnPoint?: boolean;
+  /** Координаты точки поста; без них кнопка не показывается */
+  centerOnPointCoords?: { longitude: number; latitude: number } | null;
   showFullscreen?: boolean;
   className?: string;
   onLocate?: (coords: { longitude: number; latitude: number }) => void;
@@ -111,6 +115,8 @@ function MapControls({
   showZoom = true,
   showCompass = false,
   showLocate = false,
+  showCenterOnPoint = false,
+  centerOnPointCoords = null,
   showFullscreen = false,
   className,
   onLocate,
@@ -166,6 +172,21 @@ function MapControls({
     }
   }, [map]);
 
+  const handleCenterOnPoint = useCallback(() => {
+    if (!map || !centerOnPointCoords) return;
+    map.flyTo({
+      center: [centerOnPointCoords.longitude, centerOnPointCoords.latitude],
+      zoom: Math.max(map.getZoom(), 14),
+      duration: 1200,
+    });
+  }, [map, centerOnPointCoords]);
+
+  const showCenterOnPointButton =
+    showCenterOnPoint &&
+    centerOnPointCoords != null &&
+    Number.isFinite(centerOnPointCoords.longitude) &&
+    Number.isFinite(centerOnPointCoords.latitude);
+
   return (
     <div
       className={cn(
@@ -201,6 +222,16 @@ function MapControls({
             ) : (
               <Locate className="size-4" />
             )}
+          </ControlButton>
+        </ControlGroup>
+      )}
+      {showCenterOnPointButton && (
+        <ControlGroup>
+          <ControlButton
+            onClick={handleCenterOnPoint}
+            label={t('map.controls.centerOnPoint')}
+          >
+            <Crosshair className="size-4" />
           </ControlButton>
         </ControlGroup>
       )}

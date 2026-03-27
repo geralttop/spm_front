@@ -469,12 +469,14 @@
     "categories": "Категории",
     "containers": "Контейнеры",
     "yourLocation": "Ваше местоположение",
+    "openOnMap": "Показать на карте",
     "closeFilters": "Закрыть фильтры",
     "mapLoading": "Карта загружается…",
     "controls": {
       "zoomIn": "Приблизить",
       "zoomOut": "Отдалить",
       "findLocation": "Найти мое местоположение",
+      "centerOnPoint": "К точке поста",
       "fullscreen": "Полноэкранный режим",
       "resetNorth": "Сбросить направление на север"
     },
