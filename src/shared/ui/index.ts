@@ -17,6 +17,8 @@ export { ReportModal } from "./report-modal";
 export { EditPointModal } from "./edit-point-modal";
 export { MobileNav } from "./mobile-nav";
 export { BaseModal } from "./modal";
+export { ShareLinkModal, ShareLinkButton } from "./share-link-modal";
+export type { ShareLinkModalProps, ShareLinkButtonProps } from "./share-link-modal";
 export { PointCard } from "./point-card";
 export {
   PointCardSkeleton,

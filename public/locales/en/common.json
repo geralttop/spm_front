@@ -32,6 +32,15 @@
     "en": "English",
     "fr": "Français"
   },
+  "share": {
+    "title": "Share",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "copyFailed": "Could not copy",
+    "openLabel": "Share link",
+    "openTitle": "Share",
+    "qrHint": "Scan the QR code with your phone camera"
+  },
   "search": {
     "placeholder": "Search users...",
     "searching": "Searching...",

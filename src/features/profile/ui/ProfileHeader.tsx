@@ -2,7 +2,8 @@
 
 import { Edit2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Button } from '@/shared/ui';
+import { Button, ShareLinkButton } from '@/shared/ui';
+import { userProfilePath } from '@/shared/lib/user-profile-path';
 
 interface ProfileHeaderProps {
   username: string;
@@ -47,12 +48,15 @@ export function ProfileHeader({ username, email, avatar, isEditing, onEdit }: Pr
           <p className="mt-1 text-sm text-text-muted truncate">{email}</p>
         </div>
         
-        {/* Кнопка редактирования */}
+        {/* Поделиться и редактирование */}
         {!isEditing && (
-          <Button onClick={onEdit} variant="outline" className="gap-2 w-full sm:w-auto">
-            <Edit2 className="h-4 w-4" />
-            <span>{t('profile.profileHeader.edit')}</span>
-          </Button>
+          <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
+            <ShareLinkButton path={userProfilePath(username)} />
+            <Button onClick={onEdit} variant="outline" className="min-w-0 flex-1 gap-2 sm:flex-initial">
+              <Edit2 className="h-4 w-4" />
+              <span>{t('profile.profileHeader.edit')}</span>
+            </Button>
+          </div>
         )}
       </div>
     </div>

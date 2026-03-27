@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { Button, UserListModal, Loading } from "@/shared/ui";
+import { Button, UserListModal, Loading, ShareLinkButton } from "@/shared/ui";
 import { authApi } from "@/shared/api";
 import type { SearchUserResult } from "@/shared/types";
 import { useAuthStore } from "@/shared/lib/store";
@@ -207,14 +207,19 @@ export default function UserProfilePage() {
                 </p>
               </div>
 
-              <Button
-                onClick={handleFollowToggleMain}
-                disabled={actionLoading || !user?.id}
-                variant={isFollowing ? "destructive" : "outline"}
-                className="w-full shrink-0 touch-target gap-2 sm:w-auto"
-              >
-                {actionLoading ? "..." : isFollowing ? t("profile.unfollow") : t("profile.follow")}
-              </Button>
+              <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-auto">
+                {user?.username ? (
+                  <ShareLinkButton path={userProfilePath(user.username)} />
+                ) : null}
+                <Button
+                  onClick={handleFollowToggleMain}
+                  disabled={actionLoading || !user?.id}
+                  variant={isFollowing ? "destructive" : "outline"}
+                  className="min-w-0 flex-1 touch-target gap-2 sm:flex-initial"
+                >
+                  {actionLoading ? "..." : isFollowing ? t("profile.unfollow") : t("profile.follow")}
+                </Button>
+              </div>
             </div>
 
             <div className="space-y-4">

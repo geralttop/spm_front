@@ -32,6 +32,15 @@
     "en": "English",
     "fr": "Français"
   },
+  "share": {
+    "title": "Partager",
+    "copy": "Copier le lien",
+    "copied": "Copié",
+    "copyFailed": "Impossible de copier",
+    "openLabel": "Partager le lien",
+    "openTitle": "Partager",
+    "qrHint": "Scannez le code QR avec l’appareil photo du téléphone"
+  },
   "search": {
     "placeholder": "Rechercher des utilisateurs...",
     "searching": "Recherche...",

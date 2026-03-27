@@ -2,7 +2,8 @@
 
 import { User, Mail, Check, X, Edit2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, Button } from '@/shared/ui';
+import { Input, Textarea, Button, ShareLinkButton } from '@/shared/ui';
+import { userProfilePath } from '@/shared/lib/user-profile-path';
 import { useForm } from '@/shared/lib/hooks';
 import { updateProfileSchema } from '@/shared/schemas';
 import type { ProfileResponse } from '@/shared/types';
@@ -61,12 +62,17 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
           <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-text-muted truncate break-all">{profile.email}</p>
         </div>
         
-        {/* Кнопка редактирования */}
+        {/* Поделиться и редактирование */}
         {!isEditing && (
-          <Button onClick={onEdit} variant="outline" className="gap-2 w-full sm:w-auto touch-target">
-            <Edit2 className="h-4 w-4" />
-            <span>{t('profile.profileHeader.edit')}</span>
-          </Button>
+          <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
+            {profile.username ? (
+              <ShareLinkButton path={userProfilePath(profile.username)} />
+            ) : null}
+            <Button onClick={onEdit} variant="outline" className="min-w-0 flex-1 gap-2 touch-target sm:flex-initial">
+              <Edit2 className="h-4 w-4" />
+              <span>{t('profile.profileHeader.edit')}</span>
+            </Button>
+          </div>
         )}
       </div>
       

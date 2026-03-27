@@ -19,6 +19,7 @@ import {
   FavoriteButton,
   ReportButton,
   EditButton,
+  ShareLinkButton,
 } from "@/shared/ui";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
@@ -36,6 +37,7 @@ interface PointCardProps {
 }
 
 interface ActionButtonsProps {
+  pointId: string;
   isAuthor: boolean;
   isFavorite: boolean;
   loading: boolean;
@@ -47,6 +49,7 @@ interface ActionButtonsProps {
 }
 
 function ActionButtons({
+  pointId,
   isAuthor,
   isFavorite,
   loading,
@@ -58,6 +61,7 @@ function ActionButtons({
 }: ActionButtonsProps) {
   return (
     <div className="flex items-center gap-1 sm:gap-2 [&_button]:touch-target [&_button]:min-h-9 [&_button]:min-w-9 sm:[&_button]:min-h-[44px] sm:[&_button]:min-w-[44px] [&_button]:flex [&_button]:items-center [&_button]:justify-center">
+      <ShareLinkButton path={`/points/${pointId}`} />
       {isAuthor && (
         <EditIconButton onClick={onEdit} title="Редактировать точку" />
       )}
@@ -153,6 +157,7 @@ export const PointCard = React.memo(function PointCard({
           </Link>
           <div className="-mr-0.5 flex-shrink-0 sm:mr-0">
             <ActionButtons
+              pointId={point.id}
               isAuthor={!!isAuthor}
               isFavorite={isFavorite}
               loading={isLoading}
@@ -179,6 +184,7 @@ export const PointCard = React.memo(function PointCard({
           </div>
           <div className="ml-auto flex-shrink-0">
             <ActionButtons
+              pointId={point.id}
               isAuthor={!!isAuthor}
               isFavorite={isFavorite}
               loading={isLoading}
