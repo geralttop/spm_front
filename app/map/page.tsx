@@ -224,7 +224,7 @@ export default function MapPage() {
   }
 
   return (
-    <div className="fixed inset-0 top-14 z-0 h-[calc(100vh-3.5rem)] w-full pb-[env(safe-area-inset-bottom)] sm:top-16 sm:h-[calc(100vh-4rem)] lg:left-64 lg:w-[calc(100%-16rem)]">
+    <div className="fixed inset-0 top-14 z-0 h-[calc(100dvh-3.5rem)] w-full overflow-hidden pb-[env(safe-area-inset-bottom)] sm:top-16 sm:h-[calc(100dvh-4rem)] lg:left-64 lg:w-[calc(100%-16rem)]">
       {loading || !mapStyleReady ? (
         <div className="flex h-full w-full flex-col items-center justify-center gap-3 bg-background">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
