@@ -734,5 +734,27 @@
       "alreadyReported": "You have already reported this item",
       "cannotReportSelf": "You cannot report yourself"
     }
+  },
+  "zlata": {
+    "title": "Collection",
+    "filterLabel": "Filter by tags",
+    "filterPlaceholder": "tag1, tag2",
+    "applyFilter": "Search",
+    "clearFilter": "Clear",
+    "upload": "Upload files",
+    "uploadHint": "You can select multiple images at once",
+    "uploading": "Uploading…",
+    "deleteImage": "Delete image",
+    "addTagPlaceholder": "tag name",
+    "addTag": "Add tag",
+    "tagsCatalog": "All tags",
+    "tagsEmpty": "No tags yet",
+    "createTag": "Create tag",
+    "deleteTag": "Delete",
+    "detachTag": "Remove tag from image",
+    "loading": "Loading…",
+    "loadError": "Failed to load data",
+    "empty": "No images yet",
+    "backToProfile": "Back to profile"
   }
 }

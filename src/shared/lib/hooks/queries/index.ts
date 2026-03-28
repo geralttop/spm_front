@@ -9,3 +9,4 @@ export * from "./use-categories-query";
 export * from "./use-containers-query";
 export * from "./use-map-settings-query";
 export * from "./use-bio-history-query";
+export * from "./use-zlata-queries";

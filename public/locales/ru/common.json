@@ -734,5 +734,27 @@
       "alreadyReported": "Вы уже подавали жалобу на этот объект",
       "cannotReportSelf": "Нельзя пожаловаться на самого себя"
     }
+  },
+  "zlata": {
+    "title": "Подборка",
+    "filterLabel": "Фильтр по тегам",
+    "filterPlaceholder": "тег1, тег2",
+    "applyFilter": "Искать",
+    "clearFilter": "Сбросить",
+    "upload": "Загрузить файлы",
+    "uploadHint": "Можно выбрать сразу несколько изображений",
+    "uploading": "Загрузка…",
+    "deleteImage": "Удалить изображение",
+    "addTagPlaceholder": "имя тега",
+    "addTag": "Добавить тег",
+    "tagsCatalog": "Все теги",
+    "tagsEmpty": "Тегов пока нет",
+    "createTag": "Создать тег",
+    "deleteTag": "Удалить",
+    "detachTag": "Снять тег с изображения",
+    "loading": "Загрузка…",
+    "loadError": "Не удалось загрузить данные",
+    "empty": "Пока нет изображений",
+    "backToProfile": "К профилю"
   }
 }

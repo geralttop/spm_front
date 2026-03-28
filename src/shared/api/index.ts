@@ -10,6 +10,8 @@ export { feedApi } from "./feed";
 export { commentsApi } from "./comments";
 export { reportsApi, usersApi } from "./reports";
 export { settingsApi } from "./settings-api";
+export { zlataApi, zlataImageUrl } from "./zlata";
+export type { ZlataAsset, ZlataTagBrief } from "./zlata";
 export { BaseApi } from "./base-api";
 export type {
   RegisterRequest,

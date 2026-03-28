@@ -734,5 +734,27 @@
       "alreadyReported": "Вы ўжо падавалі скаргу на гэты аб'ект",
       "cannotReportSelf": "Нельга паскардзіцца на самога сябе"
     }
+  },
+  "zlata": {
+    "title": "Падборка",
+    "filterLabel": "Фільтр па тэгах",
+    "filterPlaceholder": "тэг1, тэг2",
+    "applyFilter": "Шукаць",
+    "clearFilter": "Скінуць",
+    "upload": "Загрузіць файлы",
+    "uploadHint": "Можна выбраць некалькі выяў адразу",
+    "uploading": "Загрузка…",
+    "deleteImage": "Выдаліць выяву",
+    "addTagPlaceholder": "назва тэга",
+    "addTag": "Дадаць тэг",
+    "tagsCatalog": "Усе тэгі",
+    "tagsEmpty": "Тэгаў пакуль няма",
+    "createTag": "Стварыць тэг",
+    "deleteTag": "Выдаліць",
+    "detachTag": "Зняць тэг з выявы",
+    "loading": "Загрузка…",
+    "loadError": "Не ўдалося загрузіць даныя",
+    "empty": "Пакуль няма выяў",
+    "backToProfile": "Да профілю"
   }
 }

@@ -729,11 +729,32 @@
       "fake": "Fausse information",
       "other": "Autre"
     },
-    
     "errors": {
       "submitFailed": "Échec de l'envoi du signalement. Veuillez réessayer.",
       "alreadyReported": "Vous avez déjà signalé cet élément",
       "cannotReportSelf": "Vous ne pouvez pas vous signaler vous-même"
     }
+  },
+  "zlata": {
+    "title": "Collection",
+    "filterLabel": "Filtrer par tags",
+    "filterPlaceholder": "tag1, tag2",
+    "applyFilter": "Rechercher",
+    "clearFilter": "Effacer",
+    "upload": "Téléverser des fichiers",
+    "uploadHint": "Vous pouvez sélectionner plusieurs images à la fois",
+    "uploading": "Téléversement…",
+    "deleteImage": "Supprimer l'image",
+    "addTagPlaceholder": "nom du tag",
+    "addTag": "Ajouter un tag",
+    "tagsCatalog": "Tous les tags",
+    "tagsEmpty": "Aucun tag pour l'instant",
+    "createTag": "Créer un tag",
+    "deleteTag": "Supprimer",
+    "detachTag": "Retirer le tag de l'image",
+    "loading": "Chargement…",
+    "loadError": "Échec du chargement",
+    "empty": "Aucune image pour l'instant",
+    "backToProfile": "Retour au profil"
   }
 }

@@ -90,6 +90,9 @@ const clearAuthStorage = () => {
 // Интерцептор для добавления токена
 apiClient.interceptors.request.use(
   async (config) => {
+    if (config.data instanceof FormData) {
+      delete config.headers["Content-Type"];
+    }
     const accessToken = getAccessToken();
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
