@@ -5,7 +5,7 @@ import {
   User,
   Calendar,
   MessageCircle,
-  Crosshair,
+  Map,
 } from "lucide-react";
 import Link from "next/link";
 import React, { useState, type ComponentType } from "react";
@@ -47,7 +47,6 @@ interface ActionButtonsProps {
   onToggleFavorite: () => void;
   onReport: () => void;
   reportTitle: string;
-  onCenterOnPoint: () => void;
 }
 
 function ActionButtons({
@@ -60,21 +59,20 @@ function ActionButtons({
   onToggleFavorite,
   onReport,
   reportTitle,
-  onCenterOnPoint,
 }: ActionButtonsProps) {
   const { t } = useTranslation();
   return (
-    <div className="flex items-center gap-1 sm:gap-2 [&_button]:touch-target [&_button]:min-h-9 [&_button]:min-w-9 sm:[&_button]:min-h-[44px] sm:[&_button]:min-w-[44px] [&_button]:flex [&_button]:items-center [&_button]:justify-center">
+    <div className="flex items-center gap-1 sm:gap-2 [&_button]:touch-target [&_button]:min-h-9 [&_button]:min-w-9 sm:[&_button]:min-h-[44px] sm:[&_button]:min-w-[44px] [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_a]:touch-target [&_a]:flex [&_a]:min-h-9 [&_a]:min-w-9 [&_a]:items-center [&_a]:justify-center sm:[&_a]:min-h-[44px] sm:[&_a]:min-w-[44px]">
       <ShareLinkButton path={`/points/${pointId}`} />
-      <button
-        type="button"
-        onClick={onCenterOnPoint}
+      <Link
+        href={`/map?point=${encodeURIComponent(pointId)}`}
+        prefetch={false}
         className="inline-flex items-center justify-center rounded-lg bg-muted p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:p-2"
-        title={t("map.controls.centerOnPoint")}
-        aria-label={t("map.controls.centerOnPoint")}
+        title={t("map.openOnMap")}
+        aria-label={t("map.openOnMap")}
       >
-        <Crosshair className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden />
-      </button>
+        <Map className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden />
+      </Link>
       {isAuthor && (
         <EditIconButton onClick={onEdit} title="Редактировать точку" />
       )}
@@ -102,7 +100,6 @@ export const PointCard = React.memo(function PointCard({
   const [showComments, setShowComments] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [mapRecenterNonce, setMapRecenterNonce] = useState(0);
 
   const { isFavorite, isLoading, toggleFavorite } = useFavoriteStatus(
     point.id,
@@ -180,9 +177,6 @@ export const PointCard = React.memo(function PointCard({
               onToggleFavorite={toggleFavorite}
               onReport={() => setShowReportModal(true)}
               reportTitle={t("reports.button")}
-              onCenterOnPoint={() =>
-                setMapRecenterNonce((n) => n + 1)
-              }
             />
           </div>
         </div>
@@ -210,9 +204,6 @@ export const PointCard = React.memo(function PointCard({
               onToggleFavorite={toggleFavorite}
               onReport={() => setShowReportModal(true)}
               reportTitle={t("reports.button")}
-              onCenterOnPoint={() =>
-                setMapRecenterNonce((n) => n + 1)
-              }
             />
           </div>
         </div>
@@ -289,11 +280,7 @@ export const PointCard = React.memo(function PointCard({
         </div>
       </div>
 
-      <PointCardMedia
-        key={point.id}
-        point={point}
-        recenterMapNonce={mapRecenterNonce}
-      />
+      <PointCardMedia key={point.id} point={point} />
 
       <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
         <button
