@@ -19,6 +19,9 @@
     "openMenu": "Open menu",
     "retry": "Try again"
   },
+  "validation": {
+    "bioMaxLength": "Bio must not exceed 500 characters"
+  },
   "navigation": {
     "home": "Home",
     "places": "Places",
@@ -199,6 +202,14 @@
     "profileStats": {
       "followers": "Followers",
       "following": "Following"
+    },
+    "bioHistory": {
+      "toggle": "Biography history",
+      "loading": "Loading history...",
+      "error": "Could not load history",
+      "empty": "No saved biography versions yet",
+      "confirmDelete": "Remove this entry from history?",
+      "deleteAria": "Delete biography history entry"
     }
   },
   "comments": {

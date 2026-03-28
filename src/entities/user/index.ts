@@ -8,7 +8,7 @@ export type {
 export {
   registerSchema,
   loginSchema,
-  updateProfileSchema,
+  createUpdateProfileSchema,
   verifyCodeSchema,
   forgotPasswordSchema,
   resetPasswordSchema,

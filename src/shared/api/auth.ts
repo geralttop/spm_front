@@ -57,6 +57,12 @@ export interface SearchUserResult {
   avatar?: string;
 }
 
+export interface BioHistoryEntry {
+  id: number;
+  text: string;
+  createdAt: string;
+}
+
 export const authApi = {
   register: async (data: RegisterRequest): Promise<AuthResponse> => {
     const response = await apiClient.post<AuthResponse>("/auth/register", data);
@@ -151,6 +157,24 @@ export const authApi = {
 
   deleteAvatar: async (): Promise<{ message: string }> => {
     const response = await apiClient.delete<{ message: string }>("/auth/delete-avatar");
+    return response.data;
+  },
+
+  getMyBioHistory: async (): Promise<BioHistoryEntry[]> => {
+    const response = await apiClient.get<BioHistoryEntry[]>("/auth/bio-history");
+    return response.data;
+  },
+
+  getBioHistoryByUsername: async (username: string): Promise<BioHistoryEntry[]> => {
+    const encoded = encodeURIComponent(username);
+    const response = await apiClient.get<BioHistoryEntry[]>(
+      `/auth/user/username/${encoded}/bio-history`
+    );
+    return response.data;
+  },
+
+  deleteBioHistoryEntry: async (id: number): Promise<{ message: string }> => {
+    const response = await apiClient.delete<{ message: string }>(`/auth/bio-history/${id}`);
     return response.data;
   },
 

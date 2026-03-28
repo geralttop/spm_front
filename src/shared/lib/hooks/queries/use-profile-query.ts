@@ -18,6 +18,7 @@ export function useUpdateProfileMutation() {
     mutationFn: (data: UpdateProfileRequest) => authApi.updateProfile(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: ["bio-history"] });
     },
   });
 }

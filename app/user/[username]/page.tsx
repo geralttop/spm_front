@@ -14,10 +14,12 @@ import {
   useSubscriptionStatsQuery,
   useFollowMutation,
   useUnfollowMutation,
+  useBioHistoryQuery,
 } from "@/shared/lib/hooks/queries";
 import { User, Mail, Users, MapPin } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
 import { PointCardSkeletonList } from "@/shared/ui";
+import { BioHistoryTimeline } from "@/features/profile";
 
 export default function UserProfilePage() {
   const router = useRouter();
@@ -44,6 +46,12 @@ export default function UserProfilePage() {
     isLoading: pointsLoading,
     refetch: refetchPoints,
   } = usePointsQuery(user ? user.id : undefined, { enabled: Boolean(user?.id) });
+
+  const {
+    data: bioHistory = [],
+    isLoading: bioHistoryLoading,
+    error: bioHistoryError,
+  } = useBioHistoryQuery(user?.username ?? null, { enabled: Boolean(user?.username) });
 
   const followMutation = useFollowMutation();
   const unfollowMutation = useUnfollowMutation();
@@ -245,6 +253,13 @@ export default function UserProfilePage() {
               </div>
             </div>
           </div>
+
+          <BioHistoryTimeline
+            entries={bioHistory}
+            isLoading={bioHistoryLoading}
+            error={bioHistoryError as Error | null}
+            canDelete={false}
+          />
 
           <div>
             <h2 className="mb-3 flex items-center gap-2 px-4 text-base font-semibold text-text-main sm:mb-4 sm:px-0 sm:text-lg">

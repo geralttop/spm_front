@@ -21,6 +21,7 @@ export type {
   SearchUserResult,
   ForgotPasswordRequest,
   ResetPasswordRequest,
+  BioHistoryEntry,
 } from "./auth";
 export type {
   Point,

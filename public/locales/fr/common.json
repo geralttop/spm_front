@@ -19,6 +19,9 @@
     "openMenu": "Ouvrir le menu",
     "retry": "Réessayer"
   },
+  "validation": {
+    "bioMaxLength": "La biographie ne doit pas dépasser 500 caractères"
+  },
   "navigation": {
     "home": "Accueil",
     "places": "Lieux",
@@ -199,6 +202,14 @@
     "profileStats": {
       "followers": "Abonnés",
       "following": "Abonnements"
+    },
+    "bioHistory": {
+      "toggle": "Historique de la biographie",
+      "loading": "Chargement de l'historique...",
+      "error": "Impossible de charger l'historique",
+      "empty": "Aucune version de biographie enregistrée",
+      "confirmDelete": "Supprimer cette entrée de l'historique ?",
+      "deleteAria": "Supprimer l'entrée de l'historique de biographie"
     }
   },
   "comments": {

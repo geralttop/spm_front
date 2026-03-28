@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { TFunction } from 'i18next';
 
 export const registerSchema = z.object({
   email: z.string()
@@ -22,16 +23,18 @@ export const loginSchema = z.object({
     .min(1, 'Пароль обязателен'),
 });
 
-export const updateProfileSchema = z.object({
-  username: z.string()
-    .min(3, 'Имя пользователя должно содержать минимум 3 символа')
-    .max(30, 'Имя пользователя не должно превышать 30 символов')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Имя пользователя может содержать только буквы, цифры и подчеркивание')
-    .optional(),
-  bio: z.string()
-    .max(1000, 'Биография не должна превышать 1000 символов')
-    .optional(),
-});
+export function createUpdateProfileSchema(t: TFunction) {
+  return z.object({
+    username: z.string()
+      .min(3, 'Имя пользователя должно содержать минимум 3 символа')
+      .max(30, 'Имя пользователя не должно превышать 30 символов')
+      .regex(/^[a-zA-Z0-9_]+$/, 'Имя пользователя может содержать только буквы, цифры и подчеркивание')
+      .optional(),
+    bio: z.string()
+      .max(500, t('validation.bioMaxLength'))
+      .optional(),
+  });
+}
 
 export const verifyCodeSchema = z.object({
   email: z.string()
@@ -60,7 +63,7 @@ export const resetPasswordSchema = z.object({
 
 export type RegisterInput = z.infer<typeof registerSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
-export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
+export type UpdateProfileInput = z.infer<ReturnType<typeof createUpdateProfileSchema>>;
 export type VerifyCodeInput = z.infer<typeof verifyCodeSchema>;
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;

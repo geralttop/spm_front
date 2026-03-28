@@ -10,9 +10,11 @@ import {
   useUpdateProfileMutation, 
   usePointsQuery, 
   useSubscriptionStatsQuery,
-  useLogoutMutation 
+  useLogoutMutation,
+  useBioHistoryQuery,
+  useDeleteBioHistoryMutation,
 } from "@/shared/lib/hooks/queries";
-import { ProfileStats, ProfileForm, ProfilePoints } from "@/features/profile";
+import { ProfileStats, ProfileForm, ProfilePoints, BioHistoryTimeline } from "@/features/profile";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -24,7 +26,10 @@ export default function ProfilePage() {
   const { data: stats } = useSubscriptionStatsQuery(profile ? Number(profile.userId) : 0);
   const updateProfileMutation = useUpdateProfileMutation();
   const logoutMutation = useLogoutMutation();
-  
+  const deleteBioHistoryMutation = useDeleteBioHistoryMutation();
+  const { data: bioHistory = [], isLoading: bioHistoryLoading, error: bioHistoryError } =
+    useBioHistoryQuery(null, { enabled: !!profile });
+
   const [isEditing, setIsEditing] = useState(false);
 
   const followersModal = useUserModal();
@@ -109,6 +114,19 @@ export default function ProfilePage() {
               // Перезагружаем профиль после изменения аватарки
               window.location.reload();
             }}
+          />
+
+          <BioHistoryTimeline
+            entries={bioHistory}
+            isLoading={bioHistoryLoading}
+            error={bioHistoryError as Error | null}
+            canDelete
+            onDelete={(id) => deleteBioHistoryMutation.mutate(id)}
+            deletePendingId={
+              deleteBioHistoryMutation.isPending
+                ? (deleteBioHistoryMutation.variables as number)
+                : null
+            }
           />
 
           {!isEditing && (

@@ -1,11 +1,12 @@
 'use client';
 
+import { useMemo } from 'react';
 import { User, Mail, Check, X, Edit2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input, Textarea, Button, ShareLinkButton } from '@/shared/ui';
 import { userProfilePath } from '@/shared/lib/user-profile-path';
 import { useForm } from '@/shared/lib/hooks';
-import { updateProfileSchema } from '@/shared/schemas';
+import { createUpdateProfileSchema } from '@/shared/schemas';
 import type { ProfileResponse } from '@/shared/types';
 import { AvatarUpload } from './AvatarUpload';
 
@@ -20,6 +21,7 @@ interface ProfileFormProps {
 
 export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAvatarChange }: ProfileFormProps) {
   const { t } = useTranslation();
+  const updateProfileSchema = useMemo(() => createUpdateProfileSchema(t), [t]);
   const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm({
     initialValues: {
       username: profile.username || '',
@@ -134,7 +136,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
                 value={values.bio}
                 onChange={(e) => handleChange('bio', e.target.value)}
                 placeholder={t('profile.profileForm.bioPlaceholder')}
-                maxLength={1000}
+                maxLength={500}
                 rows={4}
                 className="text-base touch-target min-h-[100px]"
               />
