@@ -756,5 +756,21 @@
     "loadError": "Failed to load data",
     "empty": "No images yet",
     "backToProfile": "Back to profile"
+  },
+  "vinland": {
+    "title": "A real person's favorite people",
+    "upload": "Upload files",
+    "cropTitle": "Crop photo (3:4)",
+    "uploading": "Uploading…",
+    "deleteImage": "Delete",
+    "captionLabel": "Caption",
+    "editCaption": "Edit caption",
+    "captionPlaceholder": "Text under the photo…",
+    "saveCaption": "Save caption",
+    "dragHint": "Drag by the handle to reorder",
+    "loading": "Loading…",
+    "loadError": "Failed to load data",
+    "empty": "No photos yet",
+    "backToProfile": "Back to profile"
   }
 }

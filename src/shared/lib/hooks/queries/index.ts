@@ -10,3 +10,4 @@ export * from "./use-containers-query";
 export * from "./use-map-settings-query";
 export * from "./use-bio-history-query";
 export * from "./use-zlata-queries";
+export * from "./use-vinland-queries";

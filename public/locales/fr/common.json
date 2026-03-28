@@ -756,5 +756,21 @@
     "loadError": "Échec du chargement",
     "empty": "Aucune image pour l'instant",
     "backToProfile": "Retour au profil"
+  },
+  "vinland": {
+    "title": "Les personnes chères d'une personne authentique",
+    "upload": "Téléverser des fichiers",
+    "cropTitle": "Recadrer la photo (3:4)",
+    "uploading": "Téléversement…",
+    "deleteImage": "Supprimer",
+    "captionLabel": "Légende",
+    "editCaption": "Modifier la légende",
+    "captionPlaceholder": "Texte sous la photo…",
+    "saveCaption": "Enregistrer la légende",
+    "dragHint": "Glissez la poignée pour réordonner",
+    "loading": "Chargement…",
+    "loadError": "Échec du chargement",
+    "empty": "Aucune photo pour l'instant",
+    "backToProfile": "Retour au profil"
   }
 }
