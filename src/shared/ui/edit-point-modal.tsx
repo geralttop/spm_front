@@ -4,6 +4,7 @@ import { pointsApi, categoriesApi, containersApi, type Point, type Category, typ
 import {
   useUploadPointPhotosMutation,
   useDeletePointPhotoMutation,
+  useCreatePointHistoryMutation,
 } from '@/shared/lib/hooks/queries';
 import { usePointPhotoCropQueue } from '@/shared/lib/hooks/use-point-photo-crop-queue';
 import {
@@ -33,6 +34,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
     useMapStylePreference();
   const uploadPhotosMutation = useUploadPointPhotosMutation();
   const deletePhotoMutation = useDeletePointPhotoMutation();
+  const createHistoryMutation = useCreatePointHistoryMutation();
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '';
   const {
     activeCrop,
@@ -56,6 +58,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   const [containers, setContainers] = useState<Container[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [addToHistory, setAddToHistory] = useState(false);
   const [markerPosition, setMarkerPosition] = useState({
     lng: point.coords.coordinates[0],
     lat: point.coords.coordinates[1],
@@ -64,6 +67,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   useEffect(() => {
     if (isOpen) {
       loadData();
+      setAddToHistory(false);
     } else {
       clearQueue();
     }
@@ -171,6 +175,10 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
         categoryId,
         containerId,
       });
+
+      if (addToHistory) {
+        await createHistoryMutation.mutateAsync(point.id);
+      }
 
       onSuccess?.();
       onClose();
@@ -475,6 +483,19 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             )}
           </div>
 
+          <label className="flex items-start gap-3 rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-text-main">
+            <input
+              type="checkbox"
+              className="mt-0.5 h-4 w-4"
+              checked={addToHistory}
+              onChange={(e) => setAddToHistory(e.target.checked)}
+              disabled={loading || createHistoryMutation.isPending}
+            />
+            <span className="min-w-0">
+              {t('editPoint.addToHistoryLabel')}
+            </span>
+          </label>
+
           <div className="mt-auto flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:gap-3">
             <button
               type="button"
@@ -486,7 +507,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
             </button>
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || createHistoryMutation.isPending}
               className="min-h-[44px] flex-1 rounded-lg bg-primary px-4 py-2.5 text-primary-foreground transition-colors hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50 sm:min-h-0 sm:py-2"
             >
               {loading ? t('editPoint.saving') : t('editPoint.save')}

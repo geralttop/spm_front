@@ -103,11 +103,46 @@ export interface UploadPointPhotosPayload {
   dimensions: { width: number; height: number }[];
 }
 
+export interface PointHistoryPhoto {
+  id: string;
+  url: string;
+  sortOrder: number;
+  width: number | null;
+  height: number | null;
+  createdAt: string;
+}
+
+export interface PointHistoryEntry {
+  id: string;
+  pointId: string;
+  description: string | null;
+  createdAt: string;
+  photos: PointHistoryPhoto[];
+}
+
 // Points API with custom getAll method
 class PointsApi extends BaseApi<Point, CreatePointRequest, UpdatePointRequest> {
   async getAll(params?: Record<string, any>): Promise<Point[]> {
     const response = await apiClient.get<Point[]>("/points", { params });
     return response.data;
+  }
+
+  async getHistory(pointId: string): Promise<PointHistoryEntry[]> {
+    const response = await apiClient.get<PointHistoryEntry[]>(
+      `/points/${pointId}/history`
+    );
+    return response.data;
+  }
+
+  async createHistoryEntry(pointId: string): Promise<PointHistoryEntry> {
+    const response = await apiClient.post<PointHistoryEntry>(
+      `/points/${pointId}/history`
+    );
+    return response.data;
+  }
+
+  async deleteHistoryEntry(pointId: string, historyId: string): Promise<void> {
+    await apiClient.delete(`/points/${pointId}/history/${historyId}`);
   }
 
   async uploadPhotos(

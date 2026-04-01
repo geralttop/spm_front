@@ -20,6 +20,7 @@ export { BaseModal } from "./modal";
 export { ShareLinkModal, ShareLinkButton } from "./share-link-modal";
 export type { ShareLinkModalProps, ShareLinkButtonProps } from "./share-link-modal";
 export { PointCard } from "./point-card";
+export { PointHistoryTimeline } from "./point-history-timeline";
 export {
   PointCardSkeleton,
   PointCardSkeletonList,

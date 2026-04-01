@@ -210,6 +210,15 @@
       "empty": "No saved biography versions yet",
       "confirmDelete": "Remove this entry from history?",
       "deleteAria": "Delete biography history entry"
+    },
+    "pointHistory": {
+      "toggle": "Point history",
+      "loading": "Loading history...",
+      "error": "Could not load history",
+      "empty": "No point history entries yet",
+      "addEntry": "Add history entry",
+      "confirmDelete": "Remove this entry from history?",
+      "deleteAria": "Delete point history entry"
     }
   },
   "comments": {
@@ -695,7 +704,8 @@
     "photosCount": "{{current}} / {{max}} photos",
     "deletePhoto": "Delete photo",
     "errorPhotosUpload": "Could not upload photos",
-    "errorPhotoDelete": "Could not delete photo"
+    "errorPhotoDelete": "Could not delete photo",
+    "addToHistoryLabel": "Add a point history entry on save"
   },
   "errors": {
     "unexpected": {

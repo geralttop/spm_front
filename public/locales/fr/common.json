@@ -210,6 +210,15 @@
       "empty": "Aucune version de biographie enregistrée",
       "confirmDelete": "Supprimer cette entrée de l'historique ?",
       "deleteAria": "Supprimer l'entrée de l'historique de biographie"
+    },
+    "pointHistory": {
+      "toggle": "Historique du point",
+      "loading": "Chargement de l'historique...",
+      "error": "Impossible de charger l'historique",
+      "empty": "Aucune entrée d'historique pour ce point",
+      "addEntry": "Ajouter une entrée à l'historique",
+      "confirmDelete": "Supprimer cette entrée de l'historique ?",
+      "deleteAria": "Supprimer l'entrée de l'historique du point"
     }
   },
   "comments": {
@@ -695,7 +704,8 @@
     "photosCount": "{{current}} / {{max}} photos",
     "deletePhoto": "Supprimer la photo",
     "errorPhotosUpload": "Échec du téléversement des photos",
-    "errorPhotoDelete": "Échec de la suppression de la photo"
+    "errorPhotoDelete": "Échec de la suppression de la photo",
+    "addToHistoryLabel": "Ajouter une entrée à l'historique du point lors de l'enregistrement"
   },
   "errors": {
     "unexpected": {

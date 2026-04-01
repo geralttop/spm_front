@@ -21,10 +21,16 @@ import {
   ReportButton,
   EditButton,
   ShareLinkButton,
+  PointHistoryTimeline,
 } from "@/shared/ui";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
 import { PointCardMedia } from "@/shared/ui/point-card-media";
+import {
+  usePointHistoryQuery,
+  useCreatePointHistoryMutation,
+  useDeletePointHistoryMutation,
+} from "@/shared/lib/hooks/queries";
 
 const FavoriteIconButton = FavoriteButton as ComponentType<any>;
 const ReportIconButton = ReportButton as ComponentType<any>;
@@ -111,11 +117,34 @@ export const PointCard = React.memo(function PointCard({
     accessToken && currentUserId && currentUserId !== point.author.id;
   const isAuthor = currentUserId && currentUserId === point.author.id;
 
+  const { data: historyEntries, isLoading: historyLoading, error: historyError } =
+    usePointHistoryQuery(point.id);
+  const createHistoryMutation = useCreatePointHistoryMutation();
+  const deleteHistoryMutation = useDeletePointHistoryMutation();
+  const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
+
   const handleReportSuccess = () => {
   };
 
   const handleEditSuccess = () => {
     onPointUpdate?.();
+  };
+
+  const handleCreateHistory = async () => {
+    try {
+      await createHistoryMutation.mutateAsync(point.id);
+    } catch {
+      // errors handled by mutation + UI error state in timeline (if needed)
+    }
+  };
+
+  const handleDeleteHistory = async (historyId: string) => {
+    setDeletePendingId(historyId);
+    try {
+      await deleteHistoryMutation.mutateAsync({ pointId: point.id, historyId });
+    } finally {
+      setDeletePendingId(null);
+    }
   };
 
   return (
@@ -281,6 +310,27 @@ export const PointCard = React.memo(function PointCard({
       </div>
 
       <PointCardMedia key={point.id} point={point} />
+
+      <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border space-y-2 sm:space-y-3">
+        {isAuthor && (
+          <button
+            type="button"
+            onClick={() => void handleCreateHistory()}
+            disabled={createHistoryMutation.isPending}
+            className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors font-medium touch-target min-h-[44px] -mx-1 px-1 rounded-lg active:bg-primary/10 disabled:opacity-50"
+          >
+            <span>{t("profile.pointHistory.addEntry")}</span>
+          </button>
+        )}
+        <PointHistoryTimeline
+          entries={historyEntries ?? []}
+          isLoading={historyLoading}
+          error={historyError as Error | null}
+          canDelete={!!isAuthor}
+          onDelete={handleDeleteHistory}
+          deletePendingId={deletePendingId}
+        />
+      </div>
 
       <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
         <button

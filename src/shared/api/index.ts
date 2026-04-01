@@ -30,6 +30,8 @@ export type {
 export type {
   Point,
   PointPhoto,
+  PointHistoryEntry,
+  PointHistoryPhoto,
   CreatePointRequest,
   UpdatePointRequest,
   Category,
