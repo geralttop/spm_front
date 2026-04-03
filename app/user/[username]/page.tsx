@@ -16,7 +16,7 @@ import {
   useUnfollowMutation,
   useBioHistoryQuery,
 } from "@/shared/lib/hooks/queries";
-import { User, Mail, Users, MapPin } from "lucide-react";
+import { User, Mail, Users, MapPin, MessagesSquare } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
 import { PointCardSkeletonList } from "@/shared/ui";
 import { BioHistoryTimeline } from "@/features/profile";
@@ -215,10 +215,20 @@ export default function UserProfilePage() {
                 </p>
               </div>
 
-              <div className="flex w-full shrink-0 items-center justify-end gap-2 sm:w-auto">
+              <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto">
                 {user?.username ? (
                   <ShareLinkButton path={userProfilePath(user.username)} />
                 ) : null}
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="min-w-0 flex-1 touch-target gap-2 sm:flex-initial"
+                  disabled={!user?.id}
+                  onClick={() => user?.id && router.push(`/chats/compose?with=${user.id}`)}
+                >
+                  <MessagesSquare className="h-4 w-4 shrink-0" aria-hidden />
+                  {t("chats.messageUser")}
+                </Button>
                 <Button
                   onClick={handleFollowToggleMain}
                   disabled={actionLoading || !user?.id}

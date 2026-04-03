@@ -17,6 +17,7 @@ const DEFAULT_ORDER = [
   "favorites",
   "profile",
   "my-comments",
+  "chats",
   "search",
   "create-point",
   "manage",

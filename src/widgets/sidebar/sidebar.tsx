@@ -3,7 +3,8 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
-import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, X, Map, FolderKanban } from "lucide-react";
+import { useChatUnreadCountQuery } from "@/shared/lib/hooks/queries/use-chats-queries";
+import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, MessagesSquare, X, Map, FolderKanban } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 
 interface MenuItem {
@@ -12,6 +13,7 @@ interface MenuItem {
   path: string;
   active: boolean;
   id: string;
+  unreadBadge?: number;
 }
 
 interface SidebarProps {
@@ -30,6 +32,8 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const userRole = profile?.role || null;
+  const { data: unreadData } = useChatUnreadCountQuery(Boolean(accessToken));
+  const chatsUnread = unreadData?.count ?? 0;
 
   // Дефолтный порядок вкладок (мемоизируем для предотвращения бесконечного цикла)
   const defaultMenuItems = useMemo((): MenuItem[] => {
@@ -68,6 +72,13 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         label: t("sidebar.myComments"),
         path: "/my-comments",
         active: pathname === "/my-comments"
+      },
+      {
+        id: "chats",
+        icon: MessagesSquare,
+        label: t("sidebar.chats"),
+        path: "/chats",
+        active: pathname === "/chats" || Boolean(pathname?.startsWith("/chats/"))
       },
       {
         id: "search",
@@ -139,9 +150,12 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     const newItems = defaultMenuItems.filter(
       item => !sidebarOrder.includes(item.id)
     );
-    
-    return [...orderedItems, ...newItems];
-  }, [sidebarOrder, defaultMenuItems]);
+
+    const merged = [...orderedItems, ...newItems];
+    return merged.map((item) =>
+      item.id === "chats" ? { ...item, unreadBadge: chatsUnread } : item,
+    );
+  }, [sidebarOrder, defaultMenuItems, chatsUnread]);
 
   const handleNavigation = (path: string) => {
     router.push(path);
@@ -179,8 +193,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         : "text-text-muted hover:text-text-main hover:bg-accent"
                     }`}
                   >
-                    <Icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
+                    <Icon className="h-5 w-5 shrink-0" />
+                    <span className="min-w-0 flex-1 font-medium">{item.label}</span>
+                    {item.id === "chats" && (item.unreadBadge ?? 0) > 0 ? (
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${
+                          item.active
+                            ? "bg-primary-foreground/20 text-primary-foreground"
+                            : "bg-primary text-primary-foreground"
+                        }`}
+                        aria-label={t("chats.unreadBadge")}
+                      >
+                        {(item.unreadBadge ?? 0) > 99 ? "99+" : item.unreadBadge}
+                      </span>
+                    ) : null}
                   </button>
                 </li>
               );
@@ -231,8 +257,20 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                         : "text-text-muted hover:text-text-main hover:bg-accent"
                     }`}
                   >
-                    <Icon className="h-5 w-5" />
-                    <span className="font-medium">{item.label}</span>
+                    <Icon className="h-5 w-5 shrink-0" />
+                    <span className="min-w-0 flex-1 font-medium">{item.label}</span>
+                    {item.id === "chats" && (item.unreadBadge ?? 0) > 0 ? (
+                      <span
+                        className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold tabular-nums ${
+                          item.active
+                            ? "bg-primary-foreground/20 text-primary-foreground"
+                            : "bg-primary text-primary-foreground"
+                        }`}
+                        aria-label={t("chats.unreadBadge")}
+                      >
+                        {(item.unreadBadge ?? 0) > 99 ? "99+" : item.unreadBadge}
+                      </span>
+                    ) : null}
                   </button>
                 </li>
               );

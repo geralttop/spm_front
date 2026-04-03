@@ -14,6 +14,14 @@ export { zlataApi, zlataImageUrl } from "./zlata";
 export type { ZlataAsset, ZlataTagBrief } from "./zlata";
 export { vinlandApi, vinlandImageUrl } from "./vinland";
 export type { VinlandAsset } from "./vinland";
+export { chatsApi } from "./chats";
+export type {
+  ChatListItem,
+  ChatMessageDto,
+  ChatMessagesPage,
+  SendMessageResult,
+  ChatConversationMeta,
+} from "./chats";
 export { BaseApi } from "./base-api";
 export type {
   RegisterRequest,

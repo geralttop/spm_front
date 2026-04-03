@@ -6,6 +6,8 @@ export { ThemeSwitcher } from "./theme-switcher";
 export { Button } from "./button";
 export { Input } from "./input";
 export { Textarea } from "./textarea";
+export { MessengerComposer } from "./messenger-composer";
+export type { MessengerComposerProps } from "./messenger-composer";
 export { UserListModal } from "./user-list-modal";
 export { UserCard } from "./user-card";
 export { SubscriptionStatsComponent } from "./subscription-stats";

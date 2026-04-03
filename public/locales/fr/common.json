@@ -72,7 +72,22 @@
     "settings": "Paramètres",
     "myComments": "Mes commentaires",
     "manage": "Gérer",
-    "admin": "Admin"
+    "admin": "Admin",
+    "chats": "Discussions"
+  },
+  "chats": {
+    "title": "Messages",
+    "noConversations": "Aucune conversation pour le moment",
+    "composeTitle": "Nouvelle conversation",
+    "send": "Envoyer",
+    "placeholder": "Écrivez un message…",
+    "loadOlder": "Messages plus anciens",
+    "backToList": "Retour à la liste",
+    "messageUser": "Écrire",
+    "unreadBadge": "Messages non lus",
+    "sending": "Envoi…",
+    "loadError": "Impossible de charger les discussions",
+    "emptyThreadHint": "Pas encore de messages. Écrivez le premier ci-dessous."
   },
   "theme": {
     "switchToDark": "Passer au thème sombre",

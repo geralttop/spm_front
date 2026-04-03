@@ -72,7 +72,22 @@
     "settings": "Настройки",
     "myComments": "Мои комментарии",
     "manage": "Управление",
-    "admin": "Админка"
+    "admin": "Админка",
+    "chats": "Чаты"
+  },
+  "chats": {
+    "title": "Сообщения",
+    "noConversations": "Пока нет диалогов",
+    "composeTitle": "Новый диалог",
+    "send": "Отправить",
+    "placeholder": "Введите сообщение…",
+    "loadOlder": "Загрузить ранее",
+    "backToList": "К списку",
+    "messageUser": "Написать",
+    "unreadBadge": "Непрочитанные сообщения",
+    "sending": "Отправка…",
+    "loadError": "Не удалось загрузить чаты",
+    "emptyThreadHint": "Сообщений пока нет. Напишите первое в поле внизу."
   },
   "theme": {
     "switchToDark": "Переключить на темную тему",

@@ -12,3 +12,4 @@ export * from "./use-bio-history-query";
 export * from "./use-point-history-query";
 export * from "./use-zlata-queries";
 export * from "./use-vinland-queries";
+export * from "./use-chats-queries";

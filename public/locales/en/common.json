@@ -72,7 +72,22 @@
     "settings": "Settings",
     "myComments": "My Comments",
     "manage": "Manage",
-    "admin": "Admin"
+    "admin": "Admin",
+    "chats": "Chats"
+  },
+  "chats": {
+    "title": "Messages",
+    "noConversations": "No conversations yet",
+    "composeTitle": "New conversation",
+    "send": "Send",
+    "placeholder": "Type a message…",
+    "loadOlder": "Load older",
+    "backToList": "Back to list",
+    "messageUser": "Message",
+    "unreadBadge": "Unread messages",
+    "sending": "Sending…",
+    "loadError": "Could not load chats",
+    "emptyThreadHint": "No messages yet. Type your first message below."
   },
   "theme": {
     "switchToDark": "Switch to dark theme",

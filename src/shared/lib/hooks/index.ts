@@ -18,6 +18,7 @@ export {
   updateSharedUserCoords,
   getInitialGeolocation,
 } from '../user-location';
+export { useChatWebSocket } from './use-chat-websocket';
 
 // Re-export query hooks
 export * from './queries';

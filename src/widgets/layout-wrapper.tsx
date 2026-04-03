@@ -74,7 +74,9 @@ export function LayoutWrapper({ children }: { children: React.ReactNode }) {
         
         <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
           <Header onMenuClick={() => setIsSidebarOpen(true)} />
-          <main className="flex-1 p-3 sm:p-6">{children}</main>
+          <main className="flex min-h-0 flex-1 flex-col p-3 sm:p-6">
+            {children}
+          </main>
         </div>
       </div>
     </ErrorBoundary>
