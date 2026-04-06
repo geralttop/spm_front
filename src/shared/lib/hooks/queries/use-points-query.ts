@@ -19,10 +19,15 @@ export function usePointsQuery(
   });
 }
 
-export function usePointQuery(id: string) {
+export function usePointQuery(
+  id: string,
+  options?: { fromContainer?: string | null }
+) {
+  const fromContainer = options?.fromContainer?.trim() || undefined;
   return useQuery({
-    queryKey: ["point", id],
-    queryFn: () => pointsApi.getById(id),
+    queryKey: ["point", id, fromContainer ?? ""],
+    queryFn: () =>
+      pointsApi.getById(id, fromContainer ? { fromContainer } : undefined),
     enabled: Boolean(id),
   });
 }

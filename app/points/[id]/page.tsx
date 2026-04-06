@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import axios from "axios";
 import { ArrowLeft, MapPin } from "lucide-react";
 import { PointCard } from "@/shared/ui/point-card";
@@ -14,11 +14,16 @@ function isNotFoundError(error: unknown): boolean {
   return axios.isAxiosError(error) && error.response?.status === 404;
 }
 
-export default function PointPage() {
+function PointPageContent() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const id = typeof params.id === "string" ? params.id : "";
+  const fromContainer = searchParams.get("fromContainer");
   const { t } = useTranslation();
-  const { data: point, isLoading, error, refetch, isError } = usePointQuery(id);
+  const { data: point, isLoading, error, refetch, isError } = usePointQuery(
+    id,
+    { fromContainer }
+  );
 
   useEffect(() => {
     if (point?.name) {
@@ -88,11 +93,23 @@ export default function PointPage() {
           <PointCard
             point={point}
             showAuthor
+            fromContainerId={fromContainer ?? undefined}
             onPointUpdate={() => void refetch()}
           />
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PointPage() {
+  const { t } = useTranslation();
+  return (
+    <Suspense
+      fallback={<Loading message={t("pointPage.loading")} fullScreen />}
+    >
+      <PointPageContent />
+    </Suspense>
   );
 }
 

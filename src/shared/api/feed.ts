@@ -37,6 +37,24 @@ export interface FeedPoint {
   commentsCount?: number;
 }
 
+/** Привести точку из API к виду ленты/карты (строки description/address, null для category/container). */
+export function toFeedPoint(
+  p: Omit<FeedPoint, "description" | "address" | "category" | "container"> & {
+    description?: string | null;
+    address?: string | null;
+    category?: FeedPoint["category"] | null | undefined;
+    container?: FeedPoint["container"] | null | undefined;
+  }
+): FeedPoint {
+  return {
+    ...p,
+    description: p.description ?? "",
+    address: p.address ?? "",
+    category: p.category ?? null,
+    container: p.container ?? null,
+  };
+}
+
 export interface FeedResponse {
   points: FeedPoint[];
   total: number;

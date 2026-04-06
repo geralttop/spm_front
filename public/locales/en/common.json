@@ -331,7 +331,8 @@
       "deleteSuccess": "Container successfully deleted",
       "deleteError": "Error deleting container",
       "moveError": "Error moving point",
-      "noCategory": "No category"
+      "noCategory": "No category",
+      "copyMapLink": "Container map link"
     },
     "managePoints": {
       "noPoints": "You don't have any points yet",
@@ -473,6 +474,10 @@
     "viewDetails": "View details",
     "loadingPoints": "Loading points and location...",
     "pointsLoadFailed": "Failed to load points",
+    "containerLoadFailed": "Failed to load container for the map",
+    "containerNotFound": "Container not found",
+    "containerShareForbidden": "This container cannot be opened via a shared link",
+    "containerMapEmpty": "This container has no points on the map yet",
     "pointsOnMap": "Points on map:",
     "mapStyle": "Map style",
     "filters": "Filters",

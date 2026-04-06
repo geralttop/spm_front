@@ -11,8 +11,9 @@ import {
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
+import axios from "axios";
 import i18n from "@/shared/config/i18n";
-import { feedApi } from "@/shared/api";
+import { containersApi, feedApi } from "@/shared/api";
 import type { FeedPoint } from "@/shared/api/feed";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
@@ -111,6 +112,8 @@ function MapPageClient() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const pointFromQuery = searchParams.get("point");
+  const containerId = searchParams.get("container");
+  const isContainerMode = Boolean(containerId);
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const { availableMapStyles, loadSettings, isInitialized } = useSettingsStore();
@@ -141,11 +144,30 @@ function MapPageClient() {
     setLoading(true);
     setError(null);
     try {
-      const [response, geo] = await Promise.all([
-        feedApi.getFeed(1, 1000),
-        getInitialGeolocation(),
-      ]);
+      const geo = await getInitialGeolocation();
 
+      if (containerId) {
+        const { feedPoints } = await containersApi.getForMap(containerId);
+        setAllPoints(feedPoints);
+
+        if (geo) {
+          setUserLocation(geo);
+          setCenter([geo.longitude, geo.latitude]);
+          setZoom(12);
+        } else if (feedPoints.length > 0) {
+          setUserLocation(null);
+          const first = feedPoints[0];
+          setCenter([first.coords.coordinates[0], first.coords.coordinates[1]]);
+          setZoom(12);
+        } else {
+          setUserLocation(null);
+          setCenter(FALLBACK_CENTER);
+          setZoom(FALLBACK_ZOOM);
+        }
+        return;
+      }
+
+      const response = await feedApi.getFeed(1, 1000);
       setAllPoints(response.points);
 
       if (geo) {
@@ -164,7 +186,25 @@ function MapPageClient() {
       }
     } catch (err) {
       console.error("Error loading map data:", err);
-      setError(i18n.t("map.pointsLoadFailed"));
+      if (axios.isAxiosError(err)) {
+        if (err.response?.status === 403) {
+          setError(i18n.t("map.containerShareForbidden"));
+        } else if (err.response?.status === 404) {
+          setError(i18n.t("map.containerNotFound"));
+        } else {
+          setError(
+            containerId
+              ? i18n.t("map.containerLoadFailed")
+              : i18n.t("map.pointsLoadFailed")
+          );
+        }
+      } else {
+        setError(
+          containerId
+            ? i18n.t("map.containerLoadFailed")
+            : i18n.t("map.pointsLoadFailed")
+        );
+      }
       setAllPoints([]);
       setUserLocation(null);
       setCenter(FALLBACK_CENTER);
@@ -172,7 +212,7 @@ function MapPageClient() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [containerId]);
 
   useEffect(() => {
     if (!accessToken) return;
@@ -217,6 +257,11 @@ function MapPageClient() {
   }, [isInitialized, loadMapData]);
 
   useEffect(() => {
+    if (isContainerMode) {
+      setPoints([...allPoints]);
+      return;
+    }
+
     let filtered = [...allPoints];
 
     const allAuthorIds = Array.from(new Set(allPoints.map((p) => p.author.id)));
@@ -260,7 +305,7 @@ function MapPageClient() {
     }
 
     setPoints(filtered);
-  }, [filters, allPoints]);
+  }, [filters, allPoints, isContainerMode]);
 
   const centerOnPointCoords = useMemo(() => {
     if (!openPostPointId) return null;
@@ -465,7 +510,11 @@ function MapPageClient() {
                           {t("map.popup.directions")}
                         </a>
                         <Link
-                          href={`/points/${point.id}`}
+                          href={
+                            containerId
+                              ? `/points/${point.id}?fromContainer=${encodeURIComponent(containerId)}`
+                              : `/points/${point.id}`
+                          }
                           target="_blank"
                           rel="noopener noreferrer"
                           className={cn(
@@ -526,11 +575,25 @@ function MapPageClient() {
             />
           </MapComponent>
 
-          <MapFiltersComponent
-            filters={filters}
-            onFiltersChange={setFilters}
-            allPoints={allPoints}
-          />
+          {!isContainerMode && (
+            <MapFiltersComponent
+              filters={filters}
+              onFiltersChange={setFilters}
+              allPoints={allPoints}
+            />
+          )}
+
+          {!error &&
+            isContainerMode &&
+            !loading &&
+            mapStyleReady &&
+            points.length === 0 && (
+              <div className="pointer-events-none absolute left-1/2 top-20 z-10 max-w-[min(20rem,calc(100%-2rem))] -translate-x-1/2 rounded-lg border border-border bg-card/95 px-3 py-2 text-center shadow-md backdrop-blur-sm sm:top-24">
+                <p className="text-xs text-text-muted sm:text-sm">
+                  {t("map.containerMapEmpty")}
+                </p>
+              </div>
+            )}
 
           {error && (
             <div className="absolute left-1/2 top-16 z-20 max-w-[calc(100%-1rem)] -translate-x-1/2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 shadow-lg sm:top-20 sm:max-w-lg sm:p-4">

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { containersApi, pointsApi } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
@@ -13,6 +13,7 @@ import {
 } from '../lib/system-default-entities';
 import { Package, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
 import { ContainerForm } from './ContainerForm';
+import { ShareLinkButton } from '@/shared/ui';
 
 export function ManageContainers() {
   const { t } = useTranslation();
@@ -291,7 +292,14 @@ export function ManageContainers() {
                       )}
                     </div>
                   </div>
-                  <div className="flex gap-1 sm:gap-2 shrink-0">
+                  <div className="flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2 shrink-0">
+                    <div className="flex gap-1 sm:gap-2">
+                    {container.authorId != null && (
+                      <ShareLinkButton
+                        path={`/map?container=${encodeURIComponent(container.id)}`}
+                        buttonTitle={t('manage.manageContainers.copyMapLink')}
+                      />
+                    )}
                     <button
                       onClick={() => setEditingContainer(container)}
                       className="p-1.5 sm:p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors"
@@ -304,6 +312,7 @@ export function ManageContainers() {
                     >
                       <Trash2 className="h-4 w-4 sm:h-5 sm:w-5" />
                     </button>
+                    </div>
                   </div>
                 </div>
 

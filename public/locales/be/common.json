@@ -348,7 +348,8 @@
       "deleteSuccess": "Кантэйнер паспяхова выдалены",
       "deleteError": "Памылка выдалення кантэйнера",
       "moveError": "Памылка перамяшчэння кропкі",
-      "noCategory": "Без катэгорыі"
+      "noCategory": "Без катэгорыі",
+      "copyMapLink": "Спасылка на карту кантэйнера"
     },
     "managePoints": {
       "noPoints": "У вас пакуль няма кропак",
@@ -490,6 +491,10 @@
     "viewDetails": "Падрабязней",
     "loadingPoints": "Загрузка кропак і геалакацыі...",
     "pointsLoadFailed": "Не атрымалася загрузіць кропкі",
+    "containerLoadFailed": "Не атрымалася загрузіць кантэйнер для карты",
+    "containerNotFound": "Кантэйнер не знойдзены",
+    "containerShareForbidden": "Гэты кантэйнер нельга адкрыць па спасылцы",
+    "containerMapEmpty": "У гэтым кантэйнеры пакуль няма кропак на мапе",
     "pointsOnMap": "Кропак на мапе:",
     "mapStyle": "Стыль карты",
     "filters": "Фільтры",

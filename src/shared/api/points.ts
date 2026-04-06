@@ -1,5 +1,7 @@
 import { apiClient } from "./client";
 import { BaseApi } from "./base-api";
+import type { FeedPoint } from "./feed";
+import { toFeedPoint } from "./feed";
 
 export interface PointPhoto {
   id: string;
@@ -75,6 +77,18 @@ export interface Container {
   authorId?: number | null;
 }
 
+/** Ответ GET /containers/:id для карты шаринга */
+export interface ContainerForMapResponse extends Container {
+  author?: {
+    id: number;
+    username: string;
+    firstName: string;
+    lastName: string;
+    avatar?: string;
+  };
+  points: Point[];
+}
+
 export interface CreateCategoryRequest {
   name: string;
   color?: string;
@@ -127,9 +141,27 @@ class PointsApi extends BaseApi<Point, CreatePointRequest, UpdatePointRequest> {
     return response.data;
   }
 
-  async getHistory(pointId: string): Promise<PointHistoryEntry[]> {
+  async getById(
+    id: string | number,
+    options?: { fromContainer?: string | null }
+  ): Promise<Point> {
+    const fromContainer = options?.fromContainer?.trim();
+    const response = await apiClient.get<Point>(`/points/${id}`, {
+      params: fromContainer ? { fromContainer } : undefined,
+    });
+    return response.data;
+  }
+
+  async getHistory(
+    pointId: string,
+    options?: { fromContainer?: string | null }
+  ): Promise<PointHistoryEntry[]> {
+    const fromContainer = options?.fromContainer?.trim();
     const response = await apiClient.get<PointHistoryEntry[]>(
-      `/points/${pointId}/history`
+      `/points/${pointId}/history`,
+      {
+        params: fromContainer ? { fromContainer } : undefined,
+      }
     );
     return response.data;
   }
@@ -190,6 +222,18 @@ export const categoriesApi = new BaseApi<Category, CreateCategoryRequest, Update
 class ContainersApi extends BaseApi<Container, CreateContainerRequest, UpdateContainerRequest> {
   async delete(id: string): Promise<void> {
     await apiClient.delete(`/containers/${id}`);
+  }
+
+  async getForMap(id: string): Promise<{
+    container: ContainerForMapResponse;
+    feedPoints: FeedPoint[];
+  }> {
+    const response = await apiClient.get<ContainerForMapResponse>(
+      `/containers/${id}`
+    );
+    const container = response.data;
+    const feedPoints = container.points.map((p) => toFeedPoint(p));
+    return { container, feedPoints };
   }
 }
 

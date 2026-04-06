@@ -348,7 +348,8 @@
       "deleteSuccess": "Conteneur supprimé avec succès",
       "deleteError": "Erreur de suppression du conteneur",
       "moveError": "Erreur de déplacement du point",
-      "noCategory": "Pas de catégorie"
+      "noCategory": "Pas de catégorie",
+      "copyMapLink": "Lien vers la carte du conteneur"
     },
     "managePoints": {
       "noPoints": "Vous n'avez pas encore de points",
@@ -490,6 +491,10 @@
     "viewDetails": "Voir les détails",
     "loadingPoints": "Chargement des points et de la position...",
     "pointsLoadFailed": "Impossible de charger les points",
+    "containerLoadFailed": "Impossible de charger le conteneur pour la carte",
+    "containerNotFound": "Conteneur introuvable",
+    "containerShareForbidden": "Ce conteneur ne peut pas être ouvert via un lien partagé",
+    "containerMapEmpty": "Ce conteneur n'a pas encore de points sur la carte",
     "pointsOnMap": "Points sur la carte :",
     "mapStyle": "Style de carte",
     "filters": "Filtres",

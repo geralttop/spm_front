@@ -348,7 +348,8 @@
       "deleteSuccess": "Контейнер успешно удален",
       "deleteError": "Ошибка удаления контейнера",
       "moveError": "Ошибка перемещения точки",
-      "noCategory": "Без категории"
+      "noCategory": "Без категории",
+      "copyMapLink": "Ссылка на карту контейнера"
     },
     "managePoints": {
       "noPoints": "У вас пока нет точек",
@@ -490,6 +491,10 @@
     "viewDetails": "Подробнее",
     "loadingPoints": "Загрузка точек и геолокации...",
     "pointsLoadFailed": "Не удалось загрузить точки",
+    "containerLoadFailed": "Не удалось загрузить контейнер для карты",
+    "containerNotFound": "Контейнер не найден",
+    "containerShareForbidden": "Этот контейнер нельзя открыть по ссылке",
+    "containerMapEmpty": "В этом контейнере пока нет точек на карте",
     "pointsOnMap": "Точек на карте:",
     "mapStyle": "Стиль карты",
     "filters": "Фильтры",

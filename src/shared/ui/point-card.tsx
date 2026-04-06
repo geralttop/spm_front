@@ -8,7 +8,7 @@ import {
   Map,
 } from "lucide-react";
 import Link from "next/link";
-import React, { useState, type ComponentType } from "react";
+import React, { useMemo, useState, type ComponentType } from "react";
 import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { useAuthStore } from "@/shared/lib/store";
 import type { Point } from "@/shared/api";
@@ -39,12 +39,15 @@ const EditIconButton = EditButton as ComponentType<any>;
 interface PointCardProps {
   point: Point;
   showAuthor?: boolean;
+  /** Переход с карты шаринга контейнера — для API и ссылок */
+  fromContainerId?: string | null;
   onFavoriteChange?: () => void;
   onPointUpdate?: () => void;
 }
 
 interface ActionButtonsProps {
-  pointId: string;
+  sharePath: string;
+  mapHref: string;
   isAuthor: boolean;
   isFavorite: boolean;
   loading: boolean;
@@ -56,7 +59,8 @@ interface ActionButtonsProps {
 }
 
 function ActionButtons({
-  pointId,
+  sharePath,
+  mapHref,
   isAuthor,
   isFavorite,
   loading,
@@ -69,9 +73,9 @@ function ActionButtons({
   const { t } = useTranslation();
   return (
     <div className="flex items-center gap-1 sm:gap-2 [&_button]:touch-target [&_button]:min-h-9 [&_button]:min-w-9 sm:[&_button]:min-h-[44px] sm:[&_button]:min-w-[44px] [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_a]:touch-target [&_a]:flex [&_a]:min-h-9 [&_a]:min-w-9 [&_a]:items-center [&_a]:justify-center sm:[&_a]:min-h-[44px] sm:[&_a]:min-w-[44px]">
-      <ShareLinkButton path={`/points/${pointId}`} />
+      <ShareLinkButton path={sharePath} />
       <Link
-        href={`/map?point=${encodeURIComponent(pointId)}`}
+        href={mapHref}
         prefetch={false}
         className="inline-flex items-center justify-center rounded-lg bg-muted p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:p-2"
         title={t("map.openOnMap")}
@@ -97,6 +101,7 @@ function ActionButtons({
 export const PointCard = React.memo(function PointCard({
   point,
   showAuthor = true,
+  fromContainerId,
   onFavoriteChange,
   onPointUpdate,
 }: PointCardProps) {
@@ -117,8 +122,23 @@ export const PointCard = React.memo(function PointCard({
     accessToken && currentUserId && currentUserId !== point.author.id;
   const isAuthor = currentUserId && currentUserId === point.author.id;
 
+  const sharePath = useMemo(
+    () =>
+      fromContainerId
+        ? `/points/${point.id}?fromContainer=${encodeURIComponent(fromContainerId)}`
+        : `/points/${point.id}`,
+    [fromContainerId, point.id]
+  );
+  const mapHref = useMemo(
+    () =>
+      fromContainerId
+        ? `/map?container=${encodeURIComponent(fromContainerId)}&point=${encodeURIComponent(point.id)}`
+        : `/map?point=${encodeURIComponent(point.id)}`,
+    [fromContainerId, point.id]
+  );
+
   const { data: historyEntries, isLoading: historyLoading, error: historyError } =
-    usePointHistoryQuery(point.id);
+    usePointHistoryQuery(point.id, { fromContainer: fromContainerId });
   const createHistoryMutation = useCreatePointHistoryMutation();
   const deleteHistoryMutation = useDeletePointHistoryMutation();
   const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
@@ -197,7 +217,8 @@ export const PointCard = React.memo(function PointCard({
           </Link>
           <div className="-mr-0.5 flex-shrink-0 sm:mr-0">
             <ActionButtons
-              pointId={point.id}
+              sharePath={sharePath}
+              mapHref={mapHref}
               isAuthor={!!isAuthor}
               isFavorite={isFavorite}
               loading={isLoading}
@@ -224,7 +245,8 @@ export const PointCard = React.memo(function PointCard({
           </div>
           <div className="ml-auto flex-shrink-0">
             <ActionButtons
-              pointId={point.id}
+              sharePath={sharePath}
+              mapHref={mapHref}
               isAuthor={!!isAuthor}
               isFavorite={isFavorite}
               loading={isLoading}

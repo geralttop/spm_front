@@ -84,9 +84,15 @@ export type ShareLinkButtonProps = {
   /** Путь приложения с ведущим слэшем, например `/points/id` или из userProfilePath */
   path: string;
   className?: string;
+  /** Подпись кнопки (title и aria-label); иначе — общие ключи share.openTitle / share.openLabel */
+  buttonTitle?: string;
 };
 
-export function ShareLinkButton({ path, className }: ShareLinkButtonProps) {
+export function ShareLinkButton({
+  path,
+  className,
+  buttonTitle,
+}: ShareLinkButtonProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [url, setUrl] = useState("");
@@ -98,6 +104,9 @@ export function ShareLinkButton({ path, className }: ShareLinkButtonProps) {
     setOpen(true);
   };
 
+  const label = buttonTitle ?? t("share.openLabel");
+  const titleAttr = buttonTitle ?? t("share.openTitle");
+
   return (
     <>
       <button
@@ -107,8 +116,8 @@ export function ShareLinkButton({ path, className }: ShareLinkButtonProps) {
           "p-1.5 sm:p-2 rounded-lg transition-colors bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground",
           className
         )}
-        title={t("share.openTitle")}
-        aria-label={t("share.openLabel")}
+        title={titleAttr}
+        aria-label={label}
       >
         <Share2 className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden />
       </button>

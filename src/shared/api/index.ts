@@ -46,6 +46,7 @@ export type {
   CreateCategoryRequest,
   UpdateCategoryRequest,
   Container,
+  ContainerForMapResponse,
   CreateContainerRequest,
   UpdateContainerRequest,
   UploadPointPhotosPayload,
