@@ -2,6 +2,7 @@ import { apiClient } from "./client";
 import { BaseApi } from "./base-api";
 import type { FeedPoint } from "./feed";
 import { toFeedPoint } from "./feed";
+import type { PointAuthor } from "@/shared/lib/user-badge-types";
 
 export interface PointPhoto {
   id: string;
@@ -31,13 +32,7 @@ export interface Point {
     color: string;
   } | null;
   container?: Container | null;
-  author: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  };
+  author: PointAuthor;
   commentsCount?: number;
 }
 
@@ -79,13 +74,7 @@ export interface Container {
 
 /** Ответ GET /containers/:id для карты шаринга */
 export interface ContainerForMapResponse extends Container {
-  author?: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  };
+  author?: PointAuthor;
   points: Point[];
 }
 

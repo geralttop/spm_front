@@ -4,6 +4,7 @@ import { Button } from "./button";
 import { useRouter } from "next/navigation";
 import { userProfilePath } from "@/shared/lib/user-profile-path";
 import type { SubscriptionUser } from "@/shared/api";
+import { UserBadges } from "@/shared/ui/user-badges";
 
 interface UserListModalProps {
   isOpen: boolean;
@@ -111,8 +112,13 @@ export function UserListModal({
                       </span>
                     )}
                   </span>
-                  <span className="min-w-0 truncate font-medium text-text-main">
+                  <span className="flex min-w-0 items-center gap-1 truncate font-medium text-text-main">
                     {user.username}
+                    <UserBadges
+                      role={user.role}
+                      createdPointsCount={user.createdPointsCount}
+                      className="shrink-0"
+                    />
                   </span>
                 </button>
 

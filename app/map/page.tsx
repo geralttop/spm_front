@@ -43,6 +43,7 @@ import {
 import { cn } from "@/shared/lib/utils";
 import { formatRelativeDate } from "@/shared/lib/utils";
 import { MapFiltersComponent, type MapFilters } from "@/widgets/map-filters";
+import { UserBadges } from "@/shared/ui/user-badges";
 import { getInitialGeolocation } from "@/shared/lib/user-location";
 
 /** Запасной вид, если нет ни гео, ни точек (не Москва). */
@@ -399,7 +400,9 @@ function MapPageClient() {
               const commentsCount = point.commentsCount ?? 0;
               const categoryColor = point.category?.color ?? "hsl(var(--muted-foreground))";
               const containerColor = point.container?.color ?? "hsl(var(--primary))";
-              const avatarUrl = resolveAuthorAvatarUrl(point.author.avatar);
+              const avatarUrl = resolveAuthorAvatarUrl(
+                point.author.avatar ?? undefined,
+              );
               const authorInitials = getAuthorInitials(point);
 
               return (
@@ -495,7 +498,14 @@ function MapPageClient() {
                           <p className="truncate text-xs font-medium text-text-main">
                             {point.author.firstName} {point.author.lastName}
                           </p>
-                          <p className="truncate text-xs text-text-muted">@{point.author.username}</p>
+                          <p className="flex min-w-0 items-center gap-1 truncate text-xs text-text-muted">
+                            @{point.author.username}
+                            <UserBadges
+                              role={point.author.role}
+                              createdPointsCount={point.author.createdPointsCount}
+                              className="shrink-0"
+                            />
+                          </p>
                         </div>
                       </div>
 

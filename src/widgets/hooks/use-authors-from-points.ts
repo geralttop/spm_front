@@ -7,6 +7,8 @@ export interface AuthorData {
   username: string;
   firstName: string;
   lastName: string;
+  role?: string;
+  createdPointsCount?: number;
   categories: Array<{ id: number; name: string; color: string }>;
   containers: Array<{ id: string; title: string }>;
 }
@@ -33,6 +35,8 @@ export function useAuthorsFromPoints(
           username: point.author.username,
           firstName: point.author.firstName,
           lastName: point.author.lastName,
+          role: point.author.role,
+          createdPointsCount: point.author.createdPointsCount,
           categories: [],
           containers: [],
         });

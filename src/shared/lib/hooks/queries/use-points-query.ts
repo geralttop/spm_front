@@ -36,6 +36,7 @@ function invalidatePointRelated(queryClient: ReturnType<typeof useQueryClient>) 
   queryClient.invalidateQueries({ queryKey: ["points"] });
   queryClient.invalidateQueries({ queryKey: ["feed"] });
   queryClient.invalidateQueries({ queryKey: ["point"] });
+  queryClient.invalidateQueries({ queryKey: ["profile"] });
 }
 
 export function useCreatePointMutation() {

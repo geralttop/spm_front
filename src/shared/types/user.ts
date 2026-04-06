@@ -11,10 +11,12 @@ export interface ProfileResponse {
   sub: string;
   userId: string;
   email: string;
+  role?: string;
   username?: string;
   bio?: string;
   avatar?: string;
   sidebarOrder?: string[];
+  createdPointsCount?: number;
 }
 
 export interface UpdateProfileRequest {
@@ -29,4 +31,6 @@ export interface SearchUserResult {
   bio: string | null;
   /** Путь к аватару (как в ответе GET /auth/user/...) */
   avatar?: string;
+  role?: string;
+  createdPointsCount?: number;
 }

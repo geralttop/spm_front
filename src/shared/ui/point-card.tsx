@@ -26,6 +26,7 @@ import {
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
 import { PointCardMedia } from "@/shared/ui/point-card-media";
+import { UserBadges } from "@/shared/ui/user-badges";
 import {
   usePointHistoryQuery,
   useCreatePointHistoryMutation,
@@ -194,8 +195,13 @@ export const PointCard = React.memo(function PointCard({
                 {point.author.firstName} {point.author.lastName}
               </p>
               <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-text-muted sm:text-sm">
-                <span className="min-w-0 truncate">
+                <span className="flex min-w-0 items-center gap-1 truncate">
                   @{point.author.username}
+                  <UserBadges
+                    role={point.author.role}
+                    createdPointsCount={point.author.createdPointsCount}
+                    className="shrink-0"
+                  />
                 </span>
                 <span
                   className="text-text-muted/40 select-none"

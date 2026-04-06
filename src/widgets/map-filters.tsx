@@ -9,6 +9,7 @@ import {
   useFilterToggles,
   type MapFilters,
 } from "@/widgets/hooks/use-filter-toggles";
+import { UserBadges } from "@/shared/ui/user-badges";
 
 export type { MapFilters };
 
@@ -158,8 +159,13 @@ export function MapFiltersComponent({
                               onChange={() => handleAuthorToggle(author.id)}
                               className="rounded border-border text-primary focus:ring-primary"
                             />
-                            <span className="text-sm text-text-main font-medium">
-                              {author.username}
+                            <span className="flex min-w-0 items-center gap-1 text-sm font-medium text-text-main">
+                              <span className="truncate">{author.username}</span>
+                              <UserBadges
+                                role={author.role}
+                                createdPointsCount={author.createdPointsCount}
+                                className="shrink-0"
+                              />
                             </span>
                           </label>
                         </div>

@@ -59,6 +59,13 @@
     "view": "Voir",
     "clear": "Effacer la recherche"
   },
+  "badges": {
+    "admin": "Administrateur",
+    "milestone5": "Au moins 5 points créés",
+    "milestone10": "Au moins 10 points créés",
+    "milestone15": "Au moins 15 points créés",
+    "milestone20": "Au moins 20 points créés"
+  },
   "sidebar": {
     "home": "Accueil",
     "feed": "Fil",

@@ -1,5 +1,6 @@
 import { apiClient } from "./client";
 import type { PointPhoto } from "./points";
+import type { PointAuthor } from "@/shared/lib/user-badge-types";
 
 export interface FeedPoint {
   id: string;
@@ -26,13 +27,7 @@ export interface FeedPoint {
     color?: string;
     createdAt: string;
   } | null;
-  author: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-    avatar?: string;
-  };
+  author: PointAuthor;
   /** Счётчик из loadRelationCount (если бэкенд отдаёт в ленте) */
   commentsCount?: number;
 }

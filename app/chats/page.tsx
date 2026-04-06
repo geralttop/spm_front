@@ -9,6 +9,7 @@ import { User } from "lucide-react";
 import { getApiUrl } from "@/shared/lib/utils/api-url";
 import { userAvatarSrc } from "@/shared/lib/user-avatar-url";
 import { Button, Loading } from "@/shared/ui";
+import { UserBadges } from "@/shared/ui/user-badges";
 import { useAuthStore } from "@/shared/lib/store";
 import { useChatWebSocket } from "@/shared/lib/hooks";
 import {
@@ -120,8 +121,13 @@ function ChatsPageInner() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="truncate font-medium text-text-main">
-                      {item.peer.username}
+                    <span className="flex min-w-0 items-center gap-1 truncate font-medium text-text-main">
+                      <span className="truncate">{item.peer.username}</span>
+                      <UserBadges
+                        role={item.peer.role}
+                        createdPointsCount={item.peer.createdPointsCount}
+                        className="shrink-0"
+                      />
                     </span>
                     {item.unreadCount > 0 ? (
                       <span className="shrink-0 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground tabular-nums">

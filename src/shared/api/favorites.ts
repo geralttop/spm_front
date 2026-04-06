@@ -1,4 +1,5 @@
 import { apiClient } from "./client";
+import type { PointAuthor } from "@/shared/lib/user-badge-types";
 
 export interface FavoritePoint {
   id: string;
@@ -21,12 +22,7 @@ export interface FavoritePoint {
     description?: string;
     createdAt: string;
   };
-  author: {
-    id: number;
-    username: string;
-    firstName: string;
-    lastName: string;
-  };
+  author: PointAuthor;
   addedAt: string;
 }
 

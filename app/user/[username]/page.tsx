@@ -20,6 +20,7 @@ import { User, Mail, Users, MapPin, MessagesSquare } from "lucide-react";
 import { PointCard } from "@/src/shared/ui/point-card";
 import { PointCardSkeletonList } from "@/shared/ui";
 import { BioHistoryTimeline } from "@/features/profile";
+import { UserBadges } from "@/shared/ui/user-badges";
 
 export default function UserProfilePage() {
   const router = useRouter();
@@ -207,8 +208,15 @@ export default function UserProfilePage() {
               </div>
 
               <div className="min-w-0 w-full flex-1 sm:w-auto">
-                <h1 className="truncate text-xl font-bold text-text-main sm:text-3xl">
-                  {user?.username || "User"}
+                <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
+                  <span className="truncate">{user?.username || "User"}</span>
+                  {user ? (
+                    <UserBadges
+                      role={user.role}
+                      createdPointsCount={user.createdPointsCount}
+                      className="shrink-0"
+                    />
+                  ) : null}
                 </h1>
                 <p className="mt-0.5 truncate text-xs text-text-muted break-all sm:mt-1 sm:text-sm">
                   {user?.email}
@@ -246,7 +254,16 @@ export default function UserProfilePage() {
                   <User className="h-4 w-4 shrink-0" />
                   {t("profile.username")}
                 </label>
-                <p className="hyphens-auto font-medium text-text-main">{user?.username || "-"}</p>
+                <p className="flex flex-wrap items-center gap-1.5 hyphens-auto font-medium text-text-main">
+                  <span>{user?.username || "-"}</span>
+                  {user ? (
+                    <UserBadges
+                      role={user.role}
+                      createdPointsCount={user.createdPointsCount}
+                      className="shrink-0"
+                    />
+                  ) : null}
+                </p>
               </div>
 
               <div>

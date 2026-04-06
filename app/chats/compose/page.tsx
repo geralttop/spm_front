@@ -14,6 +14,7 @@ import { userAvatarSrc } from "@/shared/lib/user-avatar-url";
 import { useProfileQuery } from "@/shared/lib/hooks";
 import { useSendChatMessageMutation } from "@/shared/lib/hooks/queries/use-chats-queries";
 import { ConversationComposer } from "../_components/conversation-composer";
+import { UserBadges } from "@/shared/ui/user-badges";
 
 function ChatComposeInner() {
   const { t } = useTranslation();
@@ -158,8 +159,13 @@ function ChatComposeInner() {
               </div>
             )}
           </div>
-          <span className="truncate text-base font-semibold text-text-main sm:text-lg">
-            {peer.username}
+          <span className="flex min-w-0 items-center gap-1.5 truncate text-base font-semibold text-text-main sm:text-lg">
+            <span className="truncate">{peer.username}</span>
+            <UserBadges
+              role={peer.role}
+              createdPointsCount={peer.createdPointsCount}
+              className="shrink-0"
+            />
           </span>
         </Link>
       </header>

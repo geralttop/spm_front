@@ -10,6 +10,7 @@ import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { userAvatarSrc } from "@/shared/lib/user-avatar-url";
 import { ArrowLeft, Loader2, User } from "lucide-react";
 import { Button, Loading } from "@/shared/ui";
+import { UserBadges } from "@/shared/ui/user-badges";
 import { ConversationComposer } from "../_components/conversation-composer";
 import { useAuthStore } from "@/shared/lib/store";
 import {
@@ -184,8 +185,13 @@ export default function ChatConversationPage() {
               </div>
             )}
           </div>
-          <span className="truncate text-base font-semibold text-text-main sm:text-lg">
-            {peer.username}
+          <span className="flex min-w-0 items-center gap-1.5 truncate text-base font-semibold text-text-main sm:text-lg">
+            <span className="truncate">{peer.username}</span>
+            <UserBadges
+              role={peer.role}
+              createdPointsCount={peer.createdPointsCount}
+              className="shrink-0"
+            />
           </span>
         </Link>
       </header>

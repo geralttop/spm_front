@@ -6,6 +6,7 @@ import { ReportModal } from "./report-modal";
 import { useAuthStore } from "@/shared/lib/store";
 import { useProfileQuery } from "@/shared/lib/hooks";
 import type { SearchUserResult } from "@/shared/api";
+import { UserBadges } from "@/shared/ui/user-badges";
 
 interface UserCardProps {
   user: SearchUserResult;
@@ -38,7 +39,14 @@ export function UserCard({ user, onClick, actionButton, showReportButton = true 
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="truncate font-semibold text-text-main">{user.username}</h3>
+          <h3 className="flex min-w-0 items-center gap-1.5 truncate font-semibold text-text-main">
+            <span className="truncate">{user.username}</span>
+            <UserBadges
+              role={user.role}
+              createdPointsCount={user.createdPointsCount}
+              className="shrink-0"
+            />
+          </h3>
           <p className="truncate text-sm text-text-muted">{user.email}</p>
           {user.bio && (
             <p className="mt-1 line-clamp-2 text-xs text-text-muted">{user.bio}</p>

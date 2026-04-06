@@ -1,4 +1,5 @@
 import { apiClient } from './client';
+import type { UserBadgeFields } from '@/shared/lib/user-badge-types';
 
 export interface Comment {
   id: number;
@@ -11,9 +12,11 @@ export interface Comment {
     id: number;
     username: string;
     email?: string;
+    firstName?: string;
+    lastName?: string;
     /** Путь к файлу аватара (если бэкенд отдаёт поле user) */
     avatar?: string | null;
-  };
+  } & UserBadgeFields;
   point?: {
     id: string;
     name: string;

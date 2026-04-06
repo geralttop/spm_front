@@ -7,6 +7,8 @@ export interface SubscriptionUser {
   bio: string | null;
   /** С бэкенда; для старых ответов может отсутствовать */
   avatar?: string | null;
+  role?: string;
+  createdPointsCount?: number;
 }
 
 export interface SubscriptionStats {

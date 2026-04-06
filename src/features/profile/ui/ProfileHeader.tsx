@@ -3,17 +3,20 @@
 import { Edit2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button, ShareLinkButton } from '@/shared/ui';
+import { UserBadges } from '@/shared/ui/user-badges';
 import { userProfilePath } from '@/shared/lib/user-profile-path';
 
 interface ProfileHeaderProps {
   username: string;
   email: string;
   avatar?: string;
+  role?: string;
+  createdPointsCount?: number;
   isEditing: boolean;
   onEdit: () => void;
 }
 
-export function ProfileHeader({ username, email, avatar, isEditing, onEdit }: ProfileHeaderProps) {
+export function ProfileHeader({ username, email, avatar, role, createdPointsCount, isEditing, onEdit }: ProfileHeaderProps) {
   const { t } = useTranslation();
   
   const avatarUrl = avatar 
@@ -42,8 +45,13 @@ export function ProfileHeader({ username, email, avatar, isEditing, onEdit }: Pr
         
         {/* Информация */}
         <div className="flex-1 min-w-0">
-          <h1 className="text-2xl sm:text-3xl font-bold text-text-main truncate">
-            {username}
+          <h1 className="flex min-w-0 items-center gap-2 truncate text-2xl font-bold text-text-main sm:text-3xl">
+            <span className="truncate">{username}</span>
+            <UserBadges
+              role={role}
+              createdPointsCount={createdPointsCount}
+              className="shrink-0"
+            />
           </h1>
           <p className="mt-1 text-sm text-text-muted truncate">{email}</p>
         </div>

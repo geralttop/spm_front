@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { MoreVertical, Pencil, Trash2, Flag, User } from 'lucide-react';
 import { commentsApi, Comment } from '@/shared/api';
 import { ReportModal } from '@/shared/ui';
+import { UserBadges } from '@/shared/ui/user-badges';
 import { useProfileQuery } from '@/shared/lib/hooks';
 import { formatRelativeDate } from '@/shared/lib/utils';
 import styles from './Comments.module.css';
@@ -181,7 +182,14 @@ export function Comments({ pointId }: CommentsProps) {
                       href={userProfilePath(comment.author.username)}
                       className={`${styles.username} ${styles.profileLink}`}
                     >
-                      @{comment.author.username}
+                      <span className="inline-flex items-center gap-1">
+                        @{comment.author.username}
+                        <UserBadges
+                          role={comment.author.role}
+                          createdPointsCount={comment.author.createdPointsCount}
+                          className="shrink-0"
+                        />
+                      </span>
                     </Link>
                     <span className={styles.metaSep} aria-hidden>
                       ·

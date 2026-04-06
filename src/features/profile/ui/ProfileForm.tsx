@@ -4,6 +4,7 @@ import { useMemo } from 'react';
 import { User, Mail, Check, X, Edit2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input, Textarea, Button, ShareLinkButton } from '@/shared/ui';
+import { UserBadges } from '@/shared/ui/user-badges';
 import { userProfilePath } from '@/shared/lib/user-profile-path';
 import { useForm } from '@/shared/lib/hooks';
 import { createUpdateProfileSchema } from '@/shared/schemas';
@@ -58,8 +59,13 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
         
         {/* Информация */}
         <div className="flex-1 min-w-0 w-full sm:w-auto">
-          <h1 className="text-xl sm:text-3xl font-bold text-text-main truncate">
-            {profile.username || t("profile.title")}
+          <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
+            <span className="truncate">{profile.username || t("profile.title")}</span>
+            <UserBadges
+              role={profile.role}
+              createdPointsCount={profile.createdPointsCount}
+              className="shrink-0"
+            />
           </h1>
           <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-text-muted truncate break-all">{profile.email}</p>
         </div>

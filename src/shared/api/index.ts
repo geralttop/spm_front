@@ -21,6 +21,7 @@ export type {
   ChatMessagesPage,
   SendMessageResult,
   ChatConversationMeta,
+  ChatPeer,
 } from "./chats";
 export { BaseApi } from "./base-api";
 export type {

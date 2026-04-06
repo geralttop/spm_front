@@ -1,8 +1,16 @@
 import { apiClient } from "./client";
 
+export interface ChatPeer {
+  id: number;
+  username: string;
+  avatar: string | null;
+  role: string;
+  createdPointsCount: number;
+}
+
 export interface ChatListItem {
   conversationId: number;
-  peer: { id: number; username: string; avatar: string | null };
+  peer: ChatPeer;
   lastMessage: {
     id: number;
     body: string;
@@ -32,7 +40,7 @@ export interface SendMessageResult {
 
 export interface ChatConversationMeta {
   conversationId: number;
-  peer: { id: number; username: string; avatar: string | null };
+  peer: ChatPeer;
 }
 
 export const chatsApi = {

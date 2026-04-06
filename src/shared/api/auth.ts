@@ -32,6 +32,7 @@ export interface ProfileResponse {
   bio?: string;
   avatar?: string;
   sidebarOrder?: string[];
+  createdPointsCount?: number;
 }
 
 export interface UpdateProfileRequest {
@@ -55,6 +56,8 @@ export interface SearchUserResult {
   email: string;
   bio: string | null;
   avatar?: string;
+  role?: string;
+  createdPointsCount?: number;
 }
 
 export interface BioHistoryEntry {
