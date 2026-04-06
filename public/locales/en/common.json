@@ -505,7 +505,8 @@
     },
     "popup": {
       "close": "Close",
-      "directions": "Directions",
+      "openInYandex": "Open in Yandex Maps",
+      "openInGoogle": "Open in Google Maps",
       "openInNewTab": "Open point in new tab",
       "noCategory": "Uncategorized",
       "commentsWithCount": "{{count}} comments"

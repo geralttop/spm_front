@@ -522,7 +522,8 @@
     },
     "popup": {
       "close": "Зачыніць",
-      "directions": "Маршрут",
+      "openInYandex": "Адкрыць у Яндекс Картах",
+      "openInGoogle": "Адкрыць у Google Картах",
       "openInNewTab": "Адкрыць кропку ў новай укладцы",
       "noCategory": "Без катэгорыі",
       "commentsWithCount": "{{count}} камент."

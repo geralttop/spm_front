@@ -38,7 +38,6 @@ import {
   Loader2,
   ChevronDown,
   MessageCircle,
-  Navigation,
   ExternalLink,
 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
@@ -73,7 +72,11 @@ function resolveAuthorAvatarUrl(avatar?: string): string | null {
   return `${apiBase}${avatar}`;
 }
 
-function mapsDirectionsUrl(lat: number, lng: number) {
+function yandexMapsPointUrl(lat: number, lng: number) {
+  return `https://yandex.ru/maps/?pt=${lng},${lat}&z=16&l=map`;
+}
+
+function googleMapsPointUrl(lat: number, lng: number) {
   return `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 }
 
@@ -497,18 +500,32 @@ function MapPageClient() {
                       </div>
 
                       <div className="flex gap-2 pt-1">
-                        <a
-                          href={mapsDirectionsUrl(lat, lng)}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className={cn(
-                            buttonVariants({ size: "sm", variant: "default" }),
-                            "h-8 flex-1 gap-0"
-                          )}
-                        >
-                          <Navigation className="mr-1.5 size-3.5 shrink-0" />
-                          {t("map.popup.directions")}
-                        </a>
+                        <div className="flex min-w-0 flex-1 gap-1">
+                          <a
+                            href={yandexMapsPointUrl(lat, lng)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-8 min-w-0 flex-1 items-center justify-center rounded-md bg-[#FC3F1D] text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FC3F1D] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            title={t("map.popup.openInYandex")}
+                            aria-label={t("map.popup.openInYandex")}
+                          >
+                            <span className="shrink-0" aria-hidden>
+                              Я
+                            </span>
+                          </a>
+                          <a
+                            href={googleMapsPointUrl(lat, lng)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex h-8 min-w-0 flex-1 items-center justify-center rounded-md bg-[#34A853] text-sm font-semibold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#34A853] focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                            title={t("map.popup.openInGoogle")}
+                            aria-label={t("map.popup.openInGoogle")}
+                          >
+                            <span className="shrink-0" aria-hidden>
+                              G
+                            </span>
+                          </a>
+                        </div>
                         <Link
                           href={
                             containerId

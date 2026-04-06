@@ -522,7 +522,8 @@
     },
     "popup": {
       "close": "Fermer",
-      "directions": "Itinéraire",
+      "openInYandex": "Ouvrir dans Yandex Cartes",
+      "openInGoogle": "Ouvrir dans Google Maps",
       "openInNewTab": "Ouvrir le point dans un nouvel onglet",
       "noCategory": "Sans catégorie",
       "commentsWithCount": "{{count}} commentaires"

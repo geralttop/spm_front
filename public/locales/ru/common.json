@@ -522,7 +522,8 @@
     },
     "popup": {
       "close": "Закрыть",
-      "directions": "Маршрут",
+      "openInYandex": "Открыть в Яндекс Картах",
+      "openInGoogle": "Открыть в Google Картах",
       "openInNewTab": "Открыть точку в новой вкладке",
       "noCategory": "Без категории",
       "commentsWithCount": "{{count}} коммент."
