@@ -538,52 +538,28 @@
   },
   "mapStyles": {
     "openstreet": {
-      "name": "OpenStreetMap",
-      "description": "Классическая карта OpenStreetMap"
+      "name": "OpenStreetMap"
     },
     "openstreet3d": {
-      "name": "OpenStreetMap 3D",
-      "description": "3D версия OpenStreetMap с векторными тайлами"
+      "name": "OpenStreetMap 3D"
     },
     "satellite": {
-      "name": "Спутник",
-      "description": "Спутниковые снимки высокого разрешения"
+      "name": "Спутник"
     },
     "carto": {
-      "name": "Carto",
-      "description": "Минималистичная карта от Carto"
+      "name": "Carto"
     },
     "terrain": {
-      "name": "Рельеф",
-      "description": "Топографическая карта с рельефом"
+      "name": "Рельеф"
     },
     "osmHumanitarian": {
-      "name": "OSM Гуманитарная",
-      "description": "Гуманитарная версия OpenStreetMap"
+      "name": "OSM Гуманитарная"
     },
     "streets": {
-      "name": "Esri Улицы",
-      "description": "Детальная карта улиц от Esri"
+      "name": "Esri Улицы"
     },
     "natGeo": {
-      "name": "National Geographic",
-      "description": "Стиль National Geographic"
-    },
-    "stamenTerrain": {
-      "name": "Stamen Рельеф",
-      "description": "Художественная топографическая карта"
-    },
-    "stamenToner": {
-      "name": "Stamen Тонер",
-      "description": "Черно-белая контрастная карта"
-    },
-    "stamenWatercolor": {
-      "name": "Stamen Акварель",
-      "description": "Акварельный художественный стиль"
-    },
-    "openTopoMap": {
-      "name": "OpenTopoMap",
-      "description": "Детальная топографическая карта"
+      "name": "National Geographic"
     }
   },
   "createPoint": {
@@ -692,9 +668,19 @@
     "mapStyles": "Стили карт",
     "mapStylesDescription": "Выберите, какие стили карт будут доступны в выпадающем списке",
     "default": "По умолч.",
-    "recommended": "Рекомендуется",
     "setAsDefault": "Сделать основным",
-    "mapStylesTip": "Выбранные стили карт будут доступны при создании точек и просмотре карточек точек. Стиль по умолчанию будет использоваться при первом открытии карты. Рекомендуется оставить включенными базовые стили для лучшего опыта.",
+    "mapStylesTip": "Выбранные стили карт будут доступны при создании точек и просмотре карточек точек. Стиль по умолчанию будет использоваться при первом открытии карты.",
+    "mapStyleQuality": {
+      "helpAria": "Пояснение меток: как стиль ведёт себя при сильном приближении карты",
+      "title": "Метки и масштаб (зум)",
+      "green": "Зелёная — при сильном зуме карта не «ломается»: нет чёрного экрана и сообщения, что данных нет.",
+      "yellow": "Жёлтая — чёрный экран или «нет данных» обычно появляются только почти на максимальном масштабе.",
+      "red": "Красная — такие артефакты появляются раньше и при меньшем зуме.",
+      "recommendation": "По умолчанию включены стили с зелёной меткой — у них шире диапазон масштаба без пустых тайлов.",
+      "badgeGood": "Без провалов",
+      "badgeMedium": "У предела зума",
+      "badgePoor": "Рано пропадает"
+    },
     "otherSettings": "Другие настройки",
     "otherSettingsDescription": "Дополнительные настройки будут добавлены в будущих обновлениях",
     "updateError": "Ошибка при обновлении настроек",

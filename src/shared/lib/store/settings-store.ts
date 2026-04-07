@@ -1,6 +1,10 @@
 import { create } from 'zustand';
-import { type MapStyleKey } from '@/shared/config/map-styles';
+import { MAP_STYLES, type MapStyleKey } from '@/shared/config/map-styles';
 import { settingsApi, type MapSettings, type PointCardInitialView } from '@/shared/api';
+
+const MAP_STYLE_KEYS = new Set(
+  Object.keys(MAP_STYLES) as MapStyleKey[],
+);
 
 /** Один параллельный запрос getMapSettings на все вызовы loadSettings без данных (защита от 429). */
 let mapSettingsFetchInFlight: Promise<MapSettings> | null = null;
@@ -34,9 +38,41 @@ interface SettingsState {
   resetToDefaults: () => Promise<void>;
 }
 
-const DEFAULT_MAP_STYLES: MapStyleKey[] = ['openstreet', 'openstreet3d', 'satellite', 'carto'];
-const DEFAULT_STYLE: MapStyleKey = 'openstreet';
+const DEFAULT_MAP_STYLES: MapStyleKey[] = ['carto', 'openstreet3d'];
+const DEFAULT_STYLE: MapStyleKey = 'carto';
 const DEFAULT_POINT_CARD_VIEW: PointCardInitialView = 'map';
+
+function normalizeMapSettingsPayload(
+  settings: Pick<MapSettings, "availableMapStyles" | "defaultMapStyle"> & {
+    pointCardInitialView?: PointCardInitialView;
+  },
+): MapSettings {
+  const seen = new Set<MapStyleKey>();
+  const available: MapStyleKey[] = [];
+  for (const k of settings.availableMapStyles ?? []) {
+    if (MAP_STYLE_KEYS.has(k) && !seen.has(k)) {
+      seen.add(k);
+      available.push(k);
+    }
+  }
+  const finalAvailable =
+    available.length > 0 ? available : [...DEFAULT_MAP_STYLES];
+  let def = settings.defaultMapStyle;
+  if (!MAP_STYLE_KEYS.has(def)) {
+    def = DEFAULT_STYLE;
+  }
+  if (!finalAvailable.includes(def)) {
+    def = finalAvailable.includes(DEFAULT_STYLE)
+      ? DEFAULT_STYLE
+      : finalAvailable[0];
+  }
+  return {
+    availableMapStyles: finalAvailable,
+    defaultMapStyle: def,
+    pointCardInitialView:
+      settings.pointCardInitialView ?? DEFAULT_POINT_CARD_VIEW,
+  };
+}
 
 export const useSettingsStore = create<SettingsState>((set, get) => ({
   availableMapStyles: DEFAULT_MAP_STYLES,
@@ -60,10 +96,12 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         settings = await fetchMapSettingsDeduped();
       }
 
+      const normalized = normalizeMapSettingsPayload(settings);
+
       set({
-        availableMapStyles: settings.availableMapStyles,
-        defaultMapStyle: settings.defaultMapStyle,
-        pointCardInitialView: settings.pointCardInitialView ?? DEFAULT_POINT_CARD_VIEW,
+        availableMapStyles: normalized.availableMapStyles,
+        defaultMapStyle: normalized.defaultMapStyle,
+        pointCardInitialView: normalized.pointCardInitialView,
         isInitialized: true,
       });
     } catch (error) {
@@ -91,10 +129,12 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     
     set({ isLoading: true });
     try {
-      const updated = await settingsApi.updateMapSettings({
-        availableMapStyles: styles,
-        defaultMapStyle: newDefault,
-      });
+      const updated = normalizeMapSettingsPayload(
+        await settingsApi.updateMapSettings({
+          availableMapStyles: styles,
+          defaultMapStyle: newDefault,
+        }),
+      );
 
       set({
         availableMapStyles: updated.availableMapStyles,
@@ -118,9 +158,11 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     
     set({ isLoading: true });
     try {
-      const updated = await settingsApi.updateMapSettings({
-        defaultMapStyle: style,
-      });
+      const updated = normalizeMapSettingsPayload(
+        await settingsApi.updateMapSettings({
+          defaultMapStyle: style,
+        }),
+      );
 
       set({
         defaultMapStyle: updated.defaultMapStyle,
@@ -137,10 +179,16 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   setPointCardInitialView: async (view) => {
     set({ isLoading: true });
     try {
-      const updated = await settingsApi.updateMapSettings({
-        pointCardInitialView: view,
+      const updated = normalizeMapSettingsPayload(
+        await settingsApi.updateMapSettings({
+          pointCardInitialView: view,
+        }),
+      );
+      set({
+        pointCardInitialView: updated.pointCardInitialView,
+        availableMapStyles: updated.availableMapStyles,
+        defaultMapStyle: updated.defaultMapStyle,
       });
-      set({ pointCardInitialView: updated.pointCardInitialView });
     } catch (error) {
       console.error('Failed to update point card view:', error);
       throw error;
@@ -170,11 +218,13 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
   resetToDefaults: async () => {
     set({ isLoading: true });
     try {
-      const updated = await settingsApi.updateMapSettings({
-        availableMapStyles: DEFAULT_MAP_STYLES,
-        defaultMapStyle: DEFAULT_STYLE,
-        pointCardInitialView: DEFAULT_POINT_CARD_VIEW,
-      });
+      const updated = normalizeMapSettingsPayload(
+        await settingsApi.updateMapSettings({
+          availableMapStyles: DEFAULT_MAP_STYLES,
+          defaultMapStyle: DEFAULT_STYLE,
+          pointCardInitialView: DEFAULT_POINT_CARD_VIEW,
+        }),
+      );
 
       set({
         availableMapStyles: updated.availableMapStyles,

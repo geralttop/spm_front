@@ -521,52 +521,28 @@
   },
   "mapStyles": {
     "openstreet": {
-      "name": "OpenStreetMap",
-      "description": "Classic OpenStreetMap"
+      "name": "OpenStreetMap"
     },
     "openstreet3d": {
-      "name": "OpenStreetMap 3D",
-      "description": "3D version of OpenStreetMap with vector tiles"
+      "name": "OpenStreetMap 3D"
     },
     "satellite": {
-      "name": "Satellite",
-      "description": "High resolution satellite imagery"
+      "name": "Satellite"
     },
     "carto": {
-      "name": "Carto",
-      "description": "Minimalist map by Carto"
+      "name": "Carto"
     },
     "terrain": {
-      "name": "Terrain",
-      "description": "Topographic map with terrain"
+      "name": "Terrain"
     },
     "osmHumanitarian": {
-      "name": "OSM Humanitarian",
-      "description": "Humanitarian version of OpenStreetMap"
+      "name": "OSM Humanitarian"
     },
     "streets": {
-      "name": "Esri Streets",
-      "description": "Detailed street map by Esri"
+      "name": "Esri Streets"
     },
     "natGeo": {
-      "name": "National Geographic",
-      "description": "National Geographic style"
-    },
-    "stamenTerrain": {
-      "name": "Stamen Terrain",
-      "description": "Artistic topographic map"
-    },
-    "stamenToner": {
-      "name": "Stamen Toner",
-      "description": "Black and white contrast map"
-    },
-    "stamenWatercolor": {
-      "name": "Stamen Watercolor",
-      "description": "Watercolor artistic style"
-    },
-    "openTopoMap": {
-      "name": "OpenTopoMap",
-      "description": "Detailed topographic map"
+      "name": "National Geographic"
     }
   },
   "createPoint": {
@@ -675,9 +651,19 @@
     "mapStyles": "Map Styles",
     "mapStylesDescription": "Select which map styles will be available in the dropdown",
     "default": "Default",
-    "recommended": "Recommended",
     "setAsDefault": "Set as default",
-    "mapStylesTip": "Selected map styles will be available when creating points and viewing point cards. The default style will be used when opening the map for the first time. It is recommended to keep basic styles enabled for the best experience.",
+    "mapStylesTip": "Selected map styles will be available when creating points and viewing point cards. The default style will be used when opening the map for the first time.",
+    "mapStyleQuality": {
+      "helpAria": "What the badges mean for map behavior when zooming in deeply",
+      "title": "Badges and zoom level",
+      "green": "Green — strong zoom does not break the map: no black screen or “no data” message.",
+      "yellow": "Yellow — a black screen or “no data” usually appears only near the maximum zoom.",
+      "red": "Red — those issues show up earlier and at lower zoom levels.",
+      "recommendation": "Green-badged styles are enabled by default; they stay usable across a wider zoom range without empty tiles.",
+      "badgeGood": "No dropouts",
+      "badgeMedium": "Near max zoom",
+      "badgePoor": "Fails earlier"
+    },
     "otherSettings": "Other Settings",
     "otherSettingsDescription": "Additional settings will be added in future updates",
     "updateError": "Error updating settings",

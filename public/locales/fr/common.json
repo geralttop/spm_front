@@ -538,52 +538,28 @@
   },
   "mapStyles": {
     "openstreet": {
-      "name": "OpenStreetMap",
-      "description": "Carte classique OpenStreetMap"
+      "name": "OpenStreetMap"
     },
     "openstreet3d": {
-      "name": "OpenStreetMap 3D",
-      "description": "Version 3D d'OpenStreetMap avec tuiles vectorielles"
+      "name": "OpenStreetMap 3D"
     },
     "satellite": {
-      "name": "Satellite",
-      "description": "Images satellite haute résolution"
+      "name": "Satellite"
     },
     "carto": {
-      "name": "Carto",
-      "description": "Carte minimaliste par Carto"
+      "name": "Carto"
     },
     "terrain": {
-      "name": "Terrain",
-      "description": "Carte topographique avec relief"
+      "name": "Terrain"
     },
     "osmHumanitarian": {
-      "name": "OSM Humanitaire",
-      "description": "Version humanitaire d'OpenStreetMap"
+      "name": "OSM Humanitaire"
     },
     "streets": {
-      "name": "Esri Rues",
-      "description": "Carte détaillée des rues par Esri"
+      "name": "Esri Rues"
     },
     "natGeo": {
-      "name": "National Geographic",
-      "description": "Style National Geographic"
-    },
-    "stamenTerrain": {
-      "name": "Stamen Terrain",
-      "description": "Carte topographique artistique"
-    },
-    "stamenToner": {
-      "name": "Stamen Toner",
-      "description": "Carte contrastée noir et blanc"
-    },
-    "stamenWatercolor": {
-      "name": "Stamen Aquarelle",
-      "description": "Style artistique aquarelle"
-    },
-    "openTopoMap": {
-      "name": "OpenTopoMap",
-      "description": "Carte topographique détaillée"
+      "name": "National Geographic"
     }
   },
   "createPoint": {
@@ -692,9 +668,19 @@
     "mapStyles": "Styles de carte",
     "mapStylesDescription": "Sélectionnez les styles de carte qui seront disponibles dans la liste déroulante",
     "default": "Par défaut",
-    "recommended": "Recommandé",
     "setAsDefault": "Définir par défaut",
-    "mapStylesTip": "Les styles de carte sélectionnés seront disponibles lors de la création de points et de la visualisation des cartes de points. Le style par défaut sera utilisé lors de l'ouverture de la carte pour la première fois. Il est recommandé de garder les styles de base activés pour une meilleure expérience.",
+    "mapStylesTip": "Les styles de carte sélectionnés seront disponibles lors de la création de points et de la visualisation des cartes de points. Le style par défaut sera utilisé lors de l'ouverture de la carte pour la première fois.",
+    "mapStyleQuality": {
+      "helpAria": "Signification des pastilles selon le comportement de la carte à fort zoom",
+      "title": "Pastilles et niveau de zoom",
+      "green": "Vert — un fort zoom ne casse pas la carte : pas d'écran noir ni de message « pas de données ».",
+      "yellow": "Jaune — écran noir ou « pas de données » surtout près du zoom maximal.",
+      "red": "Rouge — ces problèmes apparaissent plus tôt et à un zoom plus faible.",
+      "recommendation": "Par défaut, les styles à pastille verte sont activés : ils restent utilisables sur une plage de zoom plus large sans tuiles vides.",
+      "badgeGood": "Sans trou",
+      "badgeMedium": "Près du max",
+      "badgePoor": "Cesse tôt"
+    },
     "otherSettings": "Autres paramètres",
     "otherSettingsDescription": "Des paramètres supplémentaires seront ajoutés dans les futures mises à jour",
     "updateError": "Erreur de mise à jour des paramètres",

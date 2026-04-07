@@ -538,52 +538,28 @@
   },
   "mapStyles": {
     "openstreet": {
-      "name": "OpenStreetMap",
-      "description": "Класічная карта OpenStreetMap"
+      "name": "OpenStreetMap"
     },
     "openstreet3d": {
-      "name": "OpenStreetMap 3D",
-      "description": "3D версія OpenStreetMap з вектарнымі тайламі"
+      "name": "OpenStreetMap 3D"
     },
     "satellite": {
-      "name": "Спадарожнік",
-      "description": "Спадарожнікавыя здымкі высокай раздзяляльнасці"
+      "name": "Спадарожнік"
     },
     "carto": {
-      "name": "Carto",
-      "description": "Мінімалістычная карта ад Carto"
+      "name": "Carto"
     },
     "terrain": {
-      "name": "Рэльеф",
-      "description": "Тапаграфічная карта з рэльефам"
+      "name": "Рэльеф"
     },
     "osmHumanitarian": {
-      "name": "OSM Гуманітарная",
-      "description": "Гуманітарная версія OpenStreetMap"
+      "name": "OSM Гуманітарная"
     },
     "streets": {
-      "name": "Esri Вуліцы",
-      "description": "Дэтальная карта вуліц ад Esri"
+      "name": "Esri Вуліцы"
     },
     "natGeo": {
-      "name": "National Geographic",
-      "description": "Стыль National Geographic"
-    },
-    "stamenTerrain": {
-      "name": "Stamen Рэльеф",
-      "description": "Мастацкая тапаграфічная карта"
-    },
-    "stamenToner": {
-      "name": "Stamen Тонер",
-      "description": "Чорна-белая кантрастная карта"
-    },
-    "stamenWatercolor": {
-      "name": "Stamen Акварэль",
-      "description": "Акварэльны мастацкі стыль"
-    },
-    "openTopoMap": {
-      "name": "OpenTopoMap",
-      "description": "Дэтальная тапаграфічная карта"
+      "name": "National Geographic"
     }
   },
   "createPoint": {
@@ -692,9 +668,19 @@
     "mapStyles": "Стылі мап",
     "mapStylesDescription": "Выберыце, якія стылі карт будуць даступныя ў выпадальным спісе",
     "default": "Па змаўч.",
-    "recommended": "Рэкамендуецца",
     "setAsDefault": "Зрабіць асноўным",
-    "mapStylesTip": "Выбраныя стылі карт будуць даступныя пры стварэнні кропак і прагляду картак кропак. Стыль па змаўчанні будзе выкарыстоўвацца пры першым адкрыцці карты. Рэкамендуецца пакінуць уключанымі базавыя стылі для лепшага вопыту.",
+    "mapStylesTip": "Выбраныя стылі карт будуць даступныя пры стварэнні кропак і прагляду картак кропак. Стыль па змаўчанні будзе выкарыстоўвацца пры першым адкрыцці карты.",
+    "mapStyleQuality": {
+      "helpAria": "Поясненне метак: як стыль паводзіць сябе пры моцным набліжэнні карты",
+      "title": "Меткі і маштаб (зум)",
+      "green": "Зялёная — пры моцным зуме карта не «ламаецца»: няма чорнага экрана і паведамлення, што даных няма.",
+      "yellow": "Жоўтая — чорны экран або «няма даных» звычайна з'яўляюцца толькі амаль на максімальным маштабе.",
+      "red": "Чырвоная — такія артэфакты з'яўляюцца раней і пры меншым зуме.",
+      "recommendation": "Па змаўчанні ўключаны стылі з зялёнай меткай — у іх шырэй дыяпазон маштабу без пустых тайлаў.",
+      "badgeGood": "Без правалаў",
+      "badgeMedium": "Ля макс. зума",
+      "badgePoor": "Рана знікае"
+    },
     "otherSettings": "Іншыя налады",
     "otherSettingsDescription": "Дадатковыя налады будуць дададзены ў будучых абнаўленнях",
     "updateError": "Памылка пры абнаўленні налад",

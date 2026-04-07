@@ -13,8 +13,39 @@ import {
 } from "@/shared/config/theme";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
-import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette } from "lucide-react";
+import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette, HelpCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+
+type MapStyleQualityLevel = "good" | "medium" | "poor";
+
+const MAP_STYLE_QUALITY: Record<MapStyleKey, MapStyleQualityLevel> = {
+  carto: "good",
+  openstreet3d: "good",
+  openstreet: "medium",
+  satellite: "medium",
+  terrain: "medium",
+  osmHumanitarian: "medium",
+  streets: "poor",
+  natGeo: "poor",
+};
+
+/** Кружок качества (без текста); подпись — в aria/title через i18n. */
+const QUALITY_DOT_CLASS: Record<MapStyleQualityLevel, string> = {
+  good:
+    "bg-emerald-500 ring-2 ring-emerald-500/30 dark:bg-emerald-400 dark:ring-emerald-400/25",
+  medium:
+    "bg-amber-500 ring-2 ring-amber-500/30 dark:bg-amber-400 dark:ring-amber-400/25",
+  poor: "bg-red-500 ring-2 ring-red-500/30 dark:bg-red-400 dark:ring-red-400/25",
+};
+
+const QUALITY_ARIA_KEY: Record<
+  MapStyleQualityLevel,
+  "badgeGood" | "badgeMedium" | "badgePoor"
+> = {
+  good: "badgeGood",
+  medium: "badgeMedium",
+  poor: "badgePoor",
+};
 
 const MENU_ICONS = {
   feed: Rss,
@@ -380,10 +411,34 @@ export default function SettingsPage() {
           <div className="rounded-lg border border-border bg-card p-3 sm:p-6 shadow-sm">
             <div className="flex flex-col gap-2 xs:flex-row xs:items-center xs:justify-between mb-4 sm:mb-6">
               <div className="min-w-0">
-                <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
-                  <Map className="h-5 w-5 shrink-0" />
-                  {t('settings.mapStyles')}
-                </h2>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-lg sm:text-xl font-semibold text-text-main flex items-center gap-2">
+                    <Map className="h-5 w-5 shrink-0" />
+                    {t('settings.mapStyles')}
+                  </h2>
+                  <div className="group relative">
+                    <button
+                      type="button"
+                      className="rounded p-0.5 text-text-muted hover:text-text-main focus:outline-none focus-visible:ring-2 focus-visible:ring-ring touch-target"
+                      aria-label={t("settings.mapStyleQuality.helpAria")}
+                    >
+                      <HelpCircle className="h-4 w-4 shrink-0" aria-hidden />
+                    </button>
+                    <div className="invisible group-hover:visible group-focus-within:visible opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity absolute left-0 top-7 z-20 w-[min(100vw-2rem,22rem)] max-sm:right-0 max-sm:left-auto p-4 bg-popover border border-border rounded-lg shadow-lg">
+                      <p className="font-medium text-sm text-text-main mb-2">
+                        {t("settings.mapStyleQuality.title")}
+                      </p>
+                      <ul className="space-y-2 text-sm text-text-muted list-disc pl-4">
+                        <li>{t("settings.mapStyleQuality.green")}</li>
+                        <li>{t("settings.mapStyleQuality.yellow")}</li>
+                        <li>{t("settings.mapStyleQuality.red")}</li>
+                      </ul>
+                      <p className="mt-3 pt-3 border-t border-border text-xs text-text-muted">
+                        {t("settings.mapStyleQuality.recommendation")}
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <p className="text-xs sm:text-sm text-text-muted mt-1">
                   {t('settings.mapStylesDescription')}
                 </p>
@@ -399,30 +454,31 @@ export default function SettingsPage() {
               </Button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3">
-              {Object.entries(MAP_STYLES).map(([key, style]) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+              {Object.entries(MAP_STYLES).map(([key]) => {
                 const styleKey = key as MapStyleKey;
                 const isEnabled = availableMapStyles.includes(styleKey);
                 const isDefault = defaultMapStyle === styleKey;
                 const canDisable = availableMapStyles.length > 1 || !isEnabled;
-                const isDefaultStyle = ['openstreet', 'openstreet3d', 'satellite', 'carto'].includes(styleKey);
-                
+
                 const styleName = t(`mapStyles.${styleKey}.name`);
-                const styleDescription = t(`mapStyles.${styleKey}.description`);
+                const quality = MAP_STYLE_QUALITY[styleKey];
+                const qualityAriaKey = QUALITY_ARIA_KEY[quality];
+                const qualityHint = t(`settings.mapStyleQuality.${qualityAriaKey}`);
 
                 return (
                   <div
                     key={key}
-                    className={`relative p-2.5 sm:p-3 rounded-lg border transition-all cursor-pointer ${
+                    className={`min-h-11 min-w-0 p-2 sm:p-2.5 rounded-lg border transition-all cursor-pointer ${
                       isEnabled
                         ? 'border-primary bg-primary/5 hover:bg-primary/10'
                         : 'border-border bg-muted/30 hover:bg-muted/50'
                     }`}
                     onClick={() => canDisable && !settingsLoading && handleToggleStyle(styleKey)}
                   >
-                    <div className="flex items-start gap-2.5 sm:gap-3">
+                    <div className="flex min-w-0 items-center gap-2 sm:gap-2.5">
                       <div
-                        className={`mt-0.5 w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                        className={`h-5 w-5 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${
                           isEnabled
                             ? 'border-primary bg-primary'
                             : 'border-border bg-background'
@@ -430,39 +486,45 @@ export default function SettingsPage() {
                       >
                         {isEnabled && <Check className="h-3 w-3 text-primary-foreground" />}
                       </div>
-                      
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-1.5 sm:gap-2 mb-0.5 sm:mb-1 pr-16 sm:pr-0">
-                          <h3 className="font-medium text-sm text-text-main truncate">{styleName}</h3>
-                          {isDefault && (
-                            <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium whitespace-nowrap">
-                              {t('settings.default')}
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs text-text-muted line-clamp-2">
-                          {styleDescription}
-                        </p>
-                        {isDefaultStyle && !isEnabled && (
-                          <span className="inline-block mt-1 text-[10px] px-1.5 py-0.5 rounded-full bg-muted text-text-muted font-medium">
-                            {t('settings.recommended')}
-                          </span>
-                        )}
-                      </div>
-                    </div>
 
-                    {isEnabled && !isDefault && (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSetDefault(styleKey);
-                        }}
-                        disabled={settingsLoading}
-                        className="absolute top-2 right-2 text-[10px] px-1.5 sm:px-2 py-0.5 sm:py-1 rounded bg-background border border-border hover:bg-accent transition-colors disabled:opacity-50"
+                      <h3
+                        className="min-w-0 flex-1 truncate text-sm font-medium text-text-main"
+                        title={styleName}
                       >
-                        {t('settings.setAsDefault')}
-                      </button>
-                    )}
+                        {styleName}
+                      </h3>
+
+                      <span
+                        className="inline-flex shrink-0 items-center justify-center"
+                        aria-label={qualityHint}
+                        title={qualityHint}
+                      >
+                        <span
+                          className={`size-2.5 rounded-full ${QUALITY_DOT_CLASS[quality]}`}
+                          aria-hidden
+                        />
+                      </span>
+
+                      {isDefault && (
+                        <span className="shrink-0 whitespace-nowrap text-[10px] px-1.5 py-0.5 rounded-full bg-primary/20 text-primary font-medium">
+                          {t('settings.default')}
+                        </span>
+                      )}
+
+                      {isEnabled && !isDefault && (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleSetDefault(styleKey);
+                          }}
+                          disabled={settingsLoading}
+                          className="shrink-0 whitespace-nowrap rounded border border-border bg-background px-1.5 py-1 text-[10px] font-medium text-text-main hover:bg-accent transition-colors disabled:opacity-50 min-h-9 sm:min-h-0 sm:px-2 sm:py-0.5 touch-target"
+                        >
+                          {t('settings.setAsDefault')}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}
