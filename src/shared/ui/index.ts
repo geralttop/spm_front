@@ -1,6 +1,3 @@
-/**
- * Экспорт UI компонентов
- */
 export { LanguageSwitcher } from "./language-switcher";
 export { ThemeSwitcher } from "./theme-switcher";
 export { Button } from "./button";
@@ -24,10 +21,7 @@ export type { ShareLinkModalProps, ShareLinkButtonProps } from "./share-link-mod
 export { PointCard } from "./point-card";
 export { UserBadges } from "./user-badges";
 export { PointHistoryTimeline } from "./point-history-timeline";
-export {
-  PointCardSkeleton,
-  PointCardSkeletonList,
-} from "./point-card-skeleton";
+export { PointCardSkeleton, PointCardSkeletonList, } from "./point-card-skeleton";
 export { FavoriteButton, ReportButton, EditButton } from "./action-buttons";
 export { ErrorBoundary } from "./error-boundary";
 export { CodeInput } from "./code-input";

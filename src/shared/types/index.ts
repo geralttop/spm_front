@@ -1,4 +1,3 @@
-// Централизованный экспорт всех типов
 export * from './point';
 export * from './category';
 export * from './container';

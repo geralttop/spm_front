@@ -1,6 +1,3 @@
-/**
- * Экспорт API клиентов и утилит
- */
 export { apiClient } from "./client";
 export { authApi } from "./auth";
 export { pointsApi, categoriesApi, containersApi } from "./points";
@@ -15,43 +12,10 @@ export type { ZlataAsset, ZlataTagBrief } from "./zlata";
 export { vinlandApi, vinlandImageUrl } from "./vinland";
 export type { VinlandAsset } from "./vinland";
 export { chatsApi } from "./chats";
-export type {
-  ChatListItem,
-  ChatMessageDto,
-  ChatMessagesPage,
-  SendMessageResult,
-  ChatConversationMeta,
-  ChatPeer,
-} from "./chats";
+export type { ChatListItem, ChatMessageDto, ChatMessagesPage, SendMessageResult, ChatConversationMeta, ChatPeer, } from "./chats";
 export { BaseApi } from "./base-api";
-export type {
-  RegisterRequest,
-  LoginRequest,
-  VerifyCodeRequest,
-  AuthResponse,
-  ProfileResponse,
-  UpdateProfileRequest,
-  SearchUserResult,
-  ForgotPasswordRequest,
-  ResetPasswordRequest,
-  BioHistoryEntry,
-} from "./auth";
-export type {
-  Point,
-  PointPhoto,
-  PointHistoryEntry,
-  PointHistoryPhoto,
-  CreatePointRequest,
-  UpdatePointRequest,
-  Category,
-  CreateCategoryRequest,
-  UpdateCategoryRequest,
-  Container,
-  ContainerForMapResponse,
-  CreateContainerRequest,
-  UpdateContainerRequest,
-  UploadPointPhotosPayload,
-} from "./points";
+export type { RegisterRequest, LoginRequest, VerifyCodeRequest, AuthResponse, ProfileResponse, UpdateProfileRequest, SearchUserResult, ForgotPasswordRequest, ResetPasswordRequest, BioHistoryEntry, } from "./auth";
+export type { Point, PointPhoto, PointHistoryEntry, PointHistoryPhoto, CreatePointRequest, UpdatePointRequest, Category, CreateCategoryRequest, UpdateCategoryRequest, Container, ContainerForMapResponse, CreateContainerRequest, UpdateContainerRequest, UploadPointPhotosPayload, } from "./points";
 export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";
 export type { FavoritePoint, FavoriteCheckResponse } from "./favorites";
 export type { FeedResponse } from "./feed";

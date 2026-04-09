@@ -261,7 +261,7 @@
   }
 
   .textarea {
-    font-size: 16px; /* предотвращает авто-зум iOS при фокусе */
+    font-size: 16px; 
     min-height: 96px;
   }
 }

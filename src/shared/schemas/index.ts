@@ -1,4 +1,3 @@
-// Централизованный экспорт всех схем валидации
 export * from './point.schema';
 export * from './category.schema';
 export * from './container.schema';

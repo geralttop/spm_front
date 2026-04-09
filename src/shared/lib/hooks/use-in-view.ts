@@ -1,45 +1,31 @@
 "use client";
-
 import { useEffect, useRef, useState } from "react";
-
 type UseInViewOptions = {
-  rootMargin?: string;
-  threshold?: number | number[];
-  /** Вызывать один раз при первом появлении и больше не отключать (удобно для карт) */
-  once?: boolean;
+    rootMargin?: string;
+    threshold?: number | number[];
+    once?: boolean;
 };
-
-/**
- * Отслеживание пересечения элемента с viewport (ленивая подгрузка карт и гео).
- */
-export function useInView<T extends HTMLElement = HTMLDivElement>(
-  options: UseInViewOptions = {}
-) {
-  const { rootMargin = "120px", threshold = 0, once = false } = options;
-  const ref = useRef<T | null>(null);
-  const [inView, setInView] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true);
-          if (once) {
-            observer.disconnect();
-          }
-        } else if (!once) {
-          setInView(false);
-        }
-      },
-      { rootMargin, threshold }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [rootMargin, threshold, once]);
-
-  return { ref, inView };
+export function useInView<T extends HTMLElement = HTMLDivElement>(options: UseInViewOptions = {}) {
+    const { rootMargin = "120px", threshold = 0, once = false } = options;
+    const ref = useRef<T | null>(null);
+    const [inView, setInView] = useState(false);
+    useEffect(() => {
+        const el = ref.current;
+        if (!el)
+            return;
+        const observer = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) {
+                setInView(true);
+                if (once) {
+                    observer.disconnect();
+                }
+            }
+            else if (!once) {
+                setInView(false);
+            }
+        }, { rootMargin, threshold });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [rootMargin, threshold, once]);
+    return { ref, inView };
 }

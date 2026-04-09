@@ -34,7 +34,6 @@
   --radius-2xl: calc(var(--radius) + 8px);
 }
 
-/* Fallback до гидрации: палитра default, светлый режим (не чисто белый фон) */
 :root {
   --radius: 0.5rem;
   --background: #eef1f4;
@@ -60,7 +59,6 @@
   --popover-foreground: #3c3c3c;
 }
 
-/* --- Палитра default (Cursor / VS Code) --- */
 html.light:not([data-color-palette]),
 html.light[data-color-palette="default"] {
   --background: #eef1f4;
@@ -111,7 +109,6 @@ html.dark[data-color-palette="default"] {
   --popover-foreground: #d4d4d4;
 }
 
-/* --- Палитра slate (холодный сине-серый) --- */
 html.light[data-color-palette="slate"] {
   --background: #e8eef5;
   --foreground: #1e293b;
@@ -160,7 +157,6 @@ html.dark[data-color-palette="slate"] {
   --popover-foreground: #e2e8f0;
 }
 
-/* --- Палитра warm (тёплый нейтраль) --- */
 html.light[data-color-palette="warm"] {
   --background: #f5f0e8;
   --foreground: #3d3833;
@@ -209,7 +205,6 @@ html.dark[data-color-palette="warm"] {
   --popover-foreground: #e7e5e4;
 }
 
-/* --- Палитра forest (мягкий зелёный) --- */
 html.light[data-color-palette="forest"] {
   --background: #ecf3ef;
   --foreground: #1a2e22;
@@ -258,7 +253,6 @@ html.dark[data-color-palette="forest"] {
   --popover-foreground: #d8ebe2;
 }
 
-/* --- Палитра lavender (сиреневый) --- */
 html.light[data-color-palette="lavender"] {
   --background: #f3f0fa;
   --foreground: #2e1065;
@@ -307,7 +301,6 @@ html.dark[data-color-palette="lavender"] {
   --popover-foreground: #e9e4f5;
 }
 
-/* --- Палитра rose (розовый) --- */
 html.light[data-color-palette="rose"] {
   --background: #fdf2f4;
   --foreground: #4c0519;
@@ -356,7 +349,6 @@ html.dark[data-color-palette="rose"] {
   --popover-foreground: #fce7ec;
 }
 
-/* --- Палитра ocean (бирюза / море) --- */
 html.light[data-color-palette="ocean"] {
   --background: #ecfeff;
   --foreground: #164e63;
@@ -405,7 +397,6 @@ html.dark[data-color-palette="ocean"] {
   --popover-foreground: #cffafe;
 }
 
-/* --- Палитра sunset (закат, коралл и оранжевый) --- */
 html.light[data-color-palette="sunset"] {
   --background: #fff7ed;
   --foreground: #431407;
@@ -458,7 +449,7 @@ html.dark[data-color-palette="sunset"] {
   * {
     @apply border-border outline-ring/50;
   }
-  /* Edge: скрываем встроенную кнопку показа пароля, используем наш Eye/EyeOff */
+  
   input[type="password"]::-ms-reveal,
   input[type="password"]::-ms-clear {
     display: none;
@@ -469,12 +460,12 @@ html.dark[data-color-palette="sunset"] {
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 
-  /* Адаптивные утилиты */
+  
   .container {
     @apply w-full mx-auto px-4 sm:px-6 lg:px-8;
   }
 
-  /* Responsive text sizes */
+  
   .text-responsive-xs {
     @apply text-xs sm:text-sm;
   }
@@ -499,7 +490,7 @@ html.dark[data-color-palette="sunset"] {
     @apply text-2xl sm:text-3xl;
   }
 
-  /* Responsive spacing */
+  
   .space-responsive {
     @apply space-y-4 sm:space-y-6;
   }
@@ -520,7 +511,7 @@ html.dark[data-color-palette="sunset"] {
     @apply py-4 sm:py-6 lg:py-8;
   }
 
-  /* Mobile-first grid layouts */
+  
   .grid-responsive-2 {
     @apply grid grid-cols-1 sm:grid-cols-2 gap-4;
   }
@@ -533,7 +524,7 @@ html.dark[data-color-palette="sunset"] {
     @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4;
   }
 
-  /* Responsive flex layouts */
+  
   .flex-responsive {
     @apply flex flex-col sm:flex-row gap-4;
   }
@@ -542,22 +533,22 @@ html.dark[data-color-palette="sunset"] {
     @apply flex flex-col sm:flex-row items-center gap-4;
   }
 
-  /* Touch-friendly interactive elements */
+  
   .touch-target {
     @apply min-h-[44px] min-w-[44px];
   }
 
-  /* Responsive modal/overlay */
+  
   .modal-responsive {
     @apply w-full max-w-lg mx-4 sm:mx-auto;
   }
 
-  /* Responsive card padding */
+  
   .card-responsive {
     @apply p-4 sm:p-6 lg:p-8;
   }
 
-  /* Safe area for mobile devices */
+  
   .safe-area-top {
     padding-top: env(safe-area-inset-top);
   }
@@ -581,14 +572,12 @@ html.dark[data-color-palette="sunset"] {
   }
 }
 
-/* Smooth scrolling for better UX */
 @media (prefers-reduced-motion: no-preference) {
   html {
     scroll-behavior: smooth;
   }
 }
 
-/* Focus styles for accessibility */
 @layer utilities {
   .focus-visible-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
