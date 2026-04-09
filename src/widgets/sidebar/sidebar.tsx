@@ -174,7 +174,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Logo/Title */}
         <div className="p-6 border-b border-border">
           <h1 className="text-2xl font-bold text-text-main">SPM</h1>
-          <p className="text-sm text-text-muted mt-1">SharePlacesMap</p>
+          <p className="text-sm text-text-muted mt-1">{t("common.fullTitle")}</p>
         </div>
 
         {/* Navigation Menu */}
@@ -230,7 +230,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div>
             <h1 className="text-xl font-bold text-text-main">SPM</h1>
-            <p className="text-xs text-text-muted">SharePlacesMap</p>
+            <p className="text-xs text-text-muted">{t("common.fullTitle")}</p>
           </div>
           <button
             onClick={onClose}
