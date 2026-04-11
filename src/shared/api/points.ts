@@ -48,8 +48,8 @@ export interface UpdatePointRequest {
     description?: string;
     lng?: number;
     lat?: number;
-    containerId?: string;
-    categoryId?: number;
+    containerId?: string | null;
+    categoryId?: number | null;
 }
 export interface Category {
     id: number;

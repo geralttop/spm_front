@@ -80,7 +80,7 @@ export function ManageCategories() {
             return;
         setCategoriesLoading(true);
         try {
-            await pointsApi.update(draggedPoint.id, { categoryId: categoryId as any });
+            await pointsApi.update(draggedPoint.id, { categoryId });
             await loadPoints();
         }
         catch (err: any) {

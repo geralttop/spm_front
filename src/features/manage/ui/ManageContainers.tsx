@@ -86,7 +86,7 @@ export function ManageContainers() {
             return;
         setContainersLoading(true);
         try {
-            await pointsApi.update(draggedPoint.id, { containerId: containerId as any });
+            await pointsApi.update(draggedPoint.id, { containerId });
             await loadPoints();
         }
         catch (err: any) {
