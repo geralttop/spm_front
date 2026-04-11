@@ -68,11 +68,11 @@ function ChatsPageInner() {
 
       {isLoading ? (<Loading />) : !list?.length ? (<p className="rounded-xl border border-dashed border-border bg-muted/30 px-4 py-8 text-center text-text-muted">
           {t("chats.noConversations")}
-        </p>) : (<ul className="space-y-2">
+        </p>) : (<ul className="min-w-0 space-y-2">
           {list.map((item) => {
                 const avatarUrl = userAvatarSrc(item.peer.avatar, apiBase);
-                return (<li key={item.conversationId}>
-              <Link href={`/chats/${item.conversationId}`} className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent">
+                return (<li key={item.conversationId} className="min-w-0">
+              <Link href={`/chats/${item.conversationId}`} className="flex min-w-0 w-full max-w-full items-center gap-3 overflow-hidden rounded-xl border border-border bg-card p-4 transition-colors hover:bg-accent">
                 <div className="relative flex h-12 w-12 shrink-0 overflow-hidden rounded-full border border-border bg-muted">
                   {avatarUrl ? (<img src={avatarUrl} alt="" className="h-full w-full object-cover"/>) : (<div className="flex h-full w-full items-center justify-center">
                       <User className="h-6 w-6 text-text-muted" aria-hidden/>
@@ -89,7 +89,7 @@ function ChatsPageInner() {
                         {item.unreadCount > 99 ? "99+" : item.unreadCount}
                       </span>) : null}
                   </div>
-                  {item.lastMessage ? (<p className="truncate text-sm text-text-muted">
+                  {item.lastMessage ? (<p className="mt-0.5 min-w-0 break-words text-sm text-text-muted line-clamp-1">
                       {item.lastMessage.body}
                     </p>) : null}
                 </div>
