@@ -65,7 +65,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     isLoading: false,
     isInitialized: false,
     loadSettings: async (settingsData) => {
-        if (get().isInitialized && settingsData === undefined) {
+        if (get().isInitialized) {
             return;
         }
         set({ isLoading: true });

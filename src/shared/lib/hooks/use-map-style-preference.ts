@@ -7,9 +7,11 @@ export function useMapStylePreference() {
     const { defaultMapStyle, isInitialized } = useSettingsStore();
     const { data: mapSettings } = useMapSettingsQuery();
     const [override, setOverride] = useState<MapStyleKey | null>(null);
-    const mapStyle: MapStyleKey | null = override ??
-        mapSettings?.defaultMapStyle ??
-        (isInitialized ? defaultMapStyle : null);
+    const mapStyle: MapStyleKey | null =
+        override ??
+        (isInitialized
+            ? defaultMapStyle
+            : (mapSettings?.defaultMapStyle ?? null));
     const reset = useCallback(() => {
         setOverride(null);
     }, []);

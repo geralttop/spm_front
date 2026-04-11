@@ -89,6 +89,7 @@ export default function SettingsPage() {
     const handleToggleStyle = async (styleKey: MapStyleKey) => {
         try {
             await toggleMapStyle(styleKey);
+            await queryClient.invalidateQueries({ queryKey: ["mapSettings"] });
         }
         catch (error) {
             alert(t('settings.updateError'));
@@ -98,6 +99,7 @@ export default function SettingsPage() {
         if (availableMapStyles.includes(styleKey)) {
             try {
                 await setDefaultMapStyle(styleKey);
+                await queryClient.invalidateQueries({ queryKey: ["mapSettings"] });
             }
             catch (error) {
                 alert(t('settings.updateError'));
@@ -108,6 +110,7 @@ export default function SettingsPage() {
         if (confirm(t('settings.resetConfirm'))) {
             try {
                 await resetToDefaults();
+                await queryClient.invalidateQueries({ queryKey: ["mapSettings"] });
             }
             catch (error) {
                 alert(t('settings.resetError'));
