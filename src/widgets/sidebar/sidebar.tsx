@@ -168,13 +168,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         })}
           </ul>
         </nav>
-
-        
-        <div className="p-4 border-t border-border">
-          <p className="text-xs text-text-muted text-center">
-            © 2026 SPM
-          </p>
-        </div>
       </aside>
 
       
@@ -211,13 +204,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         })}
           </ul>
         </nav>
-
-        
-        <div className="p-4 border-t border-border">
-          <p className="text-xs text-text-muted text-center">
-            © 2026 SPM
-          </p>
-        </div>
       </aside>
     </>);
 }
