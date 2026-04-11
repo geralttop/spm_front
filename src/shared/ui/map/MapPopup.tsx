@@ -10,8 +10,8 @@ function PopupCloseButton({ onClose }: {
     onClose: () => void;
 }) {
     const { t } = useTranslation('common');
-    return (<button type="button" onClick={onClose} className="absolute top-1 right-1 z-10 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" aria-label={t('map.popup.close')}>
-      <X className="h-4 w-4"/>
+    return (<button type="button" onClick={onClose} className="absolute top-1 right-1 z-10 flex size-5 shrink-0 items-center justify-center rounded-md border border-border bg-card text-text-main shadow-sm ring-offset-background backdrop-blur-sm transition-colors hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2" aria-label={t('map.popup.close')}>
+      <X className="h-4 w-4 shrink-0" aria-hidden/>
       <span className="sr-only">{t('map.popup.close')}</span>
     </button>);
 }
