@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { dataProvider } from './dataProvider';
 import { authProvider } from './authProvider';
 import { Dashboard } from './Dashboard';
+import { AdminRaLayout } from './AdminRaLayout';
 
 import { UserList, UserEdit, UserShow } from './resources/users';
 import { PointList, PointEdit, PointShow, PointCreate } from './resources/points';
@@ -18,6 +19,7 @@ const AdminApp = () => {
       dataProvider={dataProvider} 
       authProvider={authProvider}
       dashboard={Dashboard}
+      layout={AdminRaLayout}
       title="SPM Admin"
     >
       <Resource 

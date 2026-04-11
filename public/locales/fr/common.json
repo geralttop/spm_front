@@ -371,6 +371,7 @@
   "admin": {
     "loading": "Chargement...",
     "noAccess": "Vous n'avez pas accès au panneau d'administration",
+    "backToProfile": "Retour au profil",
     "dashboard": {
       "title": "Tableau de bord",
       "loadingStats": "Chargement des statistiques...",

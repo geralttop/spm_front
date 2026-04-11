@@ -354,6 +354,7 @@
   "admin": {
     "loading": "Loading...",
     "noAccess": "You don't have access to the admin panel",
+    "backToProfile": "Back to profile",
     "dashboard": {
       "title": "Dashboard",
       "loadingStats": "Loading statistics...",
