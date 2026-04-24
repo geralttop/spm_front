@@ -207,7 +207,7 @@ export default function UserProfilePage() {
             </h2>
 
             {pointsLoading ? (<PointCardSkeletonList ariaLabel={t("profile.loadingPoints")} className="px-4 sm:px-0"/>) : points.length === 0 ? (<div className="px-4 py-8 text-center text-text-muted sm:px-0">{t("profile.noUserPoints")}</div>) : (<div className="-mx-3 space-y-4 sm:mx-0 sm:space-y-6">
-                {points.map((point) => (<PointCard key={point.id} point={point} onFavoriteChange={() => refetchPoints()} onPointUpdate={() => refetchPoints()}/>))}
+                {points.map((point) => (<PointCard key={point.id} point={point} showMapLink={isFollowing} onFavoriteChange={() => refetchPoints()} onPointUpdate={() => refetchPoints()}/>))}
               </div>)}
           </div>
         </div>

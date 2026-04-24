@@ -17,6 +17,7 @@ interface PointCardProps {
     point: Point;
     showAuthor?: boolean;
     fromContainerId?: string | null;
+    showMapLink?: boolean;
     onFavoriteChange?: () => void;
     onPointUpdate?: () => void;
 }
@@ -32,7 +33,7 @@ interface ActionButtonsProps {
     onReport: () => void;
     reportTitle: string;
 }
-export const PointCard = React.memo(function PointCard({ point, showAuthor = true, fromContainerId, onFavoriteChange, onPointUpdate, }: PointCardProps) {
+export const PointCard = React.memo(function PointCard({ point, showAuthor = true, fromContainerId, showMapLink = true, onFavoriteChange, onPointUpdate, }: PointCardProps) {
     const { t } = useTranslation();
     const accessToken = useAuthStore((state) => state.accessToken);
     const { data: profile } = useProfileQuery();
@@ -104,7 +105,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
             </div>
           </Link>
           <div className="-mr-0.5 flex-shrink-0 sm:mr-0">
-            <PointCardActionButtons sharePath={sharePath} mapHref={mapHref} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")} editTitle={t("editPoint.title")}/>
+            <PointCardActionButtons sharePath={sharePath} mapHref={mapHref} showMapLink={showMapLink} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")} editTitle={t("editPoint.title")}/>
           </div>
         </div>)}
 
@@ -116,7 +117,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
             </time>
           </div>
           <div className="ml-auto flex-shrink-0">
-            <PointCardActionButtons sharePath={sharePath} mapHref={mapHref} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")} editTitle={t("editPoint.title")}/>
+            <PointCardActionButtons sharePath={sharePath} mapHref={mapHref} showMapLink={showMapLink} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")} editTitle={t("editPoint.title")}/>
           </div>
         </div>)}
 
