@@ -244,16 +244,10 @@ export default function SettingsPage() {
             <div className="grid grid-cols-2 gap-2 xs:flex xs:flex-wrap">
               {supportedLocales.map((locale) => {
             const isSelected = currentLanguage === locale;
-            const languageNames: Record<SupportedLocale, string> = {
-                ru: "Русский",
-                be: "Беларуская",
-                en: "English",
-                fr: "Français"
-            };
             return (<button key={locale} onClick={() => changeLanguage(locale)} className={`px-3 sm:px-4 py-2 rounded-lg border text-sm sm:text-base font-medium transition-all ${isSelected
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border bg-card text-text-main hover:bg-accent'}`}>
-                    {languageNames[locale]}
+                    {t(`language.${locale}`)}
                   </button>);
         })}
             </div>
