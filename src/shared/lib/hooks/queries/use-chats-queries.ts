@@ -19,6 +19,7 @@ export function useChatsListQuery(enabled: boolean) {
     queryFn: () => chatsApi.list(),
     enabled,
     staleTime: 30_000,
+    refetchOnMount: "always",
   });
 }
 
@@ -62,6 +63,7 @@ export function useChatMessagesInfiniteQuery(
         : undefined,
     enabled: Boolean(conversationId) && enabled,
     staleTime: 10_000,
+    refetchOnMount: "always",
   });
 }
 

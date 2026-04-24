@@ -56,11 +56,11 @@ export default function ChatConversationPage() {
                 catch {
                 }
             }
-            await queryClient.invalidateQueries({
+            await queryClient.refetchQueries({
                 queryKey: chatsQueryKeys.messages(conversationId),
             });
-            await queryClient.invalidateQueries({ queryKey: chatsQueryKeys.list });
-            await queryClient.invalidateQueries({ queryKey: chatsQueryKeys.unread });
+            await queryClient.refetchQueries({ queryKey: chatsQueryKeys.list });
+            await queryClient.refetchQueries({ queryKey: chatsQueryKeys.unread });
         })();
     }, [conversationId, currentUserId, queryClient]);
     useChatWebSocket(accessToken, onWs);

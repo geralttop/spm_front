@@ -21,11 +21,19 @@ function ChatsPageInner() {
     const queryClient = useQueryClient();
     const [authReady, setAuthReady] = useState(false);
     const { data: list, isLoading, error, refetch } = useChatsListQuery(authReady);
-    const onChatSocket = useCallback((event: string, _data: unknown) => {
+    const onChatSocket = useCallback((event: string, data: unknown) => {
         if (event !== "message:new")
             return;
-        void queryClient.invalidateQueries({ queryKey: chatsQueryKeys.list });
-        void queryClient.invalidateQueries({ queryKey: chatsQueryKeys.unread });
+        const conversationId = data && typeof data === "object" && "conversationId" in data
+            ? Number((data as { conversationId?: unknown }).conversationId)
+            : null;
+        void queryClient.refetchQueries({ queryKey: chatsQueryKeys.list });
+        void queryClient.refetchQueries({ queryKey: chatsQueryKeys.unread });
+        if (conversationId != null && Number.isFinite(conversationId) && conversationId > 0) {
+            void queryClient.refetchQueries({
+                queryKey: chatsQueryKeys.messages(conversationId),
+            });
+        }
     }, [queryClient]);
     useChatWebSocket(authReady ? accessToken : null, onChatSocket);
     useEffect(() => {
