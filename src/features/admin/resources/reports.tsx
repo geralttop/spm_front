@@ -129,9 +129,9 @@ export const ReportList = () => {
     const { t } = useTranslation('common');
     const { statusChoices, reasonChoices, typeChoices } = useReportChoices();
     return (<List sort={{ field: 'createdAt', order: 'DESC' }} filters={[
-            <SelectInput source="status" choices={statusChoices} alwaysOn/>,
-            <SelectInput source="type" choices={typeChoices}/>,
-            <SelectInput source="reason" choices={reasonChoices}/>,
+            <SelectInput key="status" source="status" choices={statusChoices} alwaysOn/>,
+            <SelectInput key="type" source="type" choices={typeChoices}/>,
+            <SelectInput key="reason" source="reason" choices={reasonChoices}/>,
         ]}>
       <Datagrid rowClick="show" bulkActionButtons={false}>
         <TextField source="id" label={t('admin.reports.id')}/>

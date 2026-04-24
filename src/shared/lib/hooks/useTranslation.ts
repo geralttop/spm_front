@@ -11,10 +11,6 @@ export function useTranslation() {
     const [ready, setReady] = useState(i18n.isInitialized);
     const [currentLang, setCurrentLang] = useState<SupportedLocale>((i18n.language || defaultLocale) as SupportedLocale);
     useEffect(() => {
-        if (i18n.isInitialized) {
-            setReady(true);
-            setCurrentLang((i18n.language || defaultLocale) as SupportedLocale);
-        }
         const handleInitialized = () => {
             setReady(true);
             setCurrentLang((i18n.language || defaultLocale) as SupportedLocale);

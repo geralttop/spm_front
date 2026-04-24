@@ -1,20 +1,18 @@
-import { MapPin, Tag, Package, User, Calendar, MessageCircle, Map, } from "lucide-react";
+import { MapPin, Tag, Package, User, Calendar, MessageCircle, } from "lucide-react";
 import Link from "next/link";
-import React, { useMemo, useState, type ComponentType } from "react";
+import React, { useMemo, useState } from "react";
 import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { useAuthStore } from "@/shared/lib/store";
 import type { Point } from "@/shared/api";
 import { formatRelativeDate } from "@/shared/lib/utils";
 import { Comments } from "@/entities/comment";
-import { ReportModal, EditPointModal, FavoriteButton, ReportButton, EditButton, ShareLinkButton, PointHistoryTimeline, } from "@/shared/ui";
+import { ReportModal, EditPointModal, PointHistoryTimeline, } from "@/shared/ui";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
 import { PointCardMedia } from "@/shared/ui/point-card-media";
 import { UserBadges } from "@/shared/ui/user-badges";
 import { usePointHistoryQuery, useCreatePointHistoryMutation, useDeletePointHistoryMutation, } from "@/shared/lib/hooks/queries";
-const FavoriteIconButton = FavoriteButton as ComponentType<any>;
-const ReportIconButton = ReportButton as ComponentType<any>;
-const EditIconButton = EditButton as ComponentType<any>;
+import { PointCardActionButtons } from "@/shared/ui/point-card/action-buttons";
 interface PointCardProps {
     point: Point;
     showAuthor?: boolean;
@@ -33,18 +31,6 @@ interface ActionButtonsProps {
     onToggleFavorite: () => void;
     onReport: () => void;
     reportTitle: string;
-}
-function ActionButtons({ sharePath, mapHref, isAuthor, isFavorite, loading, canReport, onEdit, onToggleFavorite, onReport, reportTitle, }: ActionButtonsProps) {
-    const { t } = useTranslation();
-    return (<div className="flex items-center gap-1 sm:gap-2 [&_button]:touch-target [&_button]:min-h-9 [&_button]:min-w-9 sm:[&_button]:min-h-[44px] sm:[&_button]:min-w-[44px] [&_button]:flex [&_button]:items-center [&_button]:justify-center [&_a]:touch-target [&_a]:flex [&_a]:min-h-9 [&_a]:min-w-9 [&_a]:items-center [&_a]:justify-center sm:[&_a]:min-h-[44px] sm:[&_a]:min-w-[44px]">
-      <ShareLinkButton path={sharePath}/>
-      <Link href={mapHref} prefetch={false} className="inline-flex items-center justify-center rounded-lg bg-muted p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:p-2" title={t("map.openOnMap")} aria-label={t("map.openOnMap")}>
-        <Map className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden/>
-      </Link>
-      {isAuthor && (<EditIconButton onClick={onEdit} title="Редактировать точку"/>)}
-      <FavoriteIconButton isFavorite={isFavorite} loading={loading} onClick={onToggleFavorite}/>
-      {canReport && (<ReportIconButton onClick={onReport} title={reportTitle}/>)}
-    </div>);
 }
 export const PointCard = React.memo(function PointCard({ point, showAuthor = true, fromContainerId, onFavoriteChange, onPointUpdate, }: PointCardProps) {
     const { t } = useTranslation();
@@ -118,7 +104,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
             </div>
           </Link>
           <div className="-mr-0.5 flex-shrink-0 sm:mr-0">
-            <ActionButtons sharePath={sharePath} mapHref={mapHref} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")}/>
+            <PointCardActionButtons sharePath={sharePath} mapHref={mapHref} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")} editTitle={t("editPoint.title")}/>
           </div>
         </div>)}
 
@@ -130,7 +116,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
             </time>
           </div>
           <div className="ml-auto flex-shrink-0">
-            <ActionButtons sharePath={sharePath} mapHref={mapHref} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")}/>
+            <PointCardActionButtons sharePath={sharePath} mapHref={mapHref} isAuthor={!!isAuthor} isFavorite={isFavorite} loading={isLoading} canReport={!!canReport} onEdit={() => setShowEditModal(true)} onToggleFavorite={toggleFavorite} onReport={() => setShowReportModal(true)} reportTitle={t("reports.button")} editTitle={t("editPoint.title")}/>
           </div>
         </div>)}
 

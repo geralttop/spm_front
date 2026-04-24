@@ -17,8 +17,6 @@ export function useFavoriteStatus(
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
     const checkFavoriteStatus = async () => {
       if (!accessToken) return;
 
@@ -44,12 +42,12 @@ export function useFavoriteStatus(
       }
     };
 
-    timeoutId = setTimeout(checkFavoriteStatus, 100);
+    const timeoutId = setTimeout(() => {
+      void checkFavoriteStatus();
+    }, 100);
 
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
+      clearTimeout(timeoutId);
     };
   }, [pointId, accessToken]);
 

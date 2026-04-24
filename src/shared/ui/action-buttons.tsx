@@ -48,7 +48,7 @@ export function FavoriteButton({
   );
 }
 
-export interface ReportButtonProps extends Omit<BaseButtonProps, "type"> {}
+export type ReportButtonProps = Omit<BaseButtonProps, "type">;
 
 export function ReportButton({
   className = "",
@@ -65,7 +65,7 @@ export function ReportButton({
   );
 }
 
-export interface EditButtonProps extends Omit<BaseButtonProps, "type"> {}
+export type EditButtonProps = Omit<BaseButtonProps, "type">;
 
 export function EditButton({ className = "", ...rest }: EditButtonProps) {
   const { t } = useTranslation();

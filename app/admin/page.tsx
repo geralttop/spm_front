@@ -1,13 +1,21 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useTranslation } from 'react-i18next';
+import dynamic from 'next/dynamic';
+import { useTranslation } from '@/shared/lib/hooks';
 import { useAuthStore } from '@/shared/lib/store';
 import { getApiUrl } from '@/shared/lib/utils/api-url';
-import AdminApp from '@/src/features/admin/AdminApp';
+const AdminApp = dynamic(() => import('@/src/features/admin/AdminApp'), {
+    ssr: false,
+    loading: () => (<div className="flex items-center justify-center min-h-screen">
+      <div className="text-lg" />
+    </div>),
+});
 export default function AdminPage() {
     const { t } = useTranslation();
-    const [user, setUser] = useState<any>(null);
+    const [user, setUser] = useState<{
+        role?: string;
+    } | null>(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
     const accessToken = useAuthStore((state) => state.accessToken);
@@ -46,7 +54,7 @@ export default function AdminPage() {
             }
         };
         checkAdminAccess();
-    }, [router, accessToken, checkAuth]);
+    }, [router, accessToken, checkAuth, t]);
     if (loading) {
         return (<div className="flex items-center justify-center min-h-screen">
         <div className="text-lg">{t('admin.loading')}</div>

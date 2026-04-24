@@ -3,7 +3,9 @@ import { useEffect, useRef } from "react";
 import { getChatWebSocketUrl } from "@/shared/lib/utils/ws-url";
 export function useChatWebSocket(accessToken: string | null, onMessage: (event: string, data: unknown) => void) {
     const cb = useRef(onMessage);
-    cb.current = onMessage;
+    useEffect(() => {
+        cb.current = onMessage;
+    }, [onMessage]);
     useEffect(() => {
         if (!accessToken)
             return;

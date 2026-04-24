@@ -9,11 +9,7 @@ interface LanguageSwitcherProps {
 }
 export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
     const { currentLanguage, changeLanguage, t, ready } = useTranslation();
-    const [mounted, setMounted] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
-    useEffect(() => {
-        setMounted(true);
-    }, []);
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const target = event.target as HTMLElement;
@@ -26,11 +22,11 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
             return () => document.removeEventListener('click', handleClickOutside);
         }
     }, [isOpen]);
-    if (!mounted || !ready) {
+    if (!ready) {
         return (<div className="relative">
         <button disabled className={cn("flex items-center gap-2 rounded-lg border border-border bg-card text-sm font-medium text-text-muted", compact ? "px-2 py-1.5" : "px-3 py-2")}>
           <Languages className="h-4 w-4"/>
-          {!compact && <span>...</span>}
+          {!compact && <span className="sr-only">{t("common.loading")}</span>}
           <ChevronDown className="h-4 w-4"/>
         </button>
       </div>);

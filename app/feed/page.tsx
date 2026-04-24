@@ -1,24 +1,34 @@
 'use client';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { MapPin, Loader2, RefreshCw } from 'lucide-react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '@/shared/lib/hooks';
 import { PointCard } from '@/src/shared/ui/point-card';
 import { ErrorMessage, PointCardSkeletonList } from '@/shared/ui';
 import { useFeedQuery } from '@/shared/lib/hooks';
 export default function FeedPage() {
     const { t } = useTranslation();
     const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, error, refetch, } = useFeedQuery(10);
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
     useEffect(() => {
-        const handleScroll = () => {
-            if (window.innerHeight + document.documentElement.scrollTop >=
-                document.documentElement.offsetHeight - 1000) {
-                if (hasNextPage && !isFetchingNextPage) {
-                    fetchNextPage();
-                }
-            }
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        if (!hasNextPage)
+            return;
+        const node = sentinelRef.current;
+        if (!node)
+            return;
+        const obs = new IntersectionObserver((entries) => {
+            const first = entries[0];
+            if (!first?.isIntersecting)
+                return;
+            if (isFetchingNextPage)
+                return;
+            void fetchNextPage();
+        }, {
+            root: null,
+            rootMargin: '800px 0px',
+            threshold: 0,
+        });
+        obs.observe(node);
+        return () => obs.disconnect();
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
     if (error) {
         return (<ErrorMessage message={t('feed.loadError')} onRetry={() => refetch()} fullScreen/>);
@@ -53,6 +63,8 @@ export default function FeedPage() {
             {!hasNextPage && points.length > 0 && (<div className="text-center py-6">
                 <p className="text-text-muted">{t('feed.allLoaded')}</p>
               </div>)}
+
+            <div ref={sentinelRef} className="h-px w-full" aria-hidden />
           </div>)}
       </div>
     </div>);

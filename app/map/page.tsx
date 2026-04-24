@@ -2,9 +2,8 @@
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "@/shared/lib/hooks";
 import axios from "axios";
-import i18n from "@/shared/config/i18n";
 import { containersApi, feedApi } from "@/shared/api";
 import type { FeedPoint } from "@/shared/api/feed";
 import { useAuthStore } from "@/shared/lib/store";
@@ -24,6 +23,8 @@ const FALLBACK_CENTER: [
     number
 ] = [15, 50];
 const FALLBACK_ZOOM = 4;
+const MAP_FEED_PAGE_SIZE = 200;
+const MAP_MAX_POINTS = 1000;
 function markerLabelText(point: FeedPoint): string {
     const raw = point.category?.name?.trim() || point.name.trim();
     if (raw.length <= 22)
@@ -111,7 +112,9 @@ function MapPageClient() {
         latitude: number;
     } | null>(null);
     const [openPostPointId, setOpenPostPointId] = useState<string | null>(null);
+    const loadSeq = useRef(0);
     const loadMapData = useCallback(async () => {
+        const seq = ++loadSeq.current;
         setLoading(true);
         setError(null);
         try {
@@ -137,17 +140,35 @@ function MapPageClient() {
                 }
                 return;
             }
-            const response = await feedApi.getFeed(1, 1000);
-            setAllPoints(response.points);
+            const first = await feedApi.getFeed(1, MAP_FEED_PAGE_SIZE);
+            if (loadSeq.current !== seq)
+                return;
+            let merged = [...first.points];
+            setAllPoints(merged);
+
+            let page = 2;
+            while (first.hasMore && merged.length < MAP_MAX_POINTS) {
+                const next = await feedApi.getFeed(page, MAP_FEED_PAGE_SIZE);
+                if (loadSeq.current !== seq)
+                    return;
+                merged = merged.concat(next.points);
+                if (merged.length > MAP_MAX_POINTS) {
+                    merged = merged.slice(0, MAP_MAX_POINTS);
+                }
+                setAllPoints(merged);
+                if (!next.hasMore)
+                    break;
+                page += 1;
+            }
             if (geo) {
                 setUserLocation(geo);
                 setCenter([geo.longitude, geo.latitude]);
                 setZoom(12);
             }
-            else if (response.points.length > 0) {
+            else if (merged.length > 0) {
                 setUserLocation(null);
-                const first = response.points[0];
-                setCenter([first.coords.coordinates[0], first.coords.coordinates[1]]);
+                const firstPoint = merged[0];
+                setCenter([firstPoint.coords.coordinates[0], firstPoint.coords.coordinates[1]]);
                 setZoom(12);
             }
             else {
@@ -160,21 +181,21 @@ function MapPageClient() {
             console.error("Error loading map data:", err);
             if (axios.isAxiosError(err)) {
                 if (err.response?.status === 403) {
-                    setError(i18n.t("map.containerShareForbidden"));
+                    setError(t("map.containerShareForbidden"));
                 }
                 else if (err.response?.status === 404) {
-                    setError(i18n.t("map.containerNotFound"));
+                    setError(t("map.containerNotFound"));
                 }
                 else {
                     setError(containerId
-                        ? i18n.t("map.containerLoadFailed")
-                        : i18n.t("map.pointsLoadFailed"));
+                        ? t("map.containerLoadFailed")
+                        : t("map.pointsLoadFailed"));
                 }
             }
             else {
                 setError(containerId
-                    ? i18n.t("map.containerLoadFailed")
-                    : i18n.t("map.pointsLoadFailed"));
+                    ? t("map.containerLoadFailed")
+                    : t("map.pointsLoadFailed"));
             }
             setAllPoints([]);
             setUserLocation(null);
@@ -184,7 +205,7 @@ function MapPageClient() {
         finally {
             setLoading(false);
         }
-    }, [containerId]);
+    }, [containerId, t]);
     useEffect(() => {
         if (!accessToken)
             return;
@@ -219,6 +240,11 @@ function MapPageClient() {
             void loadMapData();
         }
     }, [isInitialized, loadMapData]);
+    useEffect(() => {
+        if (!pointFromQuery)
+            return;
+        setOpenPostPointId(pointFromQuery);
+    }, [pointFromQuery]);
     useEffect(() => {
         if (isContainerMode) {
             setPoints([...allPoints]);
