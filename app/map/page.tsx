@@ -391,9 +391,6 @@ function MapPageClient() {
                           <User className="size-3.5 text-primary"/>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="truncate text-xs font-medium text-text-main">
-                            {point.author.firstName} {point.author.lastName}
-                          </p>
                           <p className="flex min-w-0 items-center gap-1 truncate text-xs text-text-muted">
                             @{point.author.username}
                             <UserBadges role={point.author.role} createdPointsCount={point.author.createdPointsCount} className="shrink-0"/>

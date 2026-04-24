@@ -84,10 +84,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
                 </div>)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-text-main sm:text-base">
-                {point.author.firstName} {point.author.lastName}
-              </p>
-              <div className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-text-muted sm:text-sm">
+              <div className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-text-muted sm:text-sm">
                 <span className="flex min-w-0 items-center gap-1 truncate">
                   @{point.author.username}
                   <UserBadges role={point.author.role} createdPointsCount={point.author.createdPointsCount} className="shrink-0"/>
