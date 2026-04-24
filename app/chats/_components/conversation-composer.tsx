@@ -8,11 +8,13 @@ export function ConversationComposer({
   sending,
   placeholder,
   sendAriaLabel,
+  onInputFocus,
 }: {
   onSendMessage: (text: string) => void;
   sending: boolean;
   placeholder: string;
   sendAriaLabel: string;
+  onInputFocus?: () => void;
 }) {
   const [text, setText] = useState("");
   const submit = () => {
@@ -30,6 +32,7 @@ export function ConversationComposer({
       sendAriaLabel={sendAriaLabel}
       sending={sending}
       disabled={sending}
+      onInputFocus={onInputFocus}
     />
   );
 }

@@ -25,6 +25,8 @@ export default function ChatConversationPage() {
     const accessToken = useAuthStore((s) => s.accessToken);
     const queryClient = useQueryClient();
     const scrollRef = useRef<HTMLDivElement>(null);
+    const bottomRef = useRef<HTMLDivElement>(null);
+    const stickToBottomRef = useRef(true);
     const { data: profile } = useProfileQuery();
     const currentUserId = profile ? Number(profile.userId) : null;
     const enabled = Number.isFinite(conversationId) && conversationId > 0;
@@ -88,13 +90,25 @@ export default function ChatConversationPage() {
     useEffect(() => {
         if (messagesQuery.isLoading)
             return;
+        if (!stickToBottomRef.current)
+            return;
+        requestAnimationFrame(() => {
+            bottomRef.current?.scrollIntoView({ block: "end" });
+        });
+    }, [messages.length, messagesQuery.isLoading, conversationId]);
+    useEffect(() => {
         const el = scrollRef.current;
         if (!el)
             return;
-        requestAnimationFrame(() => {
-            el.scrollTop = el.scrollHeight;
-        });
-    }, [messages.length, messagesQuery.isLoading, conversationId]);
+        const updateStickiness = () => {
+            const threshold = 80;
+            stickToBottomRef.current =
+                el.scrollTop + el.clientHeight >= el.scrollHeight - threshold;
+        };
+        updateStickiness();
+        el.addEventListener("scroll", updateStickiness, { passive: true });
+        return () => el.removeEventListener("scroll", updateStickiness);
+    }, [conversationId]);
     if (!enabled) {
         return (<div className="w-full py-8 text-center text-text-muted">
         {t("common.error")}
@@ -119,6 +133,12 @@ export default function ChatConversationPage() {
             return;
         sendMutation.mutate({ peerUserId: peer.id, text: trimmed });
     };
+    const scrollToBottom = () => {
+        stickToBottomRef.current = true;
+        requestAnimationFrame(() => {
+            bottomRef.current?.scrollIntoView({ block: "end" });
+        });
+    };
     return (<div className="mx-auto flex h-[calc(100dvh-5rem)] max-h-[calc(100dvh-5rem)] w-full min-h-0 max-w-3xl flex-col overflow-hidden sm:h-[calc(100dvh-7rem)] sm:max-h-[calc(100dvh-7rem)] md:max-w-4xl xl:max-w-5xl 2xl:max-w-6xl">
       <header className="flex shrink-0 items-center gap-3 border-b border-border bg-background px-0 py-3">
         <Link href="/chats" className="rounded-lg p-2 text-text-muted transition-colors hover:bg-accent hover:text-text-main" aria-label={t("chats.backToList")}>
@@ -137,30 +157,35 @@ export default function ChatConversationPage() {
         </Link>
       </header>
 
-      <div ref={scrollRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain rounded-xl border border-border bg-muted/20 p-3 sm:p-4">
-        {messagesQuery.hasNextPage ? (<div className="flex justify-center pb-2">
-            <Button type="button" variant="outline" size="sm" disabled={messagesQuery.isFetchingNextPage} onClick={() => messagesQuery.fetchNextPage()}>
-              {messagesQuery.isFetchingNextPage ? (<Loader2 className="h-4 w-4 animate-spin" aria-hidden/>) : (t("chats.loadOlder"))}
-            </Button>
-          </div>) : null}
+      <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto overscroll-contain rounded-xl border border-border bg-muted/20 p-3 sm:p-4">
+        <div className="flex min-h-full flex-col gap-2">
+          {messagesQuery.hasNextPage ? (<div className="flex justify-center pb-2">
+              <Button type="button" variant="outline" size="sm" disabled={messagesQuery.isFetchingNextPage} onClick={() => messagesQuery.fetchNextPage()}>
+                {messagesQuery.isFetchingNextPage ? (<Loader2 className="h-4 w-4 animate-spin" aria-hidden/>) : (t("chats.loadOlder"))}
+              </Button>
+            </div>) : null}
 
-        {messagesQuery.isLoading ? (<Loading />) : (messages.map((m) => {
-            const mine = m.senderId === currentUserId;
-            return (<div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[min(92%,36rem)] rounded-2xl px-3 py-2 text-sm sm:max-w-[min(78%,40rem)] md:max-w-[min(72%,44rem)] lg:text-base ${mine
-                    ? "bg-primary text-primary-foreground"
-                    : "border border-border bg-card text-text-main"}`}>
-                  <p className="whitespace-pre-wrap break-words">{m.body}</p>
-                  <time className={`mt-1 block text-[10px] opacity-70 ${mine ? "text-right" : ""}`} dateTime={m.createdAt}>
-                    {new Date(m.createdAt).toLocaleString()}
-                  </time>
-                </div>
-              </div>);
-        }))}
+          <div className="mt-auto flex flex-col gap-2">
+            {messagesQuery.isLoading ? (<Loading />) : (messages.map((m) => {
+                const mine = m.senderId === currentUserId;
+                return (<div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
+                    <div className={`max-w-[min(92%,36rem)] rounded-2xl px-3 py-2 text-sm sm:max-w-[min(78%,40rem)] md:max-w-[min(72%,44rem)] lg:text-base ${mine
+                        ? "bg-primary text-primary-foreground"
+                        : "border border-border bg-card text-text-main"}`}>
+                      <p className="whitespace-pre-wrap wrap-break-word">{m.body}</p>
+                      <time className={`mt-1 block text-[10px] opacity-70 ${mine ? "text-right" : ""}`} dateTime={m.createdAt}>
+                        {new Date(m.createdAt).toLocaleString()}
+                      </time>
+                    </div>
+                  </div>);
+            }))}
+            <div ref={bottomRef} />
+          </div>
+        </div>
       </div>
 
       <footer className="shrink-0 border-t border-border bg-background pt-3 pb-[max(0.5rem,env(safe-area-inset-bottom))] sm:pt-4">
-        <ConversationComposer onSendMessage={handleSend} sending={sendMutation.isPending} placeholder={t("chats.placeholder")} sendAriaLabel={t("chats.send")}/>
+        <ConversationComposer onSendMessage={handleSend} sending={sendMutation.isPending} placeholder={t("chats.placeholder")} sendAriaLabel={t("chats.send")} onInputFocus={scrollToBottom}/>
       </footer>
     </div>);
 }
