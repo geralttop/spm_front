@@ -7,7 +7,7 @@ export function LanguageProvider({ children }: {
     useEffect(() => {
         const updateHtmlLang = (lng: string) => {
             if (typeof document !== "undefined") {
-                document.documentElement.lang = lng;
+                document.documentElement.lang = lng === "belat" ? "be-Latn" : lng;
             }
         };
         if (i18n.language) {

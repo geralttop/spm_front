@@ -32,6 +32,10 @@
   "language": {
     "ru": "Русский",
     "be": "Беларуская",
+    "belat": "Belarusian (Latin)",
+    "uk": "Ukrainian",
+    "kk": "Kazakh",
+    "ka": "Georgian",
     "en": "English",
     "fr": "Français"
   },
