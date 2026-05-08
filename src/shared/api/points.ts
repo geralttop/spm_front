@@ -161,6 +161,11 @@ class PointsApi extends BaseApi<Point, CreatePointRequest, UpdatePointRequest> {
         const response = await apiClient.delete<Point>(`/points/${pointId}/photos/${photoId}`);
         return response.data;
     }
+    async getForMapByCategory(categoryId: number | string): Promise<FeedPoint[]> {
+        const id = typeof categoryId === "string" ? categoryId.trim() : String(categoryId);
+        const response = await apiClient.get<Point[]>(`/points/by-category/${encodeURIComponent(id)}`);
+        return response.data.map((p) => toFeedPoint(p));
+    }
 }
 export const pointsApi = new PointsApi("/points", apiClient);
 export const categoriesApi = new BaseApi<Category, CreateCategoryRequest, UpdateCategoryRequest>("/categories", apiClient);

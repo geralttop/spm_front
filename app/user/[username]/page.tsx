@@ -8,11 +8,10 @@ import { useAuthStore } from "@/shared/lib/store";
 import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
 import { useProfileQuery, usePointsQuery, useSubscriptionStatsQuery, useFollowMutation, useUnfollowMutation, useBioHistoryQuery, } from "@/shared/lib/hooks/queries";
-import { User, Mail, Users, MapPin, MessagesSquare } from "lucide-react";
-import { PointCard } from "@/src/shared/ui/point-card";
-import { PointCardSkeletonList } from "@/shared/ui";
+import { User, Mail, Users, MessagesSquare } from "lucide-react";
 import { BioHistoryTimeline } from "@/features/profile";
 import { UserBadges } from "@/shared/ui/user-badges";
+import { ProfilePoints } from "@/features/profile";
 export default function UserProfilePage() {
     const router = useRouter();
     const params = useParams();
@@ -200,15 +199,12 @@ export default function UserProfilePage() {
 
           <div>
             <h2 className="mb-3 flex items-center gap-2 px-4 text-base font-semibold text-text-main sm:mb-4 sm:px-0 sm:text-lg">
-              <MapPin className="h-4 w-4 shrink-0 sm:h-5 sm:w-5"/>
               <span className="truncate">
                 {t("profile.userPoints")} {user?.username}
               </span>
             </h2>
 
-            {pointsLoading ? (<PointCardSkeletonList ariaLabel={t("profile.loadingPoints")} className="px-4 sm:px-0"/>) : points.length === 0 ? (<div className="px-4 py-8 text-center text-text-muted sm:px-0">{t("profile.noUserPoints")}</div>) : (<div className="-mx-3 space-y-4 sm:mx-0 sm:space-y-6">
-                {points.map((point) => (<PointCard key={point.id} point={point} showMapLink={isFollowing} onFavoriteChange={() => refetchPoints()} onPointUpdate={() => refetchPoints()}/>))}
-              </div>)}
+            <ProfilePoints points={points} loading={pointsLoading} onRefetch={refetchPoints} title={`${t("profile.userPoints")} ${user?.username ?? ""}`.trim()}/>
           </div>
         </div>
       </div>

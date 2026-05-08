@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { categoriesApi, pointsApi } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
 import { countPointsInVirtualCategory, filterManageCategoryList, getSystemDefaultCategoryId, listPointsInVirtualCategory, MANAGE_VIRTUAL_CATEGORY_EXPAND_ID, } from '../lib/system-default-entities';
-import { Tag, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
+import { Tag, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical, Map } from 'lucide-react';
 import { CategoryForm } from './CategoryForm';
+import Link from 'next/link';
+import { ShareLinkButton } from '@/shared/ui';
 export function ManageCategories() {
     const { t } = useTranslation();
     const { categories, categoriesLoading, expandedCategories, editingCategory, showCategoryForm, points, draggedPoint, setCategories, setCategoriesLoading, toggleCategoryExpand, setEditingCategory, setShowCategoryForm, setDraggedPoint, setPoints, } = useManageStore();
@@ -177,6 +179,10 @@ export function ManageCategories() {
                     </div>
                   </div>
                   <div className="flex gap-1 sm:gap-2 shrink-0">
+                    {category.authorId != null && (<ShareLinkButton path={`/map?category=${encodeURIComponent(String(category.id))}`} buttonTitle={t('manage.manageCategories.copyMapLink')}/>)}
+                    {category.authorId != null && (<Link href={`/map?category=${encodeURIComponent(String(category.id))}`} prefetch={false} className="inline-flex items-center justify-center rounded-lg bg-muted p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:p-2" title={t('map.openOnMap')} aria-label={t('map.openOnMap')}>
+                        <Map className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden/>
+                      </Link>)}
                     <button onClick={() => setEditingCategory(category)} className="p-1.5 sm:p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
                       <Edit2 className="h-4 w-4 sm:h-5 sm:w-5"/>
                     </button>

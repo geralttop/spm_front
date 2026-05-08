@@ -4,8 +4,9 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslation } from "@/shared/lib/hooks";
 import axios from "axios";
-import { containersApi, feedApi } from "@/shared/api";
+import { containersApi, feedApi, pointsApi } from "@/shared/api";
 import type { FeedPoint } from "@/shared/api/feed";
+import { toFeedPoint } from "@/shared/api/feed";
 import { useAuthStore } from "@/shared/lib/store";
 import { useSettingsStore } from "@/shared/lib/store/settings-store";
 import { useMapSettingsQuery, useMapStylePreference } from "@/shared/lib/hooks";
@@ -85,7 +86,9 @@ function MapPageClient() {
     const searchParams = useSearchParams();
     const pointFromQuery = searchParams.get("point");
     const containerId = searchParams.get("container");
+    const categoryId = searchParams.get("category");
     const isContainerMode = Boolean(containerId);
+    const isCategoryMode = Boolean(categoryId);
     const router = useRouter();
     const accessToken = useAuthStore((state) => state.accessToken);
     const { availableMapStyles, loadSettings, isInitialized } = useSettingsStore();
@@ -113,6 +116,8 @@ function MapPageClient() {
     } | null>(null);
     const [openPostPointId, setOpenPostPointId] = useState<string | null>(null);
     const loadSeq = useRef(0);
+    const overlayPointSeq = useRef(0);
+    const overlayLoadedFor = useRef<string | null>(null);
     const loadMapData = useCallback(async () => {
         const seq = ++loadSeq.current;
         setLoading(true);
@@ -121,6 +126,27 @@ function MapPageClient() {
             const geo = await getInitialGeolocation();
             if (containerId) {
                 const { feedPoints } = await containersApi.getForMap(containerId);
+                setAllPoints(feedPoints);
+                if (geo) {
+                    setUserLocation(geo);
+                    setCenter([geo.longitude, geo.latitude]);
+                    setZoom(12);
+                }
+                else if (feedPoints.length > 0) {
+                    setUserLocation(null);
+                    const first = feedPoints[0];
+                    setCenter([first.coords.coordinates[0], first.coords.coordinates[1]]);
+                    setZoom(12);
+                }
+                else {
+                    setUserLocation(null);
+                    setCenter(FALLBACK_CENTER);
+                    setZoom(FALLBACK_ZOOM);
+                }
+                return;
+            }
+            if (categoryId) {
+                const feedPoints = await pointsApi.getForMapByCategory(categoryId);
                 setAllPoints(feedPoints);
                 if (geo) {
                     setUserLocation(geo);
@@ -205,7 +231,7 @@ function MapPageClient() {
         finally {
             setLoading(false);
         }
-    }, [containerId, t]);
+    }, [containerId, categoryId, t]);
     useEffect(() => {
         if (!accessToken)
             return;
@@ -246,7 +272,43 @@ function MapPageClient() {
         setOpenPostPointId(pointFromQuery);
     }, [pointFromQuery]);
     useEffect(() => {
+        if (loading)
+            return;
+        if (isContainerMode || isCategoryMode)
+            return;
+        if (!pointFromQuery)
+            return;
+        if (overlayLoadedFor.current === pointFromQuery)
+            return;
+        if (allPoints.some((p) => p.id === pointFromQuery)) {
+            overlayLoadedFor.current = pointFromQuery;
+            return;
+        }
+        const seq = ++overlayPointSeq.current;
+        void (async () => {
+            try {
+                const p = await pointsApi.getById(pointFromQuery);
+                if (overlayPointSeq.current !== seq)
+                    return;
+                overlayLoadedFor.current = pointFromQuery;
+                const fp = toFeedPoint(p);
+                setAllPoints((prev) => (prev.some((x) => x.id === fp.id) ? prev : [fp, ...prev]));
+            }
+            catch (err) {
+                if (overlayPointSeq.current !== seq)
+                    return;
+                overlayLoadedFor.current = pointFromQuery;
+                console.error("Error loading point overlay:", err);
+                setError((prev) => prev ?? t("map.pointsLoadFailed"));
+            }
+        })();
+    }, [loading, isContainerMode, isCategoryMode, pointFromQuery, allPoints, t]);
+    useEffect(() => {
         if (isContainerMode) {
+            setPoints([...allPoints]);
+            return;
+        }
+        if (isCategoryMode) {
             setPoints([...allPoints]);
             return;
         }
@@ -275,8 +337,14 @@ function MapPageClient() {
             dateTo.setHours(23, 59, 59, 999);
             filtered = filtered.filter((point) => new Date(point.createdAt) <= dateTo);
         }
+        if (pointFromQuery) {
+            const pinned = allPoints.find((p) => p.id === pointFromQuery);
+            if (pinned && !filtered.some((p) => p.id === pinned.id)) {
+                filtered = [pinned, ...filtered];
+            }
+        }
         setPoints(filtered);
-    }, [filters, allPoints, isContainerMode]);
+    }, [filters, allPoints, isContainerMode, isCategoryMode, pointFromQuery]);
     const centerOnPointCoords = useMemo(() => {
         if (!openPostPointId)
             return null;
@@ -287,11 +355,19 @@ function MapPageClient() {
         return { longitude: lng, latitude: lat };
     }, [openPostPointId, points]);
     useEffect(() => {
-        if (openPostPointId &&
-            !points.some((p) => p.id === openPostPointId)) {
+        if (!openPostPointId)
+            return;
+        if (pointFromQuery &&
+            openPostPointId === pointFromQuery &&
+            !isContainerMode &&
+            !isCategoryMode &&
+            overlayLoadedFor.current !== pointFromQuery) {
+            return;
+        }
+        if (!points.some((p) => p.id === openPostPointId)) {
             setOpenPostPointId(null);
         }
-    }, [points, openPostPointId]);
+    }, [points, openPostPointId, pointFromQuery, isContainerMode, isCategoryMode]);
     if (!accessToken) {
         return null;
     }
@@ -438,7 +514,7 @@ function MapPageClient() {
             })}/>
           </MapComponent>
 
-          {!isContainerMode && (<MapFiltersComponent filters={filters} onFiltersChange={setFilters} allPoints={allPoints}/>)}
+          {!isContainerMode && !isCategoryMode && (<MapFiltersComponent filters={filters} onFiltersChange={setFilters} allPoints={allPoints}/>)}
 
           {!error &&
                 isContainerMode &&

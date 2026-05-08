@@ -195,6 +195,16 @@
     "userPoints": "Пайдаланушы нүктелері",
     "noUserPoints": "Пайдаланушыда әлі нүкте жоқ",
     "loadingPoints": "Нүктелер жүктелуде...",
+    "pointsView": {
+      "flat": "Күні бойынша",
+      "grouped": "Топтап"
+    },
+    "grouped": {
+      "containersTitle": "Контейнерлер",
+      "categoriesTitle": "Санаттар",
+      "noContainer": "Контейнер жоқ",
+      "noCategory": "Санат жоқ"
+    },
     "followSuccess": "Сіз жазылдыңыз",
     "unfollowSuccess": "Сіз жазылымнан бас тарттыңыз",
     "followError": "Жазылу қатесі",
@@ -327,7 +337,8 @@
       "deleteSuccess": "Санат сәтті жойылды",
       "deleteError": "Санатты жою қатесі",
       "moveError": "Нүктені жылжыту қатесі",
-      "noContainer": "Контейнер жоқ"
+      "noContainer": "Контейнер жоқ",
+      "copyMapLink": "Санат картасының сілтемесі"
     },
     "manageContainers": {
       "title": "Контейнерлер",

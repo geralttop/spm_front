@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { containersApi, pointsApi } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
 import { countPointsInVirtualContainer, filterManageContainerList, getSystemDefaultContainerId, listPointsInVirtualContainer, MANAGE_VIRTUAL_CONTAINER_EXPAND_ID, } from '../lib/system-default-entities';
-import { Package, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical } from 'lucide-react';
+import { Package, Plus, Edit2, Trash2, Loader2, ChevronDown, ChevronRight, GripVertical, Map } from 'lucide-react';
 import { ContainerForm } from './ContainerForm';
 import { ShareLinkButton } from '@/shared/ui';
+import Link from 'next/link';
 export function ManageContainers() {
     const { t } = useTranslation();
     const { containers, containersLoading, expandedContainers, editingContainer, showContainerForm, points, draggedPoint, setContainers, setContainersLoading, toggleContainerExpand, setEditingContainer, setShowContainerForm, setDraggedPoint, setPoints, } = useManageStore();
@@ -152,7 +153,7 @@ export function ManageContainers() {
                       <p className="font-medium text-xs sm:text-sm text-text-main truncate">{point.name}</p>
                       {point.description && (<p className="text-xs text-text-muted truncate">{point.description}</p>)}
                     </div>
-                    <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 hidden xs:flex">
+                    <div className="items-center gap-1.5 sm:gap-2 shrink-0 hidden xs:flex">
                       {point.category && (<div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full" style={{ backgroundColor: point.category.color }} title={point.category.name}/>)}
                       <span className="text-xs text-text-muted">
                         {point.category?.name || t('manage.manageContainers.noCategory')}
@@ -187,6 +188,9 @@ export function ManageContainers() {
                   <div className="flex flex-col items-end gap-1 sm:flex-row sm:items-center sm:gap-2 shrink-0">
                     <div className="flex gap-1 sm:gap-2">
                     {container.authorId != null && (<ShareLinkButton path={`/map?container=${encodeURIComponent(container.id)}`} buttonTitle={t('manage.manageContainers.copyMapLink')}/>)}
+                    {container.authorId != null && (<Link href={`/map?container=${encodeURIComponent(container.id)}`} prefetch={false} className="inline-flex items-center justify-center rounded-lg bg-muted p-1.5 text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground sm:p-2" title={t('map.openOnMap')} aria-label={t('map.openOnMap')}>
+                        <Map className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden/>
+                      </Link>)}
                     <button onClick={() => setEditingContainer(container)} className="p-1.5 sm:p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
                       <Edit2 className="h-4 w-4 sm:h-5 sm:w-5"/>
                     </button>
@@ -204,7 +208,7 @@ export function ManageContainers() {
                           <p className="font-medium text-xs sm:text-sm text-text-main truncate">{point.name}</p>
                           {point.description && <p className="text-xs text-text-muted truncate">{point.description}</p>}
                         </div>
-                        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 hidden xs:flex">
+                        <div className="items-center gap-1.5 sm:gap-2 shrink-0 hidden xs:flex">
                           {point.category && (<div className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full" style={{ backgroundColor: point.category.color }} title={point.category.name}/>)}
                           <span className="text-xs text-text-muted">
                             {point.category?.name || t('manage.manageContainers.noCategory')}

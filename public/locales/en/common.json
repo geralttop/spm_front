@@ -195,6 +195,16 @@
     "userPoints": "User's points",
     "noUserPoints": "User has no points yet",
     "loadingPoints": "Loading points...",
+    "pointsView": {
+      "flat": "By date",
+      "grouped": "Grouped"
+    },
+    "grouped": {
+      "containersTitle": "Containers",
+      "categoriesTitle": "Categories",
+      "noContainer": "No container",
+      "noCategory": "No category"
+    },
     "followSuccess": "You followed",
     "unfollowSuccess": "You unfollowed",
     "followError": "Follow error",
@@ -327,7 +337,8 @@
       "deleteSuccess": "Category successfully deleted",
       "deleteError": "Error deleting category",
       "moveError": "Error moving point",
-      "noContainer": "No container"
+      "noContainer": "No container",
+      "copyMapLink": "Category map link"
     },
     "manageContainers": {
       "title": "Containers",

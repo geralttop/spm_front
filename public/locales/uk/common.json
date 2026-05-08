@@ -195,6 +195,16 @@
     "userPoints": "Точки користувача",
     "noUserPoints": "У користувача ще немає точок",
     "loadingPoints": "Завантаження точок...",
+    "pointsView": {
+      "flat": "За датою",
+      "grouped": "Групами"
+    },
+    "grouped": {
+      "containersTitle": "Контейнери",
+      "categoriesTitle": "Категорії",
+      "noContainer": "Без контейнера",
+      "noCategory": "Без категорії"
+    },
     "followSuccess": "Ви підписалися на",
     "unfollowSuccess": "Ви відписалися від",
     "followError": "Помилка підписки",
@@ -327,7 +337,8 @@
       "deleteSuccess": "Категорію успішно видалено",
       "deleteError": "Помилка видалення категорії",
       "moveError": "Помилка переміщення точки",
-      "noContainer": "Без контейнера"
+      "noContainer": "Без контейнера",
+      "copyMapLink": "Посилання на карту категорії"
     },
     "manageContainers": {
       "title": "Контейнери",

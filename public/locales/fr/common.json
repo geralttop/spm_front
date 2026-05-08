@@ -195,6 +195,16 @@
     "userPoints": "Points de l'utilisateur",
     "noUserPoints": "L'utilisateur n'a pas encore de points",
     "loadingPoints": "Chargement des points...",
+    "pointsView": {
+      "flat": "Par date",
+      "grouped": "Groupés"
+    },
+    "grouped": {
+      "containersTitle": "Conteneurs",
+      "categoriesTitle": "Catégories",
+      "noContainer": "Sans conteneur",
+      "noCategory": "Sans catégorie"
+    },
     "followSuccess": "Vous êtes abonné",
     "unfollowSuccess": "Vous êtes désabonné",
     "followError": "Erreur d'abonnement",
@@ -344,7 +354,8 @@
       "deleteSuccess": "Catégorie supprimée avec succès",
       "deleteError": "Erreur de suppression de la catégorie",
       "moveError": "Erreur de déplacement du point",
-      "noContainer": "Pas de conteneur"
+      "noContainer": "Pas de conteneur",
+      "copyMapLink": "Lien vers la carte de la catégorie"
     },
     "manageContainers": {
       "title": "Conteneurs",

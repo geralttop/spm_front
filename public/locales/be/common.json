@@ -195,6 +195,16 @@
     "userPoints": "Кропкі карыстальніка",
     "noUserPoints": "У карыстальніка пакуль няма кропак",
     "loadingPoints": "Загрузка кропак...",
+    "pointsView": {
+      "flat": "Па даце",
+      "grouped": "Групамі"
+    },
+    "grouped": {
+      "containersTitle": "Кантэйнеры",
+      "categoriesTitle": "Катэгорыі",
+      "noContainer": "Без кантэйнера",
+      "noCategory": "Без катэгорыі"
+    },
     "followSuccess": "Вы падпісаліся",
     "unfollowSuccess": "Вы адпісаліся",
     "followError": "Памылка падпіскі",
@@ -344,7 +354,8 @@
       "deleteSuccess": "Катэгорыя паспяхова выдалена",
       "deleteError": "Памылка выдалення катэгорыі",
       "moveError": "Памылка перамяшчэння кропкі",
-      "noCategory": "Без катэгорыі"
+      "noCategory": "Без катэгорыі",
+      "copyMapLink": "Спасылка на карту катэгорыі"
     },
     "manageContainers": {
       "title": "Кантэйнеры",

@@ -195,6 +195,16 @@
     "userPoints": "Kropki karystaĺnika",
     "noUserPoints": "U karystaĺnika pakul niama kropak",
     "loadingPoints": "Zahruzka kropak...",
+    "pointsView": {
+      "flat": "Pa dacie",
+      "grouped": "Hrupami"
+    },
+    "grouped": {
+      "containersTitle": "Kantejniery",
+      "categoriesTitle": "Katehoryi",
+      "noContainer": "Biez kantejniera",
+      "noCategory": "Biez katehoryi"
+    },
     "followSuccess": "Vy padpisalisia",
     "unfollowSuccess": "Vy adpisalisia",
     "followError": "Pamyłka padpiski",
@@ -344,7 +354,8 @@
       "deleteSuccess": "Katehoryja paspiExova vydaliena",
       "deleteError": "Pamyłka vydalieńnia katehoryi",
       "moveError": "Pamyłka pieramiaščeńnia kropki",
-      "noCategory": "Biez katehoryi"
+      "noCategory": "Biez katehoryi",
+      "copyMapLink": "Spasylka na kartu katehoryi"
     },
     "manageContainers": {
       "title": "Kantejniery",

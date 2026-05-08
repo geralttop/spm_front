@@ -195,6 +195,16 @@
     "userPoints": "მომხმარებლის წერტილები",
     "noUserPoints": "მომხმარებელს ჯერ წერტილები არ აქვს",
     "loadingPoints": "წერტილები იტვირთება...",
+    "pointsView": {
+      "flat": "თარიღით",
+      "grouped": "ჯგუფებად"
+    },
+    "grouped": {
+      "containersTitle": "კონტეინერები",
+      "categoriesTitle": "კატეგორიები",
+      "noContainer": "კონტეინერის გარეშე",
+      "noCategory": "კატეგორიის გარეშე"
+    },
     "followSuccess": "თქვენ გამოიწერეთ",
     "unfollowSuccess": "თქვენ გააუქმეთ გამოწერა",
     "followError": "გამოწერის შეცდომა",
@@ -327,7 +337,8 @@
       "deleteSuccess": "კატეგორია წარმატებით წაიშალა",
       "deleteError": "კატეგორიის წაშლის შეცდომა",
       "moveError": "წერტილის გადატანის შეცდომა",
-      "noContainer": "კონტეინერი არ არის"
+      "noContainer": "კონტეინერი არ არის",
+      "copyMapLink": "კატეგორიის რუკის ბმული"
     },
     "manageContainers": {
       "title": "კონტეინერები",
