@@ -56,8 +56,14 @@ export function PointHistoryTimeline({
 
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
                   <div className="min-w-0 flex-1">
+                    {entry.pointName && (
+                      <p className="break-words text-sm font-medium text-text-main">
+                        {entry.pointName}
+                      </p>
+                    )}
+
                     <p className="whitespace-pre-wrap break-words text-sm text-text-main">
-                      {entry.description || '—'}
+                      {entry.description || t('profile.noDescription')}
                     </p>
 
                     {entry.photos?.length > 0 && (

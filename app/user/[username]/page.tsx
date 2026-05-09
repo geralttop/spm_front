@@ -198,12 +198,6 @@ export default function UserProfilePage() {
           <BioHistoryTimeline entries={bioHistory} isLoading={bioHistoryLoading} error={bioHistoryError as Error | null} canDelete={false}/>
 
           <div>
-            <h2 className="mb-3 flex items-center gap-2 px-4 text-base font-semibold text-text-main sm:mb-4 sm:px-0 sm:text-lg">
-              <span className="truncate">
-                {t("profile.userPoints")} {user?.username}
-              </span>
-            </h2>
-
             <ProfilePoints points={points} loading={pointsLoading} onRefetch={refetchPoints} title={`${t("profile.userPoints")} ${user?.username ?? ""}`.trim()}/>
           </div>
         </div>

@@ -7,6 +7,17 @@ import { ChevronDown, Languages } from "lucide-react";
 interface LanguageSwitcherProps {
     compact?: boolean;
 }
+
+const LOCALE_AUTONYMS: Record<SupportedLocale, string> = {
+    ru: "Русский",
+    be: "Беларуская",
+    belat: "Biełaruskaja (Łacinka)",
+    uk: "Українська",
+    kk: "Қазақша",
+    ka: "ქართული",
+    en: "English",
+    fr: "Français",
+};
 export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
     const { currentLanguage, changeLanguage, t, ready } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +45,7 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
     return (<div className="relative" data-language-switcher>
       <button onClick={() => setIsOpen(!isOpen)} className={cn("flex items-center gap-2 rounded-lg border border-border bg-card text-sm font-medium transition-colors", "hover:bg-accent hover:text-accent-foreground", isOpen && "bg-accent text-accent-foreground", compact ? "px-2 py-1.5" : "px-3 py-2")}>
         <Languages className="h-4 w-4"/>
-        {!compact && <span>{t(`language.${currentLanguage}`)}</span>}
+        {!compact && <span>{LOCALE_AUTONYMS[currentLanguage]}</span>}
         <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")}/>
       </button>
 
@@ -46,7 +57,7 @@ export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
                 }} className={cn("w-full rounded-md px-3 py-2 text-left text-sm font-medium transition-colors", currentLanguage === locale
                     ? "bg-primary text-primary-foreground"
                     : "text-text-main hover:bg-accent hover:text-accent-foreground")}>
-                {t(`language.${locale}`)}
+                {LOCALE_AUTONYMS[locale]}
               </button>))}
           </div>
         </div>)}

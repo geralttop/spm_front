@@ -21,10 +21,6 @@ export function Header({ onMenuClick }: HeaderProps) {
           <button onClick={onMenuClick} className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-accent transition-colors" aria-label={t('common.openMenu')}>
             <Menu className="h-5 w-5"/>
           </button>
-          
-          <h1 className="text-lg sm:text-xl font-bold text-text-main cursor-pointer hover:opacity-80 transition-opacity truncate" onClick={() => router.push("/")}>
-            {mounted && ready ? t("common.title") : "SPM"}
-          </h1>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-4">

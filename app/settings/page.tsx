@@ -11,6 +11,17 @@ import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-con
 import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette, HelpCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 type MapStyleQualityLevel = "good" | "medium" | "poor";
+
+const LOCALE_AUTONYMS: Record<SupportedLocale, string> = {
+    ru: "Русский",
+    be: "Беларуская",
+    belat: "Biełaruskaja (Łacinka)",
+    uk: "Українська",
+    kk: "Қазақша",
+    ka: "ქართული",
+    en: "English",
+    fr: "Français",
+};
 const MAP_STYLE_QUALITY: Record<MapStyleKey, MapStyleQualityLevel> = {
     carto: "good",
     openstreet3d: "good",
@@ -247,7 +258,7 @@ export default function SettingsPage() {
             return (<button key={locale} onClick={() => changeLanguage(locale)} className={`px-3 sm:px-4 py-2 rounded-lg border text-sm sm:text-base font-medium transition-all ${isSelected
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border bg-card text-text-main hover:bg-accent'}`}>
-                    {t(`language.${locale}`)}
+                    {LOCALE_AUTONYMS[locale]}
                   </button>);
         })}
             </div>

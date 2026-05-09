@@ -105,6 +105,7 @@ export interface PointHistoryPhoto {
 export interface PointHistoryEntry {
     id: string;
     pointId: string;
+    pointName: string | null;
     description: string | null;
     createdAt: string;
     photos: PointHistoryPhoto[];
