@@ -9,6 +9,7 @@ import { useForm } from '@/shared/lib/hooks';
 import { createUpdateProfileSchema } from '@/shared/schemas';
 import type { ProfileResponse } from '@/shared/types';
 import { AvatarUpload } from './AvatarUpload';
+import { ProfileStickyIdentityObserver } from './ProfileStickyIdentityObserver';
 interface ProfileFormProps {
     profile: ProfileResponse;
     isEditing: boolean;
@@ -38,24 +39,22 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
       
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-border">
         
-        <div className="shrink-0">
-          <div className="h-16 w-16 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-muted border-2 sm:border-4 border-border">
-            {avatarUrl ? (<img src={avatarUrl} alt={profile.username} className="h-full w-full object-cover"/>) : (<div className="h-full w-full flex items-center justify-center bg-primary/10">
-                <User className="h-8 w-8 sm:h-12 sm:w-12 text-primary/50"/>
-              </div>)}
+        <ProfileStickyIdentityObserver className="flex min-w-0 flex-1 flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-4">
+          <div className="shrink-0">
+            <div className="h-16 w-16 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-muted border-2 sm:border-4 border-border">
+              {avatarUrl ? (<img src={avatarUrl} alt={profile.username} className="h-full w-full object-cover"/>) : (<div className="h-full w-full flex items-center justify-center bg-primary/10">
+                  <User className="h-8 w-8 sm:h-12 sm:w-12 text-primary/50"/>
+                </div>)}
+            </div>
           </div>
-        </div>
-        
-        
-        <div className="flex-1 min-w-0 w-full sm:w-auto">
-          <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
-            <span className="truncate">{profile.username || t("profile.title")}</span>
-            <UserBadges role={profile.role} createdPointsCount={profile.createdPointsCount} isVerified={profile.isVerified} className="shrink-0"/>
-          </h1>
-          <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-text-muted truncate break-all">{profile.email}</p>
-        </div>
-        
-        
+          <div className="w-full min-w-0 flex-1 sm:w-auto">
+            <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
+              <span className="truncate">{profile.username || t("profile.title")}</span>
+              <UserBadges role={profile.role} createdPointsCount={profile.createdPointsCount} isVerified={profile.isVerified} className="shrink-0"/>
+            </h1>
+            <p className="mt-0.5 truncate break-all text-xs text-text-muted sm:mt-1 sm:text-sm">{profile.email}</p>
+          </div>
+        </ProfileStickyIdentityObserver>
         {!isEditing && (<div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
             {profile.username ? (<ShareLinkButton path={userProfilePath(profile.username)}/>) : null}
             <Button onClick={onEdit} variant="outline" className="min-w-0 flex-1 gap-2 touch-target sm:flex-initial">

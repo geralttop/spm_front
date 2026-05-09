@@ -12,6 +12,7 @@ interface PointHistoryTimelineProps {
   canDelete: boolean;
   onDelete?: (historyId: string) => void;
   deletePendingId?: string | null;
+  onExpand?: () => void;
 }
 
 export function PointHistoryTimeline({
@@ -21,12 +22,20 @@ export function PointHistoryTimeline({
   canDelete,
   onDelete,
   deletePendingId,
+  onExpand,
 }: PointHistoryTimelineProps) {
   const { t, i18n } = useTranslation();
   const apiBase = process.env.NEXT_PUBLIC_API_URL ?? '';
 
   return (
-    <details className="group rounded-xl border border-border bg-card shadow-sm">
+    <details
+      className="group rounded-xl border border-border bg-card shadow-sm"
+      onToggle={(e) => {
+        if (e.currentTarget.open) {
+          onExpand?.();
+        }
+      }}
+    >
       <summary className="flex cursor-pointer list-none items-center justify-between gap-2 px-3 py-3 text-left font-medium text-text-main touch-target sm:px-4 sm:py-3.5 [&::-webkit-details-marker]:hidden">
         <span>{t('profile.pointHistory.toggle')}</span>
         <ChevronDown

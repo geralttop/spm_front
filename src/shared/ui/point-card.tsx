@@ -38,6 +38,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
     const { t } = useTranslation();
     const accessToken = useAuthStore((state) => state.accessToken);
     const { data: profile } = useProfileQuery();
+    const [historyRequested, setHistoryRequested] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [showReportModal, setShowReportModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
@@ -51,7 +52,10 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
     const mapHref = useMemo(() => fromContainerId
         ? `/map?container=${encodeURIComponent(fromContainerId)}&point=${encodeURIComponent(point.id)}`
         : `/map?point=${encodeURIComponent(point.id)}`, [fromContainerId, point.id]);
-    const { data: historyEntries, isLoading: historyLoading, error: historyError } = usePointHistoryQuery(point.id, { fromContainer: fromContainerId });
+    const { data: historyEntries, isLoading: historyLoading, error: historyError } = usePointHistoryQuery(point.id, {
+        fromContainer: fromContainerId,
+        enabled: historyRequested,
+    });
     const createHistoryMutation = useCreatePointHistoryMutation();
     const deleteHistoryMutation = useDeletePointHistoryMutation();
     const [deletePendingId, setDeletePendingId] = useState<string | null>(null);
@@ -61,6 +65,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
         onPointUpdate?.();
     };
     const handleCreateHistory = async () => {
+        setHistoryRequested(true);
         try {
             await createHistoryMutation.mutateAsync(point.id);
         }
@@ -173,7 +178,7 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
         {isAuthor && (<button type="button" onClick={() => void handleCreateHistory()} disabled={createHistoryMutation.isPending} className="flex items-center gap-2 text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors font-medium touch-target min-h-[44px] -mx-1 px-1 rounded-lg active:bg-primary/10 disabled:opacity-50">
             <span>{t("profile.pointHistory.addEntry")}</span>
           </button>)}
-        <PointHistoryTimeline entries={historyEntries ?? []} isLoading={historyLoading} error={historyError as Error | null} canDelete={!!isAuthor} onDelete={handleDeleteHistory} deletePendingId={deletePendingId}/>
+        <PointHistoryTimeline entries={historyEntries ?? []} isLoading={historyLoading} error={historyError as Error | null} canDelete={!!isAuthor} onDelete={handleDeleteHistory} deletePendingId={deletePendingId} onExpand={() => setHistoryRequested(true)}/>
       </div>
 
       <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">

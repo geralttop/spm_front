@@ -4,14 +4,13 @@ import { useRouter, useParams } from "next/navigation";
 import { Button, UserListModal, Loading, ShareLinkButton } from "@/shared/ui";
 import { authApi } from "@/shared/api";
 import type { SearchUserResult } from "@/shared/types";
-import { useAuthStore } from "@/shared/lib/store";
+import { useAuthStore, useProfileStickyTitleStore } from "@/shared/lib/store";
 import { userProfilePath } from "@/shared/lib/user-profile-path";
 import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
 import { useProfileQuery, usePointsQuery, useSubscriptionStatsQuery, useFollowMutation, useUnfollowMutation, useBioHistoryQuery, } from "@/shared/lib/hooks/queries";
-import { User, Mail, Users, MessagesSquare } from "lucide-react";
-import { BioHistoryTimeline } from "@/features/profile";
+import { User, Users, MessagesSquare } from "lucide-react";
+import { BioHistoryTimeline, ProfilePoints, ProfileStickyIdentityObserver } from "@/features/profile";
 import { UserBadges } from "@/shared/ui/user-badges";
-import { ProfilePoints } from "@/features/profile";
 export default function UserProfilePage() {
     const router = useRouter();
     const params = useParams();
@@ -34,12 +33,23 @@ export default function UserProfilePage() {
     const followersModal = useUserModal();
     const followingModal = useUserModal();
     const { followingStates, actionLoadingStates, followStatesLoading, initializeFollowingStates, handleFollowToggle } = useFollowManagement();
+    const setStickyTitle = useProfileStickyTitleStore((s) => s.setTitle);
+    useEffect(() => {
+        setStickyTitle(null);
+    }, [segment, setStickyTitle]);
+    useEffect(() => {
+        const name = user?.username?.trim();
+        if (!name)
+            return;
+        setStickyTitle(name);
+    }, [user?.username, setStickyTitle]);
     useEffect(() => {
         if (!segment || profileLoading)
             return;
         const fetchUserData = async () => {
             try {
                 setLoading(true);
+                setUser(null);
                 const isAuthenticated = await checkAuth();
                 if (!isAuthenticated) {
                     router.push("/auth");
@@ -138,23 +148,25 @@ export default function UserProfilePage() {
 
           <div className="rounded-xl border border-border bg-card p-3 shadow-sm sm:p-6">
             <div className="mb-5 flex flex-col gap-3 border-b border-border pb-5 sm:mb-6 sm:flex-row sm:items-center sm:gap-4 sm:pb-6">
-              <div className="shrink-0">
-                <div className="h-16 w-16 overflow-hidden rounded-full border-2 border-border bg-muted sm:h-24 sm:w-24 sm:border-4">
-                  {avatarUrl ? (<img src={avatarUrl} alt={user?.username ?? ""} className="h-full w-full object-cover"/>) : (<div className="flex h-full w-full items-center justify-center bg-primary/10">
-                      <User className="h-8 w-8 text-primary/50 sm:h-12 sm:w-12" aria-hidden/>
-                    </div>)}
+              <ProfileStickyIdentityObserver className="flex min-w-0 flex-1 flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+                <div className="shrink-0">
+                  <div className="h-16 w-16 overflow-hidden rounded-full border-2 border-border bg-muted sm:h-24 sm:w-24 sm:border-4">
+                    {avatarUrl ? (<img src={avatarUrl} alt={user?.username ?? ""} className="h-full w-full object-cover"/>) : (<div className="flex h-full w-full items-center justify-center bg-primary/10">
+                        <User className="h-8 w-8 text-primary/50 sm:h-12 sm:w-12" aria-hidden/>
+                      </div>)}
+                  </div>
                 </div>
-              </div>
 
-              <div className="min-w-0 w-full flex-1 sm:w-auto">
-                <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
-                  <span className="truncate">{user?.username || "User"}</span>
-                  {user ? (<UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>) : null}
-                </h1>
-                <p className="mt-0.5 truncate text-xs text-text-muted break-all sm:mt-1 sm:text-sm">
-                  {user?.email}
-                </p>
-              </div>
+                <div className="min-w-0 w-full flex-1 sm:w-auto">
+                  <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
+                    <span className="truncate">{user?.username || "User"}</span>
+                    {user ? (<UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>) : null}
+                  </h1>
+                  <p className="mt-0.5 truncate text-xs text-text-muted break-all sm:mt-1 sm:text-sm">
+                    {user?.email}
+                  </p>
+                </div>
+              </ProfileStickyIdentityObserver>
 
               <div className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 sm:w-auto">
                 {user?.username ? (<ShareLinkButton path={userProfilePath(user.username)}/>) : null}

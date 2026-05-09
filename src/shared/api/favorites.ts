@@ -30,10 +30,19 @@ export interface FavoriteCheckResponse {
   isFavorite: boolean;
 }
 
+export interface FavoritePointIdsResponse {
+  pointIds: string[];
+}
+
 export const favoritesApi = {
   getAll: async (): Promise<FavoritePoint[]> => {
     const response = await apiClient.get<FavoritePoint[]>("/favorites");
     return response.data;
+  },
+
+  getPointIds: async (): Promise<string[]> => {
+    const response = await apiClient.get<FavoritePointIdsResponse>("/favorites/point-ids");
+    return response.data.pointIds;
   },
 
   add: async (pointId: string): Promise<{ message: string }> => {

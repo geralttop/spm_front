@@ -1,4 +1,4 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { authApi, type LoginRequest, type RegisterRequest, type VerifyCodeRequest, type ForgotPasswordRequest, type ResetPasswordRequest } from '@/shared/api';
 import { useAuthStore } from '@/shared/lib/store';
 export const useRegisterMutation = () => {
@@ -40,11 +40,13 @@ export const useVerifyLoginMutation = () => {
 };
 
 export const useLogoutMutation = () => {
+  const queryClient = useQueryClient();
   const clearAuth = useAuthStore((state) => state.clearAuth);
   
   return useMutation({
     mutationFn: () => authApi.logout(),
     onSuccess: () => {
+      queryClient.removeQueries({ queryKey: ["favorite-point-ids"] });
       clearAuth();
     },
   });

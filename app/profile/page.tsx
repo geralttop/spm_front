@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, UserListModal, Loading, ErrorMessage } from "@/shared/ui";
-import { useAuthStore } from "@/shared/lib/store";
+import { useAuthStore, useProfileStickyTitleStore } from "@/shared/lib/store";
 import { useTranslation, useFollowManagement, useUserModal } from "@/shared/lib/hooks";
 import { useProfileQuery, useUpdateProfileMutation, usePointsQuery, useSubscriptionStatsQuery, useLogoutMutation, useBioHistoryQuery, useDeleteBioHistoryMutation, } from "@/shared/lib/hooks/queries";
 import { ProfileStats, ProfileForm, ProfilePoints, BioHistoryTimeline } from "@/features/profile";
@@ -21,6 +21,17 @@ export default function ProfilePage() {
     const followersModal = useUserModal();
     const followingModal = useUserModal();
     const { followingStates, actionLoadingStates, followStatesLoading, initializeFollowingStates, initializeFollowingList, handleFollowToggle, } = useFollowManagement();
+    const setStickyTitle = useProfileStickyTitleStore((s) => s.setTitle);
+    useEffect(() => {
+        if (isLoading) {
+            setStickyTitle(null);
+            return;
+        }
+        if (!profile?.userId)
+            return;
+        const label = profile.username?.trim() || t("profile.title");
+        setStickyTitle(label);
+    }, [isLoading, profile?.userId, profile?.username, setStickyTitle, t]);
     useEffect(() => {
         const initAuth = async () => {
             const isAuthenticated = await checkAuth();

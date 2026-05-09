@@ -13,7 +13,6 @@ interface SidebarState {
 const DEFAULT_ORDER = [
     "feed",
     "map",
-    "favorites",
     "profile",
     "chats",
     "search",
@@ -21,7 +20,7 @@ const DEFAULT_ORDER = [
     "manage",
     "settings",
 ];
-const REMOVED_ITEMS = new Set<string>(["my-comments"]);
+const REMOVED_ITEMS = new Set<string>(["my-comments", "favorites"]);
 export const useSidebarStore = create<SidebarState>((set, get) => ({
     sidebarOrder: DEFAULT_ORDER,
     isLoading: false,

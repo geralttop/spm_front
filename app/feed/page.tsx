@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef } from 'react';
-import { MapPin, Loader2, RefreshCw } from 'lucide-react';
+import { MapPin, Loader2, RefreshCw, Rss } from 'lucide-react';
 import { useTranslation } from '@/shared/lib/hooks';
 import { PointCard } from '@/src/shared/ui/point-card';
 import { ErrorMessage, PointCardSkeletonList } from '@/shared/ui';
@@ -37,7 +37,10 @@ export default function FeedPage() {
     return (<div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-0 sm:px-6 lg:px-8 py-4 sm:py-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 px-4 sm:px-0">
-          <h1 className="text-xl sm:text-2xl font-bold text-text-main">{t('feed.title')}</h1>
+          <h1 className="flex min-w-0 items-center gap-2 text-xl font-bold text-text-main sm:text-2xl">
+            <Rss className="h-5 w-5 shrink-0 text-primary sm:h-6 sm:w-6" aria-hidden/>
+            <span className="truncate">{t('feed.title')}</span>
+          </h1>
           <button onClick={() => refetch()} disabled={isLoading} className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-surface border border-border rounded-lg hover:bg-accent transition-colors disabled:opacity-50 w-full sm:w-auto">
             <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}/>
             <span className="sm:inline">{t('feed.refresh')}</span>

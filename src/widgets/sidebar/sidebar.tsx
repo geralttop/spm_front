@@ -3,7 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useChatUnreadCountQuery } from "@/shared/lib/hooks/queries/use-chats-queries";
-import { User, Search, Settings, MapPin, Rss, Heart, MessagesSquare, X, Map, FolderKanban } from "lucide-react";
+import { User, Search, Settings, MapPin, Rss, MessagesSquare, X, Map, FolderKanban } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 interface MenuItem {
     icon: any;
@@ -44,13 +44,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 label: t("sidebar.map"),
                 path: "/map",
                 active: pathname === "/map"
-            },
-            {
-                id: "favorites",
-                icon: Heart,
-                label: t("sidebar.favorites"),
-                path: "/favorites",
-                active: pathname === "/favorites"
             },
             {
                 id: "profile",

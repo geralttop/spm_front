@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { Home, Search, Heart, User, Plus, Menu, Map } from "lucide-react";
+import { Home, Search, User, Plus, Menu, Map } from "lucide-react";
 import { useTranslation } from "@/shared/lib/hooks";
 import { cn } from "@/shared/lib/utils";
 
@@ -33,12 +33,6 @@ export function MobileNav({ className }: MobileNavProps) {
       label: t("sidebar.createPoint"),
       path: "/points/create",
       active: pathname === "/points/create"
-    },
-    {
-      icon: Heart,
-      label: t("sidebar.favorites"),
-      path: "/favorites",
-      active: pathname === "/favorites"
     },
     {
       icon: User,

@@ -2,7 +2,7 @@
 import { useTranslation as useI18nextTranslation } from "react-i18next";
 import { SupportedLocale, defaultLocale, supportedLocales } from "@/shared/config/i18n-constants";
 import i18n from "@/shared/config/i18n";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 function normalizeLocale(input: string | undefined | null): SupportedLocale {
     const raw = (input || "").trim();
@@ -46,9 +46,12 @@ export function useTranslation() {
             console.error("Error changing language:", error);
         }
     };
-    const safeT = ready
-        ? t
-        : ((key: string, options?: Record<string, unknown>) => (key.split(".").pop() || key) as string);
+    const fallbackT = useCallback(
+        (key: string, _options?: Record<string, unknown>) =>
+            (key.split(".").pop() || key) as string,
+        [],
+    );
+    const safeT = ready ? t : fallbackT;
     return {
         t: safeT,
         i18n,

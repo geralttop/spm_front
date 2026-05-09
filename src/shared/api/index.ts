@@ -19,7 +19,7 @@ export { BaseApi } from "./base-api";
 export type { RegisterRequest, LoginRequest, VerifyCodeRequest, AuthResponse, ProfileResponse, UpdateProfileRequest, SearchUserResult, ForgotPasswordRequest, ResetPasswordRequest, BioHistoryEntry, } from "./auth";
 export type { Point, PointPhoto, PointHistoryEntry, PointHistoryPhoto, CreatePointRequest, UpdatePointRequest, Category, CreateCategoryRequest, UpdateCategoryRequest, Container, ContainerForMapResponse, CreateContainerRequest, UpdateContainerRequest, UploadPointPhotosPayload, } from "./points";
 export type { SubscriptionUser, SubscriptionStats } from "./subscriptions";
-export type { FavoritePoint, FavoriteCheckResponse } from "./favorites";
+export type { FavoritePoint, FavoriteCheckResponse, FavoritePointIdsResponse } from "./favorites";
 export type { FeedResponse } from "./feed";
 export type { Comment, CreateCommentDto, UpdateCommentDto } from "./comments";
 export type { MyStatsResponse } from "./stats";

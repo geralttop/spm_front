@@ -4,3 +4,4 @@ export { ProfileForm } from './ui/ProfileForm';
 export { ProfilePoints } from './ui/ProfilePoints';
 export { AvatarUpload } from './ui/AvatarUpload';
 export { BioHistoryTimeline } from './ui/BioHistoryTimeline';
+export { ProfileStickyIdentityObserver } from './ui/ProfileStickyIdentityObserver';

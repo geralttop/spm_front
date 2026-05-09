@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { categoriesApi, containersApi } from '@/shared/api';
 import { filterManageCategoryList, filterManageContainerList } from '@/features/manage/lib/system-default-entities';
 import { useAuthStore, useManageStore } from '@/shared/lib/store';
-import { ManagePoints, ManageCategories, ManageContainers, ManageComments, ManageStats } from '@/features/manage';
-import { MapPin, Tag, Package, MessageSquare, BarChart3 } from 'lucide-react';
+import { ManagePoints, ManageCategories, ManageContainers, ManageFavorites, ManageComments, ManageStats } from '@/features/manage';
+import { MapPin, Tag, Package, Heart, MessageSquare, BarChart3 } from 'lucide-react';
 import { Loading } from '@/shared/ui';
 export default function ManagePage() {
     const { t } = useTranslation();
@@ -23,7 +23,7 @@ export default function ManagePage() {
         const tab = searchParams?.get('tab');
         if (!tab)
             return;
-        if (tab === 'points' || tab === 'categories' || tab === 'containers' || tab === 'comments' || tab === 'stats') {
+        if (tab === 'points' || tab === 'categories' || tab === 'containers' || tab === 'favorites' || tab === 'comments' || tab === 'stats') {
             setActiveTab(tab);
         }
     }, [searchParams, setActiveTab]);
@@ -51,7 +51,7 @@ export default function ManagePage() {
     if (!accessToken) {
         return <Loading />;
     }
-    const setTab = (tab: 'points' | 'categories' | 'containers' | 'comments' | 'stats') => {
+    const setTab = (tab: 'points' | 'categories' | 'containers' | 'favorites' | 'comments' | 'stats') => {
         setActiveTab(tab);
         const params = new URLSearchParams(searchParams?.toString());
         params.set('tab', tab);
@@ -81,6 +81,12 @@ export default function ManagePage() {
             <Package className="h-4 w-4 sm:h-5 sm:w-5"/>
             <span className="hidden xs:inline">{t('manage.containers')}</span> ({filterManageContainerList(containers).length})
           </button>
+          <button onClick={() => setTab('favorites')} className={`flex items-center gap-1.5 whitespace-nowrap px-3 sm:px-4 py-2 text-sm sm:text-base font-medium transition-colors shrink-0 ${activeTab === 'favorites'
+            ? 'text-primary border-b-2 border-primary'
+            : 'text-text-muted hover:text-text-main'}`}>
+            <Heart className="h-4 w-4 sm:h-5 sm:w-5"/>
+            <span className="hidden xs:inline">{t('sidebar.favorites')}</span>
+          </button>
           <button onClick={() => setTab('comments')} className={`flex items-center gap-1.5 whitespace-nowrap px-3 sm:px-4 py-2 text-sm sm:text-base font-medium transition-colors shrink-0 ${activeTab === 'comments'
             ? 'text-primary border-b-2 border-primary'
             : 'text-text-muted hover:text-text-main'}`}>
@@ -100,6 +106,7 @@ export default function ManagePage() {
           {activeTab === 'points' && <ManagePoints />}
           {activeTab === 'categories' && <ManageCategories />}
           {activeTab === 'containers' && <ManageContainers />}
+          {activeTab === 'favorites' && <ManageFavorites />}
           {activeTab === 'comments' && <ManageComments />}
           {activeTab === 'stats' && <ManageStats />}
         </div>

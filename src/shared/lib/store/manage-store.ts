@@ -1,7 +1,7 @@
 "use client";
 import { create } from "zustand";
 import type { Point, Category, Container } from "@/shared/api";
-type ManageTab = 'points' | 'categories' | 'containers' | 'comments' | 'stats';
+type ManageTab = 'points' | 'categories' | 'containers' | 'favorites' | 'comments' | 'stats';
 interface ManageState {
     activeTab: ManageTab;
     setActiveTab: (tab: ManageTab) => void;

@@ -8,7 +8,7 @@ import { useTranslation, useMapSettingsQuery, useTheme } from "@/shared/lib/hook
 import { COLOR_PALETTE_IDS, COLOR_PALETTE_PREVIEWS, type ColorPaletteId, } from "@/shared/config/theme";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
-import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette, HelpCircle } from "lucide-react";
+import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, User, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette, HelpCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 type MapStyleQualityLevel = "good" | "medium" | "poor";
 
@@ -45,7 +45,6 @@ const QUALITY_ARIA_KEY: Record<MapStyleQualityLevel, "badgeGood" | "badgeMedium"
 const MENU_ICONS = {
     feed: Rss,
     map: Map,
-    favorites: Heart,
     profile: User,
     chats: MessagesSquare,
     search: Search,
@@ -58,7 +57,6 @@ const getMenuLabel = (itemId: string, t: any): string => {
     const labelMap: Record<string, string> = {
         feed: t("sidebar.feed"),
         map: t("sidebar.map"),
-        favorites: t("sidebar.favorites"),
         profile: t("sidebar.profile"),
         chats: t("sidebar.chats"),
         search: t("sidebar.search"),

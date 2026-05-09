@@ -1,31 +1,37 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { favoritesApi } from "@/shared/api";
+import { useAuthStore } from "@/shared/lib/store";
+
 export function useFavoritesQuery() {
     return useQuery({
         queryKey: ["favorites"],
         queryFn: () => favoritesApi.getAll(),
     });
 }
-export function useFavoriteCheck(pointId: string) {
+
+export function useFavoritePointIdsQuery() {
+    const accessToken = useAuthStore((state) => state.accessToken);
     return useQuery({
-        queryKey: ["favorite", pointId],
-        queryFn: () => favoritesApi.check(pointId),
-        staleTime: 30000,
+        queryKey: ["favorite-point-ids"],
+        queryFn: () => favoritesApi.getPointIds(),
+        enabled: Boolean(accessToken),
+        staleTime: 60 * 1000,
     });
 }
+
 export function useFavoriteMutation() {
     const queryClient = useQueryClient();
+    const invalidateFavorites = () => {
+        queryClient.invalidateQueries({ queryKey: ["favorites"] });
+        queryClient.invalidateQueries({ queryKey: ["favorite-point-ids"] });
+    };
     const addMutation = useMutation({
         mutationFn: (pointId: string) => favoritesApi.add(pointId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["favorites"] });
-        },
+        onSuccess: invalidateFavorites,
     });
     const removeMutation = useMutation({
         mutationFn: (pointId: string) => favoritesApi.remove(pointId),
-        onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["favorites"] });
-        },
+        onSuccess: invalidateFavorites,
     });
     return {
         add: addMutation.mutate,
