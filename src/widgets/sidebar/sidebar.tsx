@@ -3,7 +3,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useAuthStore, useSidebarStore } from "@/shared/lib/store";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useChatUnreadCountQuery } from "@/shared/lib/hooks/queries/use-chats-queries";
-import { User, Search, Settings, MapPin, Rss, Heart, MessageSquare, MessagesSquare, X, Map, FolderKanban } from "lucide-react";
+import { User, Search, Settings, MapPin, Rss, Heart, MessagesSquare, X, Map, FolderKanban } from "lucide-react";
 import { useEffect, useState, useMemo } from "react";
 interface MenuItem {
     icon: any;
@@ -58,13 +58,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 label: t("sidebar.profile"),
                 path: "/profile",
                 active: pathname === "/profile"
-            },
-            {
-                id: "my-comments",
-                icon: MessageSquare,
-                label: t("sidebar.myComments"),
-                path: "/my-comments",
-                active: pathname === "/my-comments"
             },
             {
                 id: "chats",
@@ -171,7 +164,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       </aside>
 
       
-      <aside className={`lg:hidden fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-[60] flex flex-col transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`lg:hidden fixed left-0 top-0 h-full w-64 bg-card border-r border-border z-60 flex flex-col transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div>

@@ -15,13 +15,13 @@ const DEFAULT_ORDER = [
     "map",
     "favorites",
     "profile",
-    "my-comments",
     "chats",
     "search",
     "create-point",
     "manage",
     "settings",
 ];
+const REMOVED_ITEMS = new Set<string>(["my-comments"]);
 export const useSidebarStore = create<SidebarState>((set, get) => ({
     sidebarOrder: DEFAULT_ORDER,
     isLoading: false,
@@ -39,7 +39,7 @@ export const useSidebarStore = create<SidebarState>((set, get) => ({
                 sidebarOrderData = profile.sidebarOrder;
             }
             if (sidebarOrderData && Array.isArray(sidebarOrderData) && sidebarOrderData.length > 0) {
-                let order = [...sidebarOrderData];
+                let order = sidebarOrderData.filter((item) => !REMOVED_ITEMS.has(item));
                 const newItems = DEFAULT_ORDER.filter(item => !order.includes(item));
                 order = [...order, ...newItems];
                 set({ sidebarOrder: order, isInitialized: true });

@@ -50,7 +50,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
         <div className="flex-1 min-w-0 w-full sm:w-auto">
           <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
             <span className="truncate">{profile.username || t("profile.title")}</span>
-            <UserBadges role={profile.role} createdPointsCount={profile.createdPointsCount} className="shrink-0"/>
+            <UserBadges role={profile.role} createdPointsCount={profile.createdPointsCount} isVerified={profile.isVerified} className="shrink-0"/>
           </h1>
           <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-text-muted truncate break-all">{profile.email}</p>
         </div>
@@ -73,26 +73,24 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
             <AvatarUpload currentAvatar={profile.avatar} onAvatarChange={onAvatarChange}/>
           </div>)}
         
-        <div>
-          <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
-            <User className="h-4 w-4"/>
-            {t('profile.profileForm.username')}
-          </label>
-          {isEditing ? (<>
+        {isEditing ? (<>
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
+                <User className="h-4 w-4"/>
+                {t('profile.profileForm.username')}
+              </label>
               <Input type="text" value={values.username} onChange={(e) => handleChange('username', e.target.value)} placeholder={t('profile.profileForm.usernamePlaceholder')} maxLength={30} minLength={3} className="text-base touch-target"/>
               {errors.username && (<p className="mt-1 text-sm text-destructive">{errors.username}</p>)}
-            </>) : (<p className="text-text-main font-medium hyphens-auto">
-              {profile.username || '-'}
-            </p>)}
-        </div>
+            </div>
 
-        <div>
-          <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
-            <Mail className="h-4 w-4"/>
-            {t('profile.email')}
-          </label>
-          <p className="text-text-main font-medium break-all">{profile.email}</p>
-        </div>
+            <div>
+              <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
+                <Mail className="h-4 w-4"/>
+                {t('profile.email')}
+              </label>
+              <p className="text-text-main font-medium break-all">{profile.email}</p>
+            </div>
+          </>) : null}
         
         <div>
           <label className="mb-2 block text-sm font-medium text-text-muted">

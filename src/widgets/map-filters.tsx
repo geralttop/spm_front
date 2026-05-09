@@ -164,6 +164,7 @@ export function MapFiltersComponent({
                               <UserBadges
                                 role={author.role}
                                 createdPointsCount={author.createdPointsCount}
+                                isVerified={author.isVerified}
                                 className="shrink-0"
                               />
                             </span>

@@ -22,6 +22,7 @@ export interface ProfileResponse {
     userId: string;
     email: string;
     role: string;
+    isVerified?: boolean;
     username?: string;
     bio?: string;
     avatar?: string;
@@ -48,6 +49,7 @@ export interface SearchUserResult {
     avatar?: string;
     role?: string;
     createdPointsCount?: number;
+    isVerified?: boolean;
 }
 export interface BioHistoryEntry {
     id: number;

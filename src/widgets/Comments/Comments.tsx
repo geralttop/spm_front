@@ -140,7 +140,7 @@ export function Comments({ pointId }: CommentsProps) {
                     <Link href={userProfilePath(comment.author.username)} className={`${styles.username} ${styles.profileLink}`}>
                       <span className="inline-flex items-center gap-1">
                         @{comment.author.username}
-                        <UserBadges role={comment.author.role} createdPointsCount={comment.author.createdPointsCount} className="shrink-0"/>
+                        <UserBadges role={comment.author.role} createdPointsCount={comment.author.createdPointsCount} isVerified={comment.author.isVerified} className="shrink-0"/>
                       </span>
                     </Link>
                     <span className={styles.metaSep} aria-hidden>

@@ -9,6 +9,7 @@ export interface AuthorData {
   lastName: string;
   role?: string;
   createdPointsCount?: number;
+  isVerified?: boolean;
   categories: Array<{ id: number; name: string; color: string }>;
   containers: Array<{ id: string; title: string }>;
 }
@@ -37,6 +38,7 @@ export function useAuthorsFromPoints(
           lastName: point.author.lastName,
           role: point.author.role,
           createdPointsCount: point.author.createdPointsCount,
+          isVerified: (point.author as any).isVerified,
           categories: [],
           containers: [],
         });

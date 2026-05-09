@@ -64,6 +64,7 @@
     "clear": "Effacer la recherche"
   },
   "badges": {
+    "verified": "Utilisateur vérifié",
     "admin": "Administrateur",
     "milestone5": "Au moins 5 points créés",
     "milestone10": "Au moins 10 points créés",
@@ -319,6 +320,16 @@
     "title": "Gestion des données",
     "categories": "Catégories",
     "containers": "Conteneurs",
+    "comments": "Commentaires",
+    "stats": "Statistiques",
+    "statsHint": "Résumé de votre activité",
+    "statsCards": {
+      "pointsCreated": "Points créés",
+      "commentsCreated": "Commentaires écrits",
+      "favoritesCount": "Dans les favoris",
+      "categoriesCreated": "Catégories créées",
+      "containersCreated": "Conteneurs créés"
+    },
     "categoryForm": {
       "edit": "Modifier la catégorie",
       "new": "Nouvelle catégorie",

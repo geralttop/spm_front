@@ -64,6 +64,7 @@
     "clear": "Очистить поле"
   },
   "badges": {
+    "verified": "Верифицированный пользователь",
     "admin": "Администратор",
     "milestone5": "Не менее 5 созданных точек",
     "milestone10": "Не менее 10 созданных точек",
@@ -319,6 +320,31 @@
     "title": "Управление данными",
     "categories": "Категории",
     "containers": "Контейнеры",
+    "comments": "Комментарии",
+    "stats": "Статистика",
+    "statsHint": "Сводные показатели вашей активности",
+    "statsCards": {
+      "pointsCreated": "Создано точек",
+      "commentsCreated": "Написано комментариев",
+      "favoritesCount": "В избранном",
+      "categoriesCreated": "Создано категорий",
+      "containersCreated": "Создано контейнеров"
+    },
+    "verification": {
+      "title": "Верификация",
+      "verified": "У вас есть галочка верификации",
+      "notVerified": "У вас нет галочки верификации",
+      "pending": "Заявка на рассмотрении",
+      "rejected": "Заявка отклонена",
+      "approved": "Заявка одобрена",
+      "reasonLabel": "Причина",
+      "linksLabel": "Ссылки (необязательно)",
+      "linksPlaceholder": "Ссылки через запятую",
+      "submit": "Подать заявку",
+      "update": "Обновить заявку",
+      "revoke": "Отозвать заявку",
+      "loading": "Загрузка…"
+    },
     "categoryForm": {
       "edit": "Редактировать категорию",
       "new": "Новая категория",
@@ -423,7 +449,8 @@
       "points": "Точки",
       "categories": "Категории",
       "containers": "Контейнеры",
-      "reports": "Жалобы"
+      "reports": "Жалобы",
+      "verificationRequests": "Верификация"
     },
     "users": {
       "id": "ID",
@@ -431,11 +458,27 @@
       "email": "Email",
       "role": "Роль",
       "emailVerified": "Email подтвержден",
+      "verified": "Верификация",
       "createdAt": "Дата создания",
       "roleUser": "Пользователь",
       "roleAdmin": "Администратор",
       "bio": "Биография",
       "updatedAt": "Дата обновления"
+    },
+    "verificationRequests": {
+      "id": "ID",
+      "status": "Статус",
+      "userId": "Пользователь",
+      "adminId": "Админ",
+      "reason": "Причина",
+      "links": "Ссылки",
+      "adminNote": "Комментарий админа",
+      "createdAt": "Создано",
+      "decidedAt": "Решение",
+      "approve": "Одобрить",
+      "reject": "Отклонить",
+      "rejectPrompt": "Причина отклонения (необязательно):",
+      "actionError": "Ошибка действия"
     },
     "points": {
       "id": "ID",

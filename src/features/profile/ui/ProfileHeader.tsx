@@ -10,10 +10,11 @@ interface ProfileHeaderProps {
     avatar?: string;
     role?: string;
     createdPointsCount?: number;
+    isVerified?: boolean;
     isEditing: boolean;
     onEdit: () => void;
 }
-export function ProfileHeader({ username, email, avatar, role, createdPointsCount, isEditing, onEdit }: ProfileHeaderProps) {
+export function ProfileHeader({ username, email, avatar, role, createdPointsCount, isVerified, isEditing, onEdit }: ProfileHeaderProps) {
     const { t } = useTranslation();
     const avatarUrl = avatar
         ? `${process.env.NEXT_PUBLIC_API_URL}${avatar}`
@@ -33,7 +34,7 @@ export function ProfileHeader({ username, email, avatar, role, createdPointsCoun
         <div className="flex-1 min-w-0">
           <h1 className="flex min-w-0 items-center gap-2 truncate text-2xl font-bold text-text-main sm:text-3xl">
             <span className="truncate">{username}</span>
-            <UserBadges role={role} createdPointsCount={createdPointsCount} className="shrink-0"/>
+            <UserBadges role={role} createdPointsCount={createdPointsCount} isVerified={isVerified} className="shrink-0"/>
           </h1>
           <p className="mt-1 text-sm text-text-muted truncate">{email}</p>
         </div>

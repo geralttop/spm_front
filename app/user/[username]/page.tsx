@@ -149,7 +149,7 @@ export default function UserProfilePage() {
               <div className="min-w-0 w-full flex-1 sm:w-auto">
                 <h1 className="flex min-w-0 items-center gap-2 truncate text-xl font-bold text-text-main sm:text-3xl">
                   <span className="truncate">{user?.username || "User"}</span>
-                  {user ? (<UserBadges role={user.role} createdPointsCount={user.createdPointsCount} className="shrink-0"/>) : null}
+                  {user ? (<UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>) : null}
                 </h1>
                 <p className="mt-0.5 truncate text-xs text-text-muted break-all sm:mt-1 sm:text-sm">
                   {user?.email}
@@ -169,25 +169,6 @@ export default function UserProfilePage() {
             </div>
 
             <div className="space-y-4">
-              <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
-                  <User className="h-4 w-4 shrink-0"/>
-                  {t("profile.username")}
-                </label>
-                <p className="flex flex-wrap items-center gap-1.5 hyphens-auto font-medium text-text-main">
-                  <span>{user?.username || "-"}</span>
-                  {user ? (<UserBadges role={user.role} createdPointsCount={user.createdPointsCount} className="shrink-0"/>) : null}
-                </p>
-              </div>
-
-              <div>
-                <label className="mb-2 flex items-center gap-2 text-sm font-medium text-text-muted">
-                  <Mail className="h-4 w-4 shrink-0"/>
-                  {t("profile.email")}
-                </label>
-                <p className="break-all font-medium text-text-main">{user?.email}</p>
-              </div>
-
               <div>
                 <label className="mb-2 block text-sm font-medium text-text-muted">{t("profile.bio")}</label>
                 <p className="hyphens-auto whitespace-pre-wrap text-text-main">{user?.bio || "-"}</p>

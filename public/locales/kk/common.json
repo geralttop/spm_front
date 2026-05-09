@@ -64,6 +64,7 @@
     "clear": "Өрісті тазалау"
   },
   "badges": {
+    "verified": "Расталған пайдаланушы",
     "admin": "Әкімші",
     "milestone5": "Кемінде 5 нүкте жасалған",
     "milestone10": "Кемінде 10 нүкте жасалған",
@@ -302,6 +303,16 @@
     "title": "Деректерді басқару",
     "categories": "Санаттар",
     "containers": "Контейнерлер",
+    "comments": "Пікірлер",
+    "stats": "Статистика",
+    "statsHint": "Сіздің белсенділігіңіздің жиынтық көрсеткіштері",
+    "statsCards": {
+      "pointsCreated": "Құрылған нүктелер",
+      "commentsCreated": "Жазылған пікірлер",
+      "favoritesCount": "Таңдаулыларда",
+      "categoriesCreated": "Құрылған санаттар",
+      "containersCreated": "Құрылған контейнерлер"
+    },
     "categoryForm": {
       "edit": "Санатты өңдеу",
       "new": "Жаңа санат",

@@ -7,6 +7,7 @@ export interface SubscriptionUser {
     avatar?: string | null;
     role?: string;
     createdPointsCount?: number;
+    isVerified?: boolean;
 }
 export interface SubscriptionStats {
     followersCount: number;

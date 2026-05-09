@@ -33,7 +33,7 @@ export function UserCard({ user, onClick, actionButton, showReportButton = true 
         <div className="min-w-0 flex-1">
           <h3 className="flex min-w-0 items-center gap-1.5 truncate font-semibold text-text-main">
             <span className="truncate">{user.username}</span>
-            <UserBadges role={user.role} createdPointsCount={user.createdPointsCount} className="shrink-0"/>
+            <UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>
           </h3>
           <p className="truncate text-sm text-text-muted">{user.email}</p>
           {user.bio && (<p className="mt-1 line-clamp-2 text-xs text-text-muted">{user.bio}</p>)}

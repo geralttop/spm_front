@@ -64,6 +64,7 @@
     "clear": "Clear search"
   },
   "badges": {
+    "verified": "Verified user",
     "admin": "Administrator",
     "milestone5": "At least 5 points created",
     "milestone10": "At least 10 points created",
@@ -302,6 +303,16 @@
     "title": "Data Management",
     "categories": "Categories",
     "containers": "Containers",
+    "comments": "Comments",
+    "stats": "Statistics",
+    "statsHint": "Summary of your activity",
+    "statsCards": {
+      "pointsCreated": "Points created",
+      "commentsCreated": "Comments written",
+      "favoritesCount": "In favorites",
+      "categoriesCreated": "Categories created",
+      "containersCreated": "Containers created"
+    },
     "categoryForm": {
       "edit": "Edit Category",
       "new": "New Category",
@@ -406,7 +417,8 @@
       "points": "Points",
       "categories": "Categories",
       "containers": "Containers",
-      "reports": "Reports"
+      "reports": "Reports",
+      "verificationRequests": "Verification"
     },
     "users": {
       "id": "ID",
@@ -414,11 +426,27 @@
       "email": "Email",
       "role": "Role",
       "emailVerified": "Email verified",
+      "verified": "Verified",
       "createdAt": "Created at",
       "roleUser": "User",
       "roleAdmin": "Administrator",
       "bio": "Biography",
       "updatedAt": "Updated at"
+    },
+    "verificationRequests": {
+      "id": "ID",
+      "status": "Status",
+      "userId": "User",
+      "adminId": "Admin",
+      "reason": "Reason",
+      "links": "Links",
+      "adminNote": "Admin note",
+      "createdAt": "Created at",
+      "decidedAt": "Decision",
+      "approve": "Approve",
+      "reject": "Reject",
+      "rejectPrompt": "Rejection reason (optional):",
+      "actionError": "Action failed"
     },
     "points": {
       "id": "ID",

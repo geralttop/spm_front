@@ -28,6 +28,7 @@ export const UserList = () => {
         <EmailField source="email" label={t('admin.users.email')} />
         <TextField source="role" label={t('admin.users.role')} />
         <BooleanField source="isEmailVerified" label={t('admin.users.emailVerified')} />
+        <BooleanField source="isVerified" label={t('admin.users.verified')} />
         <DateField source="createdAt" label={t('admin.users.createdAt')} showTime />
         <EditButton />
         <ShowButton />
@@ -53,6 +54,7 @@ export const UserEdit = () => {
           ]}
         />
         <BooleanInput source="isEmailVerified" label={t('admin.users.emailVerified')} />
+        <BooleanInput source="isVerified" label={t('admin.users.verified')} />
         <TextInput source="bio" label={t('admin.users.bio')} multiline />
       </SimpleForm>
     </Edit>
@@ -69,6 +71,7 @@ export const UserShow = () => {
         <EmailField source="email" label={t('admin.users.email')} />
         <TextField source="role" label={t('admin.users.role')} />
         <BooleanField source="isEmailVerified" label={t('admin.users.emailVerified')} />
+        <BooleanField source="isVerified" label={t('admin.users.verified')} />
         <TextField source="bio" label={t('admin.users.bio')} />
         <DateField source="createdAt" label={t('admin.users.createdAt')} showTime />
         <DateField source="updatedAt" label={t('admin.users.updatedAt')} showTime />

@@ -63,7 +63,7 @@ export function UserListModal({ isOpen, onClose, title, users, loading, emptyMes
                   </span>
                   <span className="flex min-w-0 items-center gap-1 truncate font-medium text-text-main">
                     {user.username}
-                    <UserBadges role={user.role} createdPointsCount={user.createdPointsCount} className="shrink-0"/>
+                    <UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>
                   </span>
                 </button>
 

@@ -64,6 +64,7 @@
     "clear": "Ačyscicь polie"
   },
   "badges": {
+    "verified": "Veryfikavany karystaĺnik",
     "admin": "Administratar",
     "milestone5": "Nie mienš za 5 stvoranyx kropak",
     "milestone10": "Nie mienš za 10 stvoranyx kropak",
@@ -319,6 +320,16 @@
     "title": "Kiravańnie danymi",
     "categories": "Katehoryi",
     "containers": "Kantejniery",
+    "comments": "Kamentary",
+    "stats": "Statystyka",
+    "statsHint": "Zvodnyja pakazčyki tvajoj aktyŭnaści",
+    "statsCards": {
+      "pointsCreated": "Stvorana kropak",
+      "commentsCreated": "Napisana kamentaroŭ",
+      "favoritesCount": "U abranым",
+      "categoriesCreated": "Stvorana katehoryj",
+      "containersCreated": "Stvorana kantejnieraŭ"
+    },
     "categoryForm": {
       "edit": "Redahavać katehoryju",
       "new": "Novaja katehoryja",

@@ -8,7 +8,7 @@ import { useTranslation, useMapSettingsQuery, useTheme } from "@/shared/lib/hook
 import { COLOR_PALETTE_IDS, COLOR_PALETTE_PREVIEWS, type ColorPaletteId, } from "@/shared/config/theme";
 import { MAP_STYLES, type MapStyleKey } from "@/shared/config/map-styles";
 import { supportedLocales, type SupportedLocale } from "@/shared/config/i18n-constants";
-import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessageSquare, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette, HelpCircle } from "lucide-react";
+import { ArrowLeft, Map, Images, Check, RotateCcw, GripVertical, Rss, Heart, User, MessagesSquare, Search, MapPin, Settings as SettingsIcon, Languages, FolderKanban, Palette, HelpCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 type MapStyleQualityLevel = "good" | "medium" | "poor";
 
@@ -47,7 +47,6 @@ const MENU_ICONS = {
     map: Map,
     favorites: Heart,
     profile: User,
-    "my-comments": MessageSquare,
     chats: MessagesSquare,
     search: Search,
     "create-point": MapPin,
@@ -61,7 +60,6 @@ const getMenuLabel = (itemId: string, t: any): string => {
         map: t("sidebar.map"),
         favorites: t("sidebar.favorites"),
         profile: t("sidebar.profile"),
-        "my-comments": t("sidebar.myComments"),
         chats: t("sidebar.chats"),
         search: t("sidebar.search"),
         "create-point": t("sidebar.createPoint"),

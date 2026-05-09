@@ -10,6 +10,7 @@ import { PointList, PointEdit, PointShow, PointCreate } from './resources/points
 import { CategoryList, CategoryEdit, CategoryShow, CategoryCreate } from './resources/categories';
 import { ContainerList, ContainerEdit, ContainerShow, ContainerCreate } from './resources/containers';
 import { ReportList, ReportEdit, ReportShow } from './resources/reports';
+import { VerificationRequestList, VerificationRequestShow } from './resources/verification-requests';
 
 const AdminApp = () => {
   const { t } = useTranslation('common');
@@ -59,6 +60,12 @@ const AdminApp = () => {
         edit={ReportEdit} 
         show={ReportShow}
         options={{ label: t('admin.nav.reports') }}
+      />
+      <Resource
+        name="verification-requests"
+        list={VerificationRequestList}
+        show={VerificationRequestShow}
+        options={{ label: t('admin.nav.verificationRequests') }}
       />
     </Admin>
   );

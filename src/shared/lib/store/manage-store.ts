@@ -1,9 +1,10 @@
 "use client";
 import { create } from "zustand";
 import type { Point, Category, Container } from "@/shared/api";
+type ManageTab = 'points' | 'categories' | 'containers' | 'comments' | 'stats';
 interface ManageState {
-    activeTab: 'points' | 'categories' | 'containers';
-    setActiveTab: (tab: 'points' | 'categories' | 'containers') => void;
+    activeTab: ManageTab;
+    setActiveTab: (tab: ManageTab) => void;
     points: Point[];
     pointsLoading: boolean;
     draggedPoint: Point | null;
