@@ -37,7 +37,11 @@
     "kk": "Kazakh",
     "ka": "Georgian",
     "en": "English",
-    "fr": "Français"
+    "fr": "Français",
+    "pl": "Polish",
+    "lt": "Lithuanian",
+    "et": "Estonian",
+    "lv": "Latvian"
   },
   "share": {
     "title": "Share",

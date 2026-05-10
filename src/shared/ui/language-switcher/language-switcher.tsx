@@ -17,6 +17,10 @@ const LOCALE_AUTONYMS: Record<SupportedLocale, string> = {
     ka: "ქართული",
     en: "English",
     fr: "Français",
+    pl: "Polski",
+    lt: "Lietuvių",
+    et: "Eesti",
+    lv: "Latviešu",
 };
 export function LanguageSwitcher({ compact = false }: LanguageSwitcherProps) {
     const { currentLanguage, changeLanguage, t, ready } = useTranslation();

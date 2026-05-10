@@ -21,6 +21,10 @@ const LOCALE_AUTONYMS: Record<SupportedLocale, string> = {
     ka: "ქართული",
     en: "English",
     fr: "Français",
+    pl: "Polski",
+    lt: "Lietuvių",
+    et: "Eesti",
+    lv: "Latviešu",
 };
 const MAP_STYLE_QUALITY: Record<MapStyleKey, MapStyleQualityLevel> = {
     carto: "good",

@@ -37,7 +37,11 @@
     "kk": "Kazachskaja",
     "ka": "Hruzinskaja",
     "en": "English",
-    "fr": "Français"
+    "fr": "Français",
+    "pl": "Polskaja",
+    "lt": "Litovskaja",
+    "et": "Estonskaja",
+    "lv": "Latyšskaja"
   },
   "share": {
     "title": "Padzialicca",
