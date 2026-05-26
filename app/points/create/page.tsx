@@ -63,6 +63,9 @@ export default function CreatePointPage() {
     newContainerColor,
     setNewContainerColor,
     handleInputChange,
+    lngText,
+    latText,
+    handleCoordinateTextChange,
     handleMarkerDragEnd,
     handleCreateCategory,
     handleCreateContainer,
@@ -353,12 +356,11 @@ export default function CreatePointPage() {
                         {tI18n("createPoint.longitude")}
                       </label>
                       <Input
-                        type="number"
-                        step="any"
-                        value={formData.lng}
-                        onChange={(e) => handleInputChange("lng", parseFloat(e.target.value) || 0)}
+                        type="text"
+                        inputMode="decimal"
+                        value={lngText}
+                        onChange={(e) => handleCoordinateTextChange("lng", e.target.value)}
                         placeholder="27.561831"
-                        required
                         className="text-base sm:text-sm"
                       />
                       <p className="text-xs text-text-muted mt-1">
@@ -370,12 +372,11 @@ export default function CreatePointPage() {
                         {tI18n("createPoint.latitude")}
                       </label>
                       <Input
-                        type="number"
-                        step="any"
-                        value={formData.lat}
-                        onChange={(e) => handleInputChange("lat", parseFloat(e.target.value) || 0)}
+                        type="text"
+                        inputMode="decimal"
+                        value={latText}
+                        onChange={(e) => handleCoordinateTextChange("lat", e.target.value)}
                         placeholder="53.902496"
-                        required
                         className="text-base sm:text-sm"
                       />
                       <p className="text-xs text-text-muted mt-1">

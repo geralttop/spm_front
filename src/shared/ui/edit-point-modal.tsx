@@ -16,6 +16,11 @@ import { Map, MapMarker, MarkerContent, MarkerPopup, MapControls } from '@/share
 import { useSettingsStore } from '@/shared/lib/store/settings-store';
 import { MAP_STYLES, type MapStyleKey } from '@/shared/config/map-styles';
 import { useTranslation, useMapSettingsQuery, useMapStylePreference } from '@/shared/lib/hooks';
+import {
+  applyCoordinateInput,
+  formatCoordinateInput,
+  parseCoordinateInput,
+} from '@/shared/lib/coordinate-input';
 
 const MAX_POINT_PHOTOS = 10;
 
@@ -51,8 +56,8 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
   const [name, setName] = useState(point.name);
   const [description, setDescription] = useState(point.description || '');
   const [address, setAddress] = useState(point.address || '');
-  const [lng, setLng] = useState(point.coords.coordinates[0]);
-  const [lat, setLat] = useState(point.coords.coordinates[1]);
+  const [lngText, setLngText] = useState(formatCoordinateInput(point.coords.coordinates[0]));
+  const [latText, setLatText] = useState(formatCoordinateInput(point.coords.coordinates[1]));
   const [categoryId, setCategoryId] = useState(point.category?.id || 0);
   const [containerId, setContainerId] = useState(point.container?.id || '');
   const [categories, setCategories] = useState<Category[]>([]);
@@ -72,8 +77,8 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
       setName(point.name);
       setDescription(point.description || '');
       setAddress(point.address || '');
-      setLng(point.coords.coordinates[0]);
-      setLat(point.coords.coordinates[1]);
+      setLngText(formatCoordinateInput(point.coords.coordinates[0]));
+      setLatText(formatCoordinateInput(point.coords.coordinates[1]));
       setCategoryId(point.category?.id || 0);
       setContainerId(point.container?.id || '');
       setMarkerPosition({
@@ -113,18 +118,24 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
 
   const handleMarkerDragEnd = (lngLat: { lng: number; lat: number }) => {
     setMarkerPosition(lngLat);
-    setLng(lngLat.lng);
-    setLat(lngLat.lat);
+    setLngText(formatCoordinateInput(lngLat.lng));
+    setLatText(formatCoordinateInput(lngLat.lat));
   };
 
-  const handleLngChange = (value: number) => {
-    setLng(value);
-    setMarkerPosition((prev) => ({ ...prev, lng: value }));
-  };
-
-  const handleLatChange = (value: number) => {
-    setLat(value);
-    setMarkerPosition((prev) => ({ ...prev, lat: value }));
+  const handleCoordinateTextChange = (field: 'lng' | 'lat', raw: string) => {
+    const next = applyCoordinateInput(raw);
+    if (next === null) {
+      return;
+    }
+    if (field === 'lng') {
+      setLngText(next);
+    } else {
+      setLatText(next);
+    }
+    const parsed = parseCoordinateInput(next);
+    if (parsed !== null) {
+      setMarkerPosition((prev) => ({ ...prev, [field]: parsed }));
+    }
   };
 
   const handlePhotoFilesChosen = (files: File[]) => {
@@ -177,6 +188,14 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
     e.preventDefault();
     setError('');
     setLoading(true);
+
+    const lng = parseCoordinateInput(lngText);
+    const lat = parseCoordinateInput(latText);
+    if (lng === null || lat === null) {
+      setError(t('editPoint.errorUpdating'));
+      setLoading(false);
+      return;
+    }
 
     try {
       await pointsApi.update(point.id, {
@@ -365,12 +384,11 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
                 {t('editPoint.longitude')} <span className="text-destructive">{t('editPoint.required')}</span>
               </label>
               <input
-                type="number"
-                step="any"
-                value={lng}
-                onChange={(e) => handleLngChange(parseFloat(e.target.value) || 0)}
+                type="text"
+                inputMode="decimal"
+                value={lngText}
+                onChange={(e) => handleCoordinateTextChange('lng', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
-                required
                 disabled={loading}
               />
             </div>
@@ -380,12 +398,11 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
                 {t('editPoint.latitude')} <span className="text-destructive">{t('editPoint.required')}</span>
               </label>
               <input
-                type="number"
-                step="any"
-                value={lat}
-                onChange={(e) => handleLatChange(parseFloat(e.target.value) || 0)}
+                type="text"
+                inputMode="decimal"
+                value={latText}
+                onChange={(e) => handleCoordinateTextChange('lat', e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
-                required
                 disabled={loading}
               />
             </div>

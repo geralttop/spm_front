@@ -9,6 +9,11 @@ import { useMapSettingsQuery, useMapStylePreference } from "@/shared/lib/hooks";
 import { useCategoriesQuery, useContainersQuery, useCreatePointMutation, useCreateCategoryMutation, useCreateContainerMutation, useUploadPointPhotosMutation, } from "@/shared/lib/hooks/queries";
 import { POINT_CROP_OUTPUT_HEIGHT, POINT_CROP_OUTPUT_WIDTH, } from "@/shared/lib/point-media-aspect";
 import { usePointPhotoCropQueue } from "@/shared/lib/hooks/use-point-photo-crop-queue";
+import {
+    applyCoordinateInput,
+    formatCoordinateInput,
+    parseCoordinateInput,
+} from "@/shared/lib/coordinate-input";
 const MAX_POINT_PHOTOS = 10;
 export type PhotoDraft = {
     file: File;
@@ -49,6 +54,8 @@ export function useCreatePointForm() {
         lng: 27.561831,
         lat: 53.902496,
     });
+    const [lngText, setLngText] = useState("27.561831");
+    const [latText, setLatText] = useState("53.902496");
     const [geoInitDone, setGeoInitDone] = useState(false);
     const userLocation = useSharedUserLocation(geoInitDone);
     useEffect(() => {
@@ -60,6 +67,8 @@ export function useCreatePointForm() {
             if (geo) {
                 updateSharedUserCoords(geo);
                 setMarkerPosition({ lng: geo.longitude, lat: geo.latitude });
+                setLngText(formatCoordinateInput(geo.longitude));
+                setLatText(formatCoordinateInput(geo.latitude));
                 setFormData((prev) => ({
                     ...prev,
                     lng: geo.longitude,
@@ -86,11 +95,22 @@ export function useCreatePointForm() {
     }, [checkAuth, router, mapSettings, loadSettings]);
     const handleInputChange = (field: keyof CreatePointRequest, value: string | number) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
-        if (field === "lng" || field === "lat") {
-            setMarkerPosition((prev) => ({
-                ...prev,
-                [field]: typeof value === "number" ? value : parseFloat(value as string) || 0,
-            }));
+    };
+    const handleCoordinateTextChange = (field: "lng" | "lat", raw: string) => {
+        const next = applyCoordinateInput(raw);
+        if (next === null) {
+            return;
+        }
+        if (field === "lng") {
+            setLngText(next);
+        }
+        else {
+            setLatText(next);
+        }
+        const parsed = parseCoordinateInput(next);
+        if (parsed !== null) {
+            setFormData((prev) => ({ ...prev, [field]: parsed }));
+            setMarkerPosition((prev) => ({ ...prev, [field]: parsed }));
         }
     };
     const handleMarkerDragEnd = (lngLat: {
@@ -98,6 +118,8 @@ export function useCreatePointForm() {
         lat: number;
     }) => {
         setMarkerPosition(lngLat);
+        setLngText(formatCoordinateInput(lngLat.lng));
+        setLatText(formatCoordinateInput(lngLat.lat));
         setFormData((prev) => ({
             ...prev,
             lng: lngLat.lng,
@@ -177,8 +199,14 @@ export function useCreatePointForm() {
         e.preventDefault();
         if (!formData.name.trim() || !formData.containerId || !formData.categoryId)
             return;
+        const lng = parseCoordinateInput(lngText);
+        const lat = parseCoordinateInput(latText);
+        if (lng === null || lat === null)
+            return;
         const payload: CreatePointRequest = {
             ...formData,
+            lng,
+            lat,
             description: formData.description?.trim() || undefined,
             address: formData.address?.trim() || undefined,
         };
@@ -249,6 +277,9 @@ export function useCreatePointForm() {
         newContainerColor,
         setNewContainerColor,
         handleInputChange,
+        lngText,
+        latText,
+        handleCoordinateTextChange,
         handleMarkerDragEnd,
         handleCreateCategory,
         handleCreateContainer,
