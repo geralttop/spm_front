@@ -619,11 +619,14 @@
     "photosHint": "Міндетті емес. Әр сурет 4:3 форматына қиылады.",
     "pickPhotos": "Фотосуреттерді таңдау",
     "photosCount": "{{current}} / {{max}} фото",
-    "removePhoto": "Фотоны жою"
+    "removePhoto": "Фотоны жою",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Картаны көрсету",
-    "showPhotos": "Фотоларды көрсету"
+    "showPhotos": "Фотоларды көрсету",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Фотоны қию (4:3)",
@@ -750,7 +753,9 @@
     "deletePhoto": "Фотоны жою",
     "errorPhotosUpload": "Фотоларды жүктеу мүмкін болмады",
     "errorPhotoDelete": "Фотоны жою мүмкін болмады",
-    "addToHistoryLabel": "Сақтағанда тарих жазбасын қосу"
+    "addToHistoryLabel": "Сақтағанда тарих жазбасын қосу",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

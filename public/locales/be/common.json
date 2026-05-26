@@ -636,11 +636,14 @@
     "photosHint": "Неабавязкова. Кожнае фота абрэзаецца да фармату 4:3 (як карта ў картцы).",
     "pickPhotos": "Абраць фота",
     "photosCount": "{{current}} / {{max}} фота",
-    "removePhoto": "Выдаліць фота"
+    "removePhoto": "Выдаліць фота",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Паказаць карту",
-    "showPhotos": "Паказаць фота"
+    "showPhotos": "Паказаць фота",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Абрэзка фота (4:3)",
@@ -750,7 +753,9 @@
     "deletePhoto": "Выдаліць фота",
     "errorPhotosUpload": "Не ўдалося загрузіць фота",
     "errorPhotoDelete": "Не ўдалося выдаліць фота",
-    "addToHistoryLabel": "Дадаць запіс у гісторыю кропкі пры захаванні"
+    "addToHistoryLabel": "Дадаць запіс у гісторыю кропкі пры захаванні",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

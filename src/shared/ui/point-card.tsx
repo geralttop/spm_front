@@ -6,7 +6,7 @@ import { useAuthStore } from "@/shared/lib/store";
 import type { Point } from "@/shared/api";
 import { formatRelativeDate } from "@/shared/lib/utils";
 import { Comments } from "@/entities/comment";
-import { ReportModal, EditPointModal, PointHistoryTimeline, } from "@/shared/ui";
+import { ReportModal, EditPointModal, PointHistoryTimeline, PointAddressHint, } from "@/shared/ui";
 import { useTranslation, useProfileQuery } from "@/shared/lib/hooks";
 import { useFavoriteStatus } from "@/shared/lib/hooks/use-favorite-status";
 import { PointCardMedia } from "@/shared/ui/point-card-media";
@@ -125,18 +125,15 @@ export const PointCard = React.memo(function PointCard({ point, showAuthor = tru
         </div>)}
 
       <div className="mb-3 sm:mb-4">
-        <h3 className="text-sm sm:text-lg font-semibold text-text-main mb-1.5 sm:mb-2 break-words">
-          {point.name}
-        </h3>
-        {point.description && (<p className="text-xs sm:text-base text-text-main mb-2 sm:mb-3 break-words line-clamp-3 sm:line-clamp-none">
+        <div className="mb-1.5 flex items-start justify-between gap-2 sm:mb-2">
+          <h3 className="min-w-0 flex-1 text-sm font-semibold text-text-main break-words sm:text-lg">
+            {point.name}
+          </h3>
+          <PointAddressHint address={point.address} />
+        </div>
+        {point.description && (<p className="text-xs sm:text-base text-text-main break-words line-clamp-3 sm:line-clamp-none">
             {point.description}
           </p>)}
-        {point.address && (<div className="flex items-start gap-2 text-xs sm:text-sm text-text-muted mb-2 sm:mb-3">
-            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0 mt-0.5"/>
-            <span className="break-words line-clamp-2 sm:line-clamp-none">
-              {point.address}
-            </span>
-          </div>)}
       </div>
 
       <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">

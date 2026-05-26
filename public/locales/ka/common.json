@@ -619,11 +619,14 @@
     "photosHint": "არასავალდებულო. თითოეული სურათი იჭრება 4:3-ზე.",
     "pickPhotos": "ფოტოების არჩევა",
     "photosCount": "{{current}} / {{max}} ფოტო",
-    "removePhoto": "ფოტოს წაშლა"
+    "removePhoto": "ფოტოს წაშლა",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "რუკის ჩვენება",
-    "showPhotos": "ფოტოების ჩვენება"
+    "showPhotos": "ფოტოების ჩვენება",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "ფოტოს მოჭრა (4:3)",
@@ -750,7 +753,9 @@
     "deletePhoto": "ფოტოს წაშლა",
     "errorPhotosUpload": "ფოტოების ატვირთვა ვერ მოხერხდა",
     "errorPhotoDelete": "ფოტოს წაშლა ვერ მოხერხდა",
-    "addToHistoryLabel": "შენახვისას ისტორიის ჩანაწერის დამატება"
+    "addToHistoryLabel": "შენახვისას ისტორიის ჩანაწერის დამატება",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

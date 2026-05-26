@@ -636,11 +636,14 @@
     "photosHint": "Neobligāti. Katrs attēls tiek apgriezts proporcijā 4:3 (kā karte kartītē).",
     "pickPhotos": "Izvēlēties fotogrāfijas",
     "photosCount": "{{current}} / {{max}} fotogrāfijas",
-    "removePhoto": "Noņemt fotogrāfiju"
+    "removePhoto": "Noņemt fotogrāfiju",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Rādīt karti",
-    "showPhotos": "Rādīt fotogrāfijas"
+    "showPhotos": "Rādīt fotogrāfijas",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Apgriezt fotogrāfiju (4:3)",
@@ -767,7 +770,9 @@
     "deletePhoto": "Dzēst fotogrāfiju",
     "errorPhotosUpload": "Neizdevās augšupielādēt fotogrāfijas",
     "errorPhotoDelete": "Neizdevās dzēst fotogrāfiju",
-    "addToHistoryLabel": "Pievienot punkta vēstures ierakstu saglabājot"
+    "addToHistoryLabel": "Pievienot punkta vēstures ierakstu saglabājot",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

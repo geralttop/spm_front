@@ -619,11 +619,14 @@
     "photosHint": "Необов'язково. Кожне зображення обрізається до 4:3 (як карта на картці).",
     "pickPhotos": "Обрати фото",
     "photosCount": "{{current}} / {{max}} фото",
-    "removePhoto": "Прибрати фото"
+    "removePhoto": "Прибрати фото",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Показати карту",
-    "showPhotos": "Показати фото"
+    "showPhotos": "Показати фото",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Обрізати фото (4:3)",
@@ -750,7 +753,9 @@
     "deletePhoto": "Видалити фото",
     "errorPhotosUpload": "Не вдалося завантажити фото",
     "errorPhotoDelete": "Не вдалося видалити фото",
-    "addToHistoryLabel": "Додати запис історії точки при збереженні"
+    "addToHistoryLabel": "Додати запис історії точки при збереженні",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

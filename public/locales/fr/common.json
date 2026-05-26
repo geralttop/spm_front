@@ -636,11 +636,14 @@
     "photosHint": "Facultatif. La première image définit le format de la carte et du carrousel sur la fiche du point.",
     "pickPhotos": "Choisir des photos",
     "photosCount": "{{current}} / {{max}} photos",
-    "removePhoto": "Supprimer la photo"
+    "removePhoto": "Supprimer la photo",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Afficher la carte",
-    "showPhotos": "Afficher les photos"
+    "showPhotos": "Afficher les photos",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Recadrer la photo (4:3)",
@@ -750,7 +753,9 @@
     "deletePhoto": "Supprimer la photo",
     "errorPhotosUpload": "Échec du téléversement des photos",
     "errorPhotoDelete": "Échec de la suppression de la photo",
-    "addToHistoryLabel": "Ajouter une entrée à l'historique du point lors de l'enregistrement"
+    "addToHistoryLabel": "Ajouter une entrée à l'historique du point lors de l'enregistrement",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

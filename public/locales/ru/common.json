@@ -668,11 +668,14 @@
     "photosHint": "Необязательно. Каждое фото обрезается до формата 4:3 (как карта в карточке).",
     "pickPhotos": "Выбрать фотографии",
     "photosCount": "{{current}} / {{max}} фото",
-    "removePhoto": "Удалить фото"
+    "removePhoto": "Удалить фото",
+    "address": "Адрес",
+    "addressPlaceholder": "Улица, город (необязательно)"
   },
   "pointCard": {
     "showMap": "Показать карту",
-    "showPhotos": "Показать фотографии"
+    "showPhotos": "Показать фотографии",
+    "addressHint": "Адрес"
   },
   "pointPhoto": {
     "cropTitle": "Обрезка фото (4:3)",
@@ -782,7 +785,9 @@
     "deletePhoto": "Удалить фото",
     "errorPhotosUpload": "Не удалось загрузить фотографии",
     "errorPhotoDelete": "Не удалось удалить фото",
-    "addToHistoryLabel": "Добавить запись в историю точки при сохранении"
+    "addToHistoryLabel": "Добавить запись в историю точки при сохранении",
+    "address": "Адрес",
+    "addressPlaceholder": "Улица, город (необязательно)"
   },
   "errors": {
     "unexpected": {

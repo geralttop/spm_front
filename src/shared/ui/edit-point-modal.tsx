@@ -50,6 +50,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
 
   const [name, setName] = useState(point.name);
   const [description, setDescription] = useState(point.description || '');
+  const [address, setAddress] = useState(point.address || '');
   const [lng, setLng] = useState(point.coords.coordinates[0]);
   const [lat, setLat] = useState(point.coords.coordinates[1]);
   const [categoryId, setCategoryId] = useState(point.category?.id || 0);
@@ -68,10 +69,21 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
     if (isOpen) {
       loadData();
       setAddToHistory(false);
+      setName(point.name);
+      setDescription(point.description || '');
+      setAddress(point.address || '');
+      setLng(point.coords.coordinates[0]);
+      setLat(point.coords.coordinates[1]);
+      setCategoryId(point.category?.id || 0);
+      setContainerId(point.container?.id || '');
+      setMarkerPosition({
+        lng: point.coords.coordinates[0],
+        lat: point.coords.coordinates[1],
+      });
     } else {
       clearQueue();
     }
-  }, [isOpen, clearQueue]);
+  }, [isOpen, point, clearQueue]);
 
   useEffect(() => {
     if (isOpen && mapSettings) {
@@ -170,6 +182,7 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
       await pointsApi.update(point.id, {
         name,
         description: description || undefined,
+        address: address.trim() || null,
         lng,
         lat,
         categoryId,
@@ -495,6 +508,22 @@ export function EditPointModal({ isOpen, onClose, point, onSuccess }: EditPointM
               {t('editPoint.addToHistoryLabel')}
             </span>
           </label>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-text-main">
+              {t('editPoint.address')}
+            </label>
+            <input
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-base text-text-main focus:border-transparent focus:outline-none focus:ring-2 focus:ring-ring sm:py-2"
+              placeholder={t('editPoint.addressPlaceholder')}
+              maxLength={500}
+              disabled={loading}
+              autoComplete="street-address"
+            />
+          </div>
 
           <div className="mt-auto flex flex-col-reverse gap-2 border-t border-border pt-4 sm:flex-row sm:gap-3">
             <button

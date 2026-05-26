@@ -490,6 +490,23 @@ export default function CreatePointPage() {
               </div>
             </div>
 
+            <div className="px-1 sm:px-0">
+              <div className="rounded-lg border border-border bg-card p-2 shadow-sm sm:p-6">
+                <label className="mb-2 block text-sm font-medium text-text-muted">
+                  {tI18n("createPoint.address")}
+                </label>
+                <Input
+                  type="text"
+                  value={formData.address ?? ""}
+                  onChange={(e) => handleInputChange("address", e.target.value)}
+                  placeholder={tI18n("createPoint.addressPlaceholder")}
+                  maxLength={500}
+                  autoComplete="street-address"
+                  className="text-base sm:text-sm"
+                />
+              </div>
+            </div>
+
             <div className="flex flex-col gap-3 px-1 sm:flex-row sm:px-0">
               <Button
                 type="submit"

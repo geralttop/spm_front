@@ -636,11 +636,14 @@
     "photosHint": "Valikuline. Iga pilt kärbitakse suhtesse 4:3 (sama mis punkti kaardil).",
     "pickPhotos": "Vali fotod",
     "photosCount": "{{current}} / {{max}} fotot",
-    "removePhoto": "Eemalda foto"
+    "removePhoto": "Eemalda foto",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Näita kaarti",
-    "showPhotos": "Näita fotosid"
+    "showPhotos": "Näita fotosid",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Kärbi fotot (4:3)",
@@ -767,7 +770,9 @@
     "deletePhoto": "Kustuta foto",
     "errorPhotosUpload": "Fotode üleslaadimine ebaõnnestus",
     "errorPhotoDelete": "Foto kustutamine ebaõnnestus",
-    "addToHistoryLabel": "Lisa punkti ajalookirje salvestamisel"
+    "addToHistoryLabel": "Lisa punkti ajalookirje salvestamisel",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

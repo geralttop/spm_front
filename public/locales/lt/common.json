@@ -636,11 +636,14 @@
     "photosHint": "Neprivaloma. Kiekvienas vaizdas apkarpomas iki 4:3 (kaip žemėlapis kortelėje).",
     "pickPhotos": "Pasirinkti nuotraukas",
     "photosCount": "{{current}} / {{max}} nuotraukų",
-    "removePhoto": "Pašalinti nuotrauką"
+    "removePhoto": "Pašalinti nuotrauką",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Rodyti žemėlapį",
-    "showPhotos": "Rodyti nuotraukas"
+    "showPhotos": "Rodyti nuotraukas",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Apkirpti nuotrauką (4:3)",
@@ -767,7 +770,9 @@
     "deletePhoto": "Ištrinti nuotrauką",
     "errorPhotosUpload": "Nepavyko įkelti nuotraukų",
     "errorPhotoDelete": "Nepavyko ištrinti nuotraukos",
-    "addToHistoryLabel": "Pridėti taško istorijos įrašą išsaugant"
+    "addToHistoryLabel": "Pridėti taško istorijos įrašą išsaugant",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

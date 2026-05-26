@@ -38,6 +38,7 @@ export interface Point {
 export interface CreatePointRequest {
     name: string;
     description?: string;
+    address?: string;
     lng: number;
     lat: number;
     containerId: string;
@@ -46,6 +47,7 @@ export interface CreatePointRequest {
 export interface UpdatePointRequest {
     name?: string;
     description?: string;
+    address?: string | null;
     lng?: number;
     lat?: number;
     containerId?: string | null;

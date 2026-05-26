@@ -636,11 +636,14 @@
     "photosHint": "Nieabaviazkova. Kožnaje fota abrezajecca da farmatu 4:3 (jak karta ў kartcy).",
     "pickPhotos": "Abrać fota",
     "photosCount": "{{current}} / {{max}} fota",
-    "removePhoto": "Vydalić fota"
+    "removePhoto": "Vydalić fota",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Pakazać kartu",
-    "showPhotos": "Pakazać fota"
+    "showPhotos": "Pakazać fota",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Abrezka fota (4:3)",
@@ -750,7 +753,9 @@
     "deletePhoto": "Vydalić fota",
     "errorPhotosUpload": "Nie ўdalosia zahruzić fota",
     "errorPhotoDelete": "Nie ўdalosia vydalić fota",
-    "addToHistoryLabel": "Dadać zapis u histo ryu kropki pry zaxavańni"
+    "addToHistoryLabel": "Dadać zapis u histo ryu kropki pry zaxavańni",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

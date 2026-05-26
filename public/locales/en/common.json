@@ -636,11 +636,14 @@
     "photosHint": "Optional. Each image is cropped to 4:3 (same as the map on the card).",
     "pickPhotos": "Choose photos",
     "photosCount": "{{current}} / {{max}} photos",
-    "removePhoto": "Remove photo"
+    "removePhoto": "Remove photo",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Show map",
-    "showPhotos": "Show photos"
+    "showPhotos": "Show photos",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Crop photo (4:3)",
@@ -767,7 +770,9 @@
     "deletePhoto": "Delete photo",
     "errorPhotosUpload": "Could not upload photos",
     "errorPhotoDelete": "Could not delete photo",
-    "addToHistoryLabel": "Add a point history entry on save"
+    "addToHistoryLabel": "Add a point history entry on save",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {

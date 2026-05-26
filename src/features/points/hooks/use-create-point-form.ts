@@ -177,7 +177,12 @@ export function useCreatePointForm() {
         e.preventDefault();
         if (!formData.name.trim() || !formData.containerId || !formData.categoryId)
             return;
-        createPointMutation.mutate(formData, {
+        const payload: CreatePointRequest = {
+            ...formData,
+            description: formData.description?.trim() || undefined,
+            address: formData.address?.trim() || undefined,
+        };
+        createPointMutation.mutate(payload, {
             onSuccess: async (point) => {
                 if (photoDrafts.length > 0) {
                     try {

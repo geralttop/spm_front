@@ -636,11 +636,14 @@
     "photosHint": "Opcjonalnie. Każdy obraz jest przycinany do 4:3 (jak mapa na karcie).",
     "pickPhotos": "Wybierz zdjęcia",
     "photosCount": "{{current}} / {{max}} zdjęć",
-    "removePhoto": "Usuń zdjęcie"
+    "removePhoto": "Usuń zdjęcie",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "pointCard": {
     "showMap": "Pokaż mapę",
-    "showPhotos": "Pokaż zdjęcia"
+    "showPhotos": "Pokaż zdjęcia",
+    "addressHint": "Address"
   },
   "pointPhoto": {
     "cropTitle": "Przytnij zdjęcie (4:3)",
@@ -767,7 +770,9 @@
     "deletePhoto": "Usuń zdjęcie",
     "errorPhotosUpload": "Nie udało się przesłać zdjęć",
     "errorPhotoDelete": "Nie udało się usunąć zdjęcia",
-    "addToHistoryLabel": "Dodaj wpis historii punktu przy zapisie"
+    "addToHistoryLabel": "Dodaj wpis historii punktu przy zapisie",
+    "address": "Address",
+    "addressPlaceholder": "Street, city (optional)"
   },
   "errors": {
     "unexpected": {
