@@ -637,13 +637,13 @@
     "pickPhotos": "Wybierz zdjęcia",
     "photosCount": "{{current}} / {{max}} zdjęć",
     "removePhoto": "Usuń zdjęcie",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adres",
+    "addressPlaceholder": "Ulica, miasto (opcjonalnie)"
   },
   "pointCard": {
     "showMap": "Pokaż mapę",
     "showPhotos": "Pokaż zdjęcia",
-    "addressHint": "Address"
+    "addressHint": "Adres"
   },
   "pointPhoto": {
     "cropTitle": "Przytnij zdjęcie (4:3)",
@@ -771,8 +771,8 @@
     "errorPhotosUpload": "Nie udało się przesłać zdjęć",
     "errorPhotoDelete": "Nie udało się usunąć zdjęcia",
     "addToHistoryLabel": "Dodaj wpis historii punktu przy zapisie",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adres",
+    "addressPlaceholder": "Ulica, miasto (opcjonalnie)"
   },
   "errors": {
     "unexpected": {

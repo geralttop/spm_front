@@ -620,13 +620,13 @@
     "pickPhotos": "ფოტოების არჩევა",
     "photosCount": "{{current}} / {{max}} ფოტო",
     "removePhoto": "ფოტოს წაშლა",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "მისამართი",
+    "addressPlaceholder": "ქუჩა, ქალაქი (არასავალდებულო)"
   },
   "pointCard": {
     "showMap": "რუკის ჩვენება",
     "showPhotos": "ფოტოების ჩვენება",
-    "addressHint": "Address"
+    "addressHint": "მისამართი"
   },
   "pointPhoto": {
     "cropTitle": "ფოტოს მოჭრა (4:3)",
@@ -754,8 +754,8 @@
     "errorPhotosUpload": "ფოტოების ატვირთვა ვერ მოხერხდა",
     "errorPhotoDelete": "ფოტოს წაშლა ვერ მოხერხდა",
     "addToHistoryLabel": "შენახვისას ისტორიის ჩანაწერის დამატება",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "მისამართი",
+    "addressPlaceholder": "ქუჩა, ქალაქი (არასავალდებულო)"
   },
   "errors": {
     "unexpected": {

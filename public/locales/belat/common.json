@@ -637,13 +637,13 @@
     "pickPhotos": "Abrać fota",
     "photosCount": "{{current}} / {{max}} fota",
     "removePhoto": "Vydalić fota",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adras",
+    "addressPlaceholder": "Vulica, harad (nieabaviazkova)"
   },
   "pointCard": {
     "showMap": "Pakazać kartu",
     "showPhotos": "Pakazać fota",
-    "addressHint": "Address"
+    "addressHint": "Adras"
   },
   "pointPhoto": {
     "cropTitle": "Abrezka fota (4:3)",
@@ -754,8 +754,8 @@
     "errorPhotosUpload": "Nie ўdalosia zahruzić fota",
     "errorPhotoDelete": "Nie ўdalosia vydalić fota",
     "addToHistoryLabel": "Dadać zapis u histo ryu kropki pry zaxavańni",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adras",
+    "addressPlaceholder": "Vulica, harad (nieabaviazkova)"
   },
   "errors": {
     "unexpected": {

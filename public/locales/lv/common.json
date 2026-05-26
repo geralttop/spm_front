@@ -637,13 +637,13 @@
     "pickPhotos": "Izvēlēties fotogrāfijas",
     "photosCount": "{{current}} / {{max}} fotogrāfijas",
     "removePhoto": "Noņemt fotogrāfiju",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adrese",
+    "addressPlaceholder": "Iela, pilsēta (nav obligāti)"
   },
   "pointCard": {
     "showMap": "Rādīt karti",
     "showPhotos": "Rādīt fotogrāfijas",
-    "addressHint": "Address"
+    "addressHint": "Adrese"
   },
   "pointPhoto": {
     "cropTitle": "Apgriezt fotogrāfiju (4:3)",
@@ -771,8 +771,8 @@
     "errorPhotosUpload": "Neizdevās augšupielādēt fotogrāfijas",
     "errorPhotoDelete": "Neizdevās dzēst fotogrāfiju",
     "addToHistoryLabel": "Pievienot punkta vēstures ierakstu saglabājot",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adrese",
+    "addressPlaceholder": "Iela, pilsēta (nav obligāti)"
   },
   "errors": {
     "unexpected": {

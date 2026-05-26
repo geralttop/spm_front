@@ -620,13 +620,13 @@
     "pickPhotos": "Обрати фото",
     "photosCount": "{{current}} / {{max}} фото",
     "removePhoto": "Прибрати фото",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Адреса",
+    "addressPlaceholder": "Вулиця, місто (необов'язково)"
   },
   "pointCard": {
     "showMap": "Показати карту",
     "showPhotos": "Показати фото",
-    "addressHint": "Address"
+    "addressHint": "Адреса"
   },
   "pointPhoto": {
     "cropTitle": "Обрізати фото (4:3)",
@@ -754,8 +754,8 @@
     "errorPhotosUpload": "Не вдалося завантажити фото",
     "errorPhotoDelete": "Не вдалося видалити фото",
     "addToHistoryLabel": "Додати запис історії точки при збереженні",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Адреса",
+    "addressPlaceholder": "Вулиця, місто (необов'язково)"
   },
   "errors": {
     "unexpected": {

@@ -637,13 +637,13 @@
     "pickPhotos": "Абраць фота",
     "photosCount": "{{current}} / {{max}} фота",
     "removePhoto": "Выдаліць фота",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Адрас",
+    "addressPlaceholder": "Вуліца, горад (неабавязкова)"
   },
   "pointCard": {
     "showMap": "Паказаць карту",
     "showPhotos": "Паказаць фота",
-    "addressHint": "Address"
+    "addressHint": "Адрас"
   },
   "pointPhoto": {
     "cropTitle": "Абрэзка фота (4:3)",
@@ -754,8 +754,8 @@
     "errorPhotosUpload": "Не ўдалося загрузіць фота",
     "errorPhotoDelete": "Не ўдалося выдаліць фота",
     "addToHistoryLabel": "Дадаць запіс у гісторыю кропкі пры захаванні",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Адрас",
+    "addressPlaceholder": "Вуліца, горад (неабавязкова)"
   },
   "errors": {
     "unexpected": {

@@ -637,13 +637,13 @@
     "pickPhotos": "Pasirinkti nuotraukas",
     "photosCount": "{{current}} / {{max}} nuotraukų",
     "removePhoto": "Pašalinti nuotrauką",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adresas",
+    "addressPlaceholder": "Gatvė, miestas (neprivaloma)"
   },
   "pointCard": {
     "showMap": "Rodyti žemėlapį",
     "showPhotos": "Rodyti nuotraukas",
-    "addressHint": "Address"
+    "addressHint": "Adresas"
   },
   "pointPhoto": {
     "cropTitle": "Apkirpti nuotrauką (4:3)",
@@ -771,8 +771,8 @@
     "errorPhotosUpload": "Nepavyko įkelti nuotraukų",
     "errorPhotoDelete": "Nepavyko ištrinti nuotraukos",
     "addToHistoryLabel": "Pridėti taško istorijos įrašą išsaugant",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Adresas",
+    "addressPlaceholder": "Gatvė, miestas (neprivaloma)"
   },
   "errors": {
     "unexpected": {

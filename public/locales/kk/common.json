@@ -620,13 +620,13 @@
     "pickPhotos": "Фотосуреттерді таңдау",
     "photosCount": "{{current}} / {{max}} фото",
     "removePhoto": "Фотоны жою",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Мекенжай",
+    "addressPlaceholder": "Көше, қала (міндетті емес)"
   },
   "pointCard": {
     "showMap": "Картаны көрсету",
     "showPhotos": "Фотоларды көрсету",
-    "addressHint": "Address"
+    "addressHint": "Мекенжай"
   },
   "pointPhoto": {
     "cropTitle": "Фотоны қию (4:3)",
@@ -754,8 +754,8 @@
     "errorPhotosUpload": "Фотоларды жүктеу мүмкін болмады",
     "errorPhotoDelete": "Фотоны жою мүмкін болмады",
     "addToHistoryLabel": "Сақтағанда тарих жазбасын қосу",
-    "address": "Address",
-    "addressPlaceholder": "Street, city (optional)"
+    "address": "Мекенжай",
+    "addressPlaceholder": "Көше, қала (міндетті емес)"
   },
   "errors": {
     "unexpected": {
