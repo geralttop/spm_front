@@ -4,6 +4,7 @@ import { User, Mail, Check, X, Edit2 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input, Textarea, Button, ShareLinkButton } from '@/shared/ui';
 import { UserBadges } from '@/shared/ui/user-badges';
+import { userAvatarSrc } from '@/shared/lib/user-avatar-url';
 import { userProfilePath } from '@/shared/lib/user-profile-path';
 import { useForm } from '@/shared/lib/hooks';
 import { createUpdateProfileSchema } from '@/shared/schemas';
@@ -19,9 +20,8 @@ interface ProfileFormProps {
         bio?: string;
     }) => Promise<void>;
     onCancel: () => void;
-    onAvatarChange: () => void;
 }
-export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAvatarChange }: ProfileFormProps) {
+export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel }: ProfileFormProps) {
     const { t } = useTranslation();
     const updateProfileSchema = useMemo(() => createUpdateProfileSchema(t), [t]);
     const { values, errors, isSubmitting, handleChange, handleSubmit } = useForm({
@@ -32,9 +32,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
         schema: updateProfileSchema,
         onSubmit: onSave,
     });
-    const avatarUrl = profile.avatar
-        ? `${process.env.NEXT_PUBLIC_API_URL}${profile.avatar}`
-        : null;
+    const avatarUrl = userAvatarSrc(profile.avatar);
     return (<div className="rounded-xl border border-border bg-card p-3 sm:p-6 shadow-sm">
       
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-border">
@@ -69,7 +67,7 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel, onAv
             <label className="mb-2 block text-sm font-medium text-text-muted">
               {t('profile.avatar.upload')}
             </label>
-            <AvatarUpload currentAvatar={profile.avatar} onAvatarChange={onAvatarChange}/>
+            <AvatarUpload currentAvatar={profile.avatar}/>
           </div>)}
         
         {isEditing ? (<>

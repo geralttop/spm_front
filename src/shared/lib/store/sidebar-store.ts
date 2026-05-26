@@ -9,6 +9,7 @@ interface SidebarState {
     }) => Promise<void>;
     setSidebarOrder: (order: string[]) => Promise<void>;
     resetToDefaults: () => Promise<void>;
+    resetSession: () => void;
 }
 const DEFAULT_ORDER = [
     "feed",
@@ -82,5 +83,8 @@ export const useSidebarStore = create<SidebarState>((set, get) => ({
         finally {
             set({ isLoading: false });
         }
+    },
+    resetSession: () => {
+        set({ sidebarOrder: DEFAULT_ORDER, isInitialized: false, isLoading: false });
     },
 }));

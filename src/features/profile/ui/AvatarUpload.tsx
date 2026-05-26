@@ -3,15 +3,17 @@ import { useState, useRef } from 'react';
 import { Camera, Trash2, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@/shared/ui';
-import { authApi } from '@/shared/api';
+import { userAvatarSrc } from '@/shared/lib/user-avatar-url';
+import { useDeleteAvatarMutation, useUploadAvatarMutation } from '@/shared/lib/hooks/queries';
 import { AvatarCropModal } from './AvatarCropModal';
 interface AvatarUploadProps {
     currentAvatar?: string;
-    onAvatarChange: () => void;
 }
-export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProps) {
+export function AvatarUpload({ currentAvatar }: AvatarUploadProps) {
     const { t } = useTranslation();
-    const [isUploading, setIsUploading] = useState(false);
+    const uploadAvatarMutation = useUploadAvatarMutation();
+    const deleteAvatarMutation = useDeleteAvatarMutation();
+    const isUploading = uploadAvatarMutation.isPending || deleteAvatarMutation.isPending;
     const [imageToCrop, setImageToCrop] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,15 +31,12 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
         reader.readAsDataURL(file);
     };
     const handleCropComplete = async (croppedBlob: Blob) => {
-        setIsUploading(true);
         setImageToCrop(null);
         try {
             const croppedFile = new File([croppedBlob], 'avatar.jpg', { type: 'image/jpeg' });
-            await authApi.uploadAvatar(croppedFile);
-            onAvatarChange();
+            await uploadAvatarMutation.mutateAsync(croppedFile);
         }
         finally {
-            setIsUploading(false);
             if (fileInputRef.current) {
                 fileInputRef.current.value = '';
             }
@@ -46,18 +45,9 @@ export function AvatarUpload({ currentAvatar, onAvatarChange }: AvatarUploadProp
     const handleDelete = async () => {
         if (!currentAvatar)
             return;
-        setIsUploading(true);
-        try {
-            await authApi.deleteAvatar();
-            onAvatarChange();
-        }
-        finally {
-            setIsUploading(false);
-        }
+        await deleteAvatarMutation.mutateAsync();
     };
-    const avatarUrl = currentAvatar
-        ? `${process.env.NEXT_PUBLIC_API_URL}${currentAvatar}`
-        : null;
+    const avatarUrl = userAvatarSrc(currentAvatar);
     return (<>
       <div className="flex flex-col items-center gap-4">
         <div className="relative">

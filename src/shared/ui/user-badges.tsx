@@ -15,13 +15,16 @@ export interface UserBadgesProps {
   className?: string;
 }
 
+const STATUS_BADGE_SIZE = 18;
+const MILESTONE_BADGE_SIZE = 28;
+
 function VerifiedBadgeIcon(props: { title?: string }) {
   const { title } = props;
   return (
     <svg
       viewBox="0 0 24 24"
-      width={18}
-      height={18}
+      width={STATUS_BADGE_SIZE}
+      height={STATUS_BADGE_SIZE}
       className="h-[18px] w-[18px] shrink-0 text-primary"
       role={title ? "img" : undefined}
       aria-label={title}
@@ -46,10 +49,10 @@ function VerifiedBadgeIcon(props: { title?: string }) {
 }
 
 function milestoneI18nKey(filename: string): string {
-  if (filename === "5points_status.png") return "badges.milestone5";
-  if (filename === "10points_status.png") return "badges.milestone10";
-  if (filename === "15points_status.png") return "badges.milestone15";
-  if (filename === "20points_status.png") return "badges.milestone20";
+  if (filename === "5points_status.svg") return "badges.milestone5";
+  if (filename === "10points_status.svg") return "badges.milestone10";
+  if (filename === "15points_status.svg") return "badges.milestone15";
+  if (filename === "20points_status.svg") return "badges.milestone20";
   return "badges.milestone5";
 }
 
@@ -85,8 +88,8 @@ export function UserBadges({
         <img
           src={badgePublicUrl(ADMIN_BADGE_FILENAME)}
           alt=""
-          width={18}
-          height={18}
+          width={STATUS_BADGE_SIZE}
+          height={STATUS_BADGE_SIZE}
           className="h-[18px] w-[18px] shrink-0 object-contain dark:opacity-95"
           title={t("badges.admin")}
         />
@@ -95,9 +98,9 @@ export function UserBadges({
         <img
           src={badgePublicUrl(milestoneFile)}
           alt=""
-          width={18}
-          height={18}
-          className="h-[18px] w-[18px] shrink-0 object-contain dark:opacity-95"
+          width={MILESTONE_BADGE_SIZE}
+          height={MILESTONE_BADGE_SIZE}
+          className="h-7 w-7 shrink-0 object-contain dark:opacity-95"
           title={t(milestoneI18nKey(milestoneFile))}
         />
       ) : null}

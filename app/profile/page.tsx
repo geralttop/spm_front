@@ -86,9 +86,7 @@ export default function ProfilePage() {
         <div className="space-y-4 sm:space-y-6">
           {stats && (<ProfileStats stats={stats} onShowFollowers={handleShowFollowers} onShowFollowing={handleShowFollowing}/>)}
 
-          <ProfileForm profile={profile} isEditing={isEditing} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel} onAvatarChange={() => {
-            window.location.reload();
-        }}/>
+          <ProfileForm profile={profile} isEditing={isEditing} onEdit={handleEdit} onSave={handleSave} onCancel={handleCancel}/>
 
           <BioHistoryTimeline entries={bioHistory} isLoading={bioHistoryLoading} error={bioHistoryError as Error | null} canDelete onDelete={(id) => deleteBioHistoryMutation.mutate(id)} deletePendingId={deleteBioHistoryMutation.isPending
             ? (deleteBioHistoryMutation.variables as number)

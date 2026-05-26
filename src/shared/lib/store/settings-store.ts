@@ -27,6 +27,7 @@ interface SettingsState {
     setPointCardInitialView: (view: PointCardInitialView) => Promise<void>;
     toggleMapStyle: (style: MapStyleKey) => Promise<void>;
     resetToDefaults: () => Promise<void>;
+    resetSession: () => void;
 }
 const DEFAULT_MAP_STYLES: MapStyleKey[] = ['carto', 'openstreet3d'];
 const DEFAULT_STYLE: MapStyleKey = 'carto';
@@ -200,5 +201,14 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         finally {
             set({ isLoading: false });
         }
+    },
+    resetSession: () => {
+        set({
+            availableMapStyles: DEFAULT_MAP_STYLES,
+            defaultMapStyle: DEFAULT_STYLE,
+            pointCardInitialView: DEFAULT_POINT_CARD_VIEW,
+            isInitialized: false,
+            isLoading: false,
+        });
     },
 }));
