@@ -1,13 +1,23 @@
 'use client';
 
 import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { pointsApi, type Point } from '@/shared/api';
 import { useManageStore } from '@/shared/lib/store';
 import { MapPin, Tag, Package, Trash2, Loader2 } from 'lucide-react';
 
+function pointPagePath(point: Point): string {
+  const containerId = point.container?.id;
+  if (containerId) {
+    return `/points/${point.id}?fromContainer=${encodeURIComponent(containerId)}`;
+  }
+  return `/points/${point.id}`;
+}
+
 export function ManagePoints() {
   const { t } = useTranslation();
+  const router = useRouter();
   const { points, pointsLoading, setPoints, setPointsLoading } = useManageStore();
 
   useEffect(() => {
@@ -43,6 +53,10 @@ export function ManagePoints() {
     }
   };
 
+  const goToPoint = (point: Point) => {
+    router.push(pointPagePath(point));
+  };
+
   if (pointsLoading) {
     return (
       <div className="flex justify-center py-8">
@@ -60,7 +74,14 @@ export function ManagePoints() {
       {points.map((point) => (
         <div key={point.id} className="flex items-start sm:items-center justify-between gap-2 p-3 sm:p-4 bg-surface rounded-lg border border-border">
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-text-main text-sm sm:text-base truncate">{point.name}</h3>
+            <button
+              type="button"
+              onClick={() => goToPoint(point)}
+              className="inline-flex max-w-full items-center gap-2 text-left font-medium text-text-main text-sm sm:text-base transition-colors hover:text-primary"
+            >
+              <MapPin className="h-4 w-4 shrink-0" />
+              <span className="truncate">{point.name}</span>
+            </button>
             {point.description && (
               <p className="text-xs sm:text-sm text-text-muted mt-1 line-clamp-2">{point.description}</p>
             )}
