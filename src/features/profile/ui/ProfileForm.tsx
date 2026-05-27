@@ -8,6 +8,7 @@ import { userAvatarSrc } from '@/shared/lib/user-avatar-url';
 import { userProfilePath } from '@/shared/lib/user-profile-path';
 import { useForm } from '@/shared/lib/hooks';
 import { createUpdateProfileSchema } from '@/shared/schemas';
+import { mapProfileUpdateError } from '@/features/profile/lib/profile-update-error';
 import type { ProfileResponse } from '@/shared/types';
 import { AvatarUpload } from './AvatarUpload';
 import { ProfileStickyIdentityObserver } from './ProfileStickyIdentityObserver';
@@ -30,7 +31,14 @@ export function ProfileForm({ profile, isEditing, onEdit, onSave, onCancel }: Pr
             bio: profile.bio || '',
         },
         schema: updateProfileSchema,
-        onSubmit: onSave,
+        submitErrorFallback: t('profile.updateError'),
+        mapSubmitError: (error) => mapProfileUpdateError(error, t),
+        onSubmit: async (data) => {
+            await onSave({
+                username: data.username.trim(),
+                bio: data.bio?.trim() || undefined,
+            });
+        },
     });
     const avatarUrl = userAvatarSrc(profile.avatar);
     return (<div className="rounded-xl border border-border bg-card p-3 sm:p-6 shadow-sm">

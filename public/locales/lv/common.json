@@ -20,7 +20,12 @@
     "retry": "Mēģināt vēlreiz"
   },
   "validation": {
-    "bioMaxLength": "Bio nedrīkst pārsniegt 500 rakstzīmes"
+    "bioMaxLength": "Bio nedrīkst pārsniegt 500 rakstzīmes",
+    "usernameRequired": "Ievadiet lietotājvārdu",
+    "usernameMinLength": "Lietotājvārdam jābūt no 3 līdz 30 rakstzīmēm",
+    "usernameMaxLength": "Lietotājvārds nedrīkst pārsniegt 30 rakstzīmes",
+    "usernamePattern": "Lietotājvārds drīkst saturēt tikai burtus, ciparus un apakšsvītru",
+    "usernameTaken": "Šis lietotājvārds jau ir aizņemts"
   },
   "navigation": {
     "home": "Sākums",

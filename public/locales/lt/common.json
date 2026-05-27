@@ -20,7 +20,12 @@
     "retry": "Bandyti dar kartą"
   },
   "validation": {
-    "bioMaxLength": "Aprašymas negali viršyti 500 simbolių"
+    "bioMaxLength": "Aprašymas negali viršyti 500 simbolių",
+    "usernameRequired": "Įveskite naudotojo vardą",
+    "usernameMinLength": "Naudotojo vardas turi būti nuo 3 iki 30 simbolių",
+    "usernameMaxLength": "Naudotojo vardas negali viršyti 30 simbolių",
+    "usernamePattern": "Naudotojo varde leidžiamos tik raidės, skaičiai ir apatinis brūkšnys",
+    "usernameTaken": "Šis naudotojo vardas jau užimtas"
   },
   "navigation": {
     "home": "Pradžia",

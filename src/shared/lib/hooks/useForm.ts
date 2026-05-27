@@ -1,12 +1,15 @@
 import { useState, useCallback } from 'react';
 import { z } from 'zod';
+import { getApiErrorMessage } from '@/shared/lib/api-error-message';
 interface UseFormOptions<T> {
     initialValues: T;
     onSubmit: (values: T) => Promise<void>;
     validate?: (values: T) => Record<string, string>;
     schema?: z.ZodSchema<T>;
+    submitErrorFallback?: string;
+    mapSubmitError?: (error: unknown) => Record<string, string>;
 }
-export function useForm<T extends Record<string, any>>({ initialValues, onSubmit, validate, schema, }: UseFormOptions<T>) {
+export function useForm<T extends Record<string, any>>({ initialValues, onSubmit, validate, schema, submitErrorFallback = 'An error occurred', mapSubmitError, }: UseFormOptions<T>) {
     const [values, setValues] = useState<T>(initialValues);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -52,14 +55,18 @@ export function useForm<T extends Record<string, any>>({ initialValues, onSubmit
         try {
             await onSubmit(values);
         }
-        catch (error: any) {
-            const errorMessage = error.response?.data?.message || error.message || 'An error occurred';
-            setErrors({ submit: errorMessage });
+        catch (error: unknown) {
+            if (mapSubmitError) {
+                setErrors(mapSubmitError(error));
+            }
+            else {
+                setErrors({ submit: getApiErrorMessage(error, submitErrorFallback) });
+            }
         }
         finally {
             setIsSubmitting(false);
         }
-    }, [values, validate, schema, onSubmit]);
+    }, [values, validate, schema, onSubmit, submitErrorFallback, mapSubmitError]);
     const reset = useCallback(() => {
         setValues(initialValues);
         setErrors({});

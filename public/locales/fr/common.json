@@ -20,7 +20,12 @@
     "retry": "Réessayer"
   },
   "validation": {
-    "bioMaxLength": "La biographie ne doit pas dépasser 500 caractères"
+    "bioMaxLength": "La biographie ne doit pas dépasser 500 caractères",
+    "usernameRequired": "Indiquez un nom d'utilisateur",
+    "usernameMinLength": "Le nom d'utilisateur doit contenir de 3 à 30 caractères",
+    "usernameMaxLength": "Le nom d'utilisateur ne doit pas dépasser 30 caractères",
+    "usernamePattern": "Le nom d'utilisateur ne peut contenir que des lettres, chiffres et underscore",
+    "usernameTaken": "Ce nom d'utilisateur est déjà pris"
   },
   "navigation": {
     "home": "Accueil",

@@ -26,10 +26,11 @@ export const loginSchema = z.object({
 export function createUpdateProfileSchema(t: TFunction) {
   return z.object({
     username: z.string()
-      .min(3, 'Имя пользователя должно содержать минимум 3 символа')
-      .max(30, 'Имя пользователя не должно превышать 30 символов')
-      .regex(/^[a-zA-Z0-9_]+$/, 'Имя пользователя может содержать только буквы, цифры и подчеркивание')
-      .optional(),
+      .trim()
+      .min(1, t('validation.usernameRequired'))
+      .min(3, t('validation.usernameMinLength'))
+      .max(30, t('validation.usernameMaxLength'))
+      .regex(/^[a-zA-Z0-9_]+$/, t('validation.usernamePattern')),
     bio: z.string()
       .max(500, t('validation.bioMaxLength'))
       .optional(),

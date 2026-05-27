@@ -20,7 +20,12 @@
     "retry": "Proovi uuesti"
   },
   "validation": {
-    "bioMaxLength": "Bio ei tohi ületada 500 tähemärki"
+    "bioMaxLength": "Bio ei tohi ületada 500 tähemärki",
+    "usernameRequired": "Sisestage kasutajanimi",
+    "usernameMinLength": "Kasutajanimi peab olema 3–30 märki",
+    "usernameMaxLength": "Kasutajanimi ei tohi ületada 30 märki",
+    "usernamePattern": "Kasutajanimes on lubatud ainult tähed, numbrid ja alakriips",
+    "usernameTaken": "See kasutajanimi on juba hõivatud"
   },
   "navigation": {
     "home": "Avaleht",

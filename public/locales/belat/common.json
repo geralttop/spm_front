@@ -20,7 +20,12 @@
     "retry": "Pasprabavać jašče raz"
   },
   "validation": {
-    "bioMaxLength": "Bijahrafija nie pavinna pieravyšać 500 simvalaŭ"
+    "bioMaxLength": "Bijahrafija nie pavinna pieravyšać 500 simvalaŭ",
+    "usernameRequired": "Ukazice imia karystaĺnika",
+    "usernameMinLength": "Imia karystaĺnika pavinnа zmiaščać ad 3 da 30 symbalaŭ",
+    "usernameMaxLength": "Imia karystaĺnika nie pavinnа pieravyščać 30 symbalaŭ",
+    "usernamePattern": "Imia karystaĺnika moža zmiaščać tolki litary, ličby i nižniae padkreślivanne",
+    "usernameTaken": "Hetae imia karystaĺnika užo zaniatae"
   },
   "navigation": {
     "home": "Haloŭnaja",

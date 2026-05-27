@@ -20,7 +20,12 @@
     "retry": "Try again"
   },
   "validation": {
-    "bioMaxLength": "Bio must not exceed 500 characters"
+    "bioMaxLength": "Bio must not exceed 500 characters",
+    "usernameRequired": "Enter a username",
+    "usernameMinLength": "Username must be 3 to 30 characters",
+    "usernameMaxLength": "Username must not exceed 30 characters",
+    "usernamePattern": "Username may contain only letters, numbers, and underscore",
+    "usernameTaken": "This username is already taken"
   },
   "navigation": {
     "home": "Home",

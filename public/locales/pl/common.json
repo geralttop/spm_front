@@ -20,7 +20,12 @@
     "retry": "Spróbuj ponownie"
   },
   "validation": {
-    "bioMaxLength": "Bio nie może przekraczać 500 znaków"
+    "bioMaxLength": "Bio nie może przekraczać 500 znaków",
+    "usernameRequired": "Podaj nazwę użytkownika",
+    "usernameMinLength": "Nazwa użytkownika musi mieć od 3 do 30 znaków",
+    "usernameMaxLength": "Nazwa użytkownika nie może przekraczać 30 znaków",
+    "usernamePattern": "Nazwa użytkownika może zawierać tylko litery, cyfry i podkreślenie",
+    "usernameTaken": "Ta nazwa użytkownika jest już zajęta"
   },
   "navigation": {
     "home": "Strona główna",

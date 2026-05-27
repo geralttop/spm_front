@@ -1,8 +1,7 @@
-export function getErrorMessage(error: any, fallback: string): string {
-  const msg = error?.response?.data?.message;
-  if (Array.isArray(msg)) return msg[0] ?? fallback;
-  if (typeof msg === "string") return msg;
-  return error?.message && error.message !== "No access token available" ? error.message : fallback;
+import { getApiErrorMessage } from "@/shared/lib/api-error-message";
+
+export function getErrorMessage(error: unknown, fallback: string): string {
+  return getApiErrorMessage(error, fallback);
 }
 
 export function getValidationError(
