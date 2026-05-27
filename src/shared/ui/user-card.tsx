@@ -1,5 +1,6 @@
 import { User as UserIcon, Flag } from "lucide-react";
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "./button";
 import { ReportModal } from "./report-modal";
@@ -22,32 +23,40 @@ export function UserCard({ user, onClick, actionButton, showReportButton = true 
     const canReport = showReportButton && accessToken && currentUserId && currentUserId !== user.id;
     const handleReportSuccess = () => {
     };
-    return (<div onClick={onClick} className="flex cursor-pointer flex-col gap-3 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent sm:flex-row sm:items-center sm:gap-4 sm:p-4">
-      <div className="flex min-w-0 flex-1 items-start gap-3">
-        <div className="shrink-0">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-            <UserIcon className="h-6 w-6 text-primary"/>
+    return (<>
+      <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-3 transition-colors sm:flex-row sm:items-center sm:gap-4 sm:p-4">
+        <button
+          type="button"
+          onClick={onClick}
+          className="flex min-w-0 flex-1 cursor-pointer items-start gap-3 rounded-lg text-left transition-colors hover:bg-accent -m-1 p-1"
+        >
+          <div className="shrink-0">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <UserIcon className="h-6 w-6 text-primary"/>
+            </div>
           </div>
-        </div>
 
-        <div className="min-w-0 flex-1">
-          <h3 className="flex min-w-0 items-center gap-1.5 truncate font-semibold text-text-main">
-            <span className="truncate">{user.username}</span>
-            <UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>
-          </h3>
-          <p className="truncate text-sm text-text-muted">{user.email}</p>
-          {user.bio && (<p className="mt-1 line-clamp-2 text-xs text-text-muted">{user.bio}</p>)}
-        </div>
+          <div className="min-w-0 flex-1">
+            <h3 className="flex min-w-0 items-center gap-1.5 truncate font-semibold text-text-main">
+              <span className="truncate">{user.username}</span>
+              <UserBadges role={user.role} createdPointsCount={user.createdPointsCount} isVerified={user.isVerified} className="shrink-0"/>
+            </h3>
+            <p className="truncate text-sm text-text-muted">{user.email}</p>
+            {user.bio && (<p className="mt-1 line-clamp-2 text-xs text-text-muted">{user.bio}</p>)}
+          </div>
+        </button>
+
+        {(actionButton || canReport) && (<div className="flex shrink-0 items-center justify-end gap-2 border-t border-border pt-3 sm:w-auto sm:border-t-0 sm:pt-0">
+            {actionButton}
+            {canReport && (<Button variant="ghost" size="sm" type="button" onClick={() => setShowReportModal(true)} className="min-h-[44px] min-w-[44px] text-text-muted hover:bg-destructive/10 hover:text-destructive dark:hover:bg-destructive/20" title={t("reports.button")}>
+                <Flag className="h-4 w-4"/>
+              </Button>)}
+          </div>)}
       </div>
 
-      {(actionButton || canReport) && (<div className="flex shrink-0 items-center justify-end gap-2 border-t border-border pt-3 sm:w-auto sm:border-t-0 sm:pt-0" onClick={(e) => e.stopPropagation()}>
-          {actionButton}
-          {canReport && (<Button variant="ghost" size="sm" type="button" onClick={() => setShowReportModal(true)} className="min-h-[44px] min-w-[44px] text-text-muted hover:bg-destructive/10 hover:text-destructive dark:hover:bg-destructive/20" title={t("reports.button")}>
-              <Flag className="h-4 w-4"/>
-            </Button>)}
-        </div>)}
-
-      
-      <ReportModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} type="user" targetId={user.id} targetName={user.username} onSuccess={handleReportSuccess}/>
-    </div>);
+      {typeof document !== "undefined" && createPortal(
+        <ReportModal isOpen={showReportModal} onClose={() => setShowReportModal(false)} type="user" targetId={user.id} targetName={user.username} onSuccess={handleReportSuccess}/>,
+        document.body,
+      )}
+    </>);
 }

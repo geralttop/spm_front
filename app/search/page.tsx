@@ -97,7 +97,7 @@ export default function SearchPage() {
                 </h2>
 
                 <div className="space-y-3">
-                  {filteredResults.map((user) => (<UserCard key={user.id} user={user} onClick={() => handleUserClick(user.username)} actionButton={<Button variant="outline" size="sm" type="button" className="w-full min-h-[44px] touch-target sm:w-auto sm:min-h-9">
+                  {filteredResults.map((user) => (<UserCard key={user.id} user={user} onClick={() => handleUserClick(user.username)} actionButton={<Button variant="outline" size="sm" type="button" onClick={() => handleUserClick(user.username)} className="w-full min-h-[44px] touch-target sm:w-auto sm:min-h-9">
                           <span className="hidden sm:inline">{t("search.viewProfile")}</span>
                           <span className="sm:hidden">{t("search.view")}</span>
                         </Button>}/>))}

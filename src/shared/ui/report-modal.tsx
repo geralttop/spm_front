@@ -72,8 +72,16 @@ export function ReportModal({ isOpen, onClose, type, targetId, targetName, onSuc
     };
     if (!isOpen)
         return null;
-    return (<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 max-sm:items-stretch max-sm:justify-start max-sm:p-0">
-      <div className="w-full max-w-xl overflow-y-auto rounded-lg border border-border bg-card text-card-foreground shadow-2xl max-h-[90vh] max-sm:flex max-sm:h-[100dvh] max-sm:max-h-[100dvh] max-sm:max-w-none max-sm:flex-col max-sm:overflow-hidden max-sm:rounded-none">
+    return (<div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 max-sm:items-stretch max-sm:justify-start max-sm:p-0"
+      onClick={(e) => e.stopPropagation()}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div
+        className="w-full max-w-xl overflow-y-auto rounded-lg border border-border bg-card text-card-foreground shadow-2xl max-h-[90vh] max-sm:flex max-sm:h-[100dvh] max-sm:max-h-[100dvh] max-sm:max-w-none max-sm:flex-col max-sm:overflow-hidden max-sm:rounded-none"
+        onClick={(e) => e.stopPropagation()}
+      >
         
         <div className="flex items-center justify-between border-b border-border bg-card p-6 max-sm:shrink-0 max-sm:p-4 max-sm:pt-[max(1rem,env(safe-area-inset-top))]">
           <div className="flex items-center gap-3 max-sm:min-w-0 max-sm:flex-1">
