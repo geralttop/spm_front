@@ -43,12 +43,17 @@ export function ManageCategories() {
         }
     };
     const handleDeleteCategory = async (id: number) => {
-        if (!confirm(t('manage.manageCategories.deleteConfirm')))
+        const pointsCount = points.filter(p => p.category?.id === id).length;
+        const confirmMessage = pointsCount > 0
+            ? t('manage.manageCategories.deleteConfirmWithPoints', { count: pointsCount })
+            : t('manage.manageCategories.deleteConfirm');
+        if (!confirm(confirmMessage))
             return;
         setCategoriesLoading(true);
         try {
             await categoriesApi.delete(id);
             await loadCategories();
+            await loadPoints();
             alert(t('manage.manageCategories.deleteSuccess'));
         }
         catch (err: any) {
@@ -186,7 +191,7 @@ export function ManageCategories() {
                     <button onClick={() => setEditingCategory(category)} className="p-1.5 sm:p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors">
                       <Edit2 className="h-4 w-4 sm:h-5 sm:w-5"/>
                     </button>
-                    <button onClick={() => handleDeleteCategory(category.id)} className="p-1.5 sm:p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors" disabled={categoryPoints.length > 0}>
+                    <button onClick={() => handleDeleteCategory(category.id)} className="p-1.5 sm:p-2 text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
                       <Trash2 className="h-4 w-4 sm:h-5 sm:w-5"/>
                     </button>
                   </div>
